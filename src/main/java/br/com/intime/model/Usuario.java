@@ -50,6 +50,12 @@ public class Usuario implements Serializable {
     @Size(max = 20)
     @Column(name = "fone")
     private String fone;
+    @Size(max = 30)
+    @Column(name = "login")
+    private String login;
+    @Size(max = 100)
+    @Column(name = "senha")
+    private String senha;
     @Size(max = 20)
     @Column(name = "nivel")
     private String nivel;
@@ -147,6 +153,22 @@ public class Usuario implements Serializable {
 
     public void setStatus(Boolean status) {
         this.status = status;
+    }
+
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public String getSenha() {
+        return senha;
+    }
+
+    public void setSenha(String senha) {
+        this.senha = senha;
     }
 
     @Override
