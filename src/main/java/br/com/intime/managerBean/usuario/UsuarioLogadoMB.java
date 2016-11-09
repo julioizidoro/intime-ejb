@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.com.intime.managerBean;
+package br.com.intime.managerBean.usuario;
 
 import br.com.intime.model.Usuario;
 import br.com.intime.repository.UsuarioRepository;

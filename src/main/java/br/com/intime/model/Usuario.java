@@ -50,23 +50,23 @@ public class Usuario implements Serializable {
     @Size(max = 20)
     @Column(name = "fone")
     private String fone;
+    @Size(max = 20)
+    @Column(name = "nivel")
+    private String nivel;
+    @Column(name = "status")
+    private Boolean status;
     @Size(max = 30)
     @Column(name = "login")
     private String login;
     @Size(max = 100)
     @Column(name = "senha")
     private String senha;
-    @Size(max = 20)
-    @Column(name = "nivel")
-    private String nivel;
-    @Column(name = "status") //Situação da empresa True - Ativo False - Inativo
-    private Boolean status;
     @JoinColumn(name = "acesso_idacesso", referencedColumnName = "idacesso")
     @ManyToOne(optional = false)
-    private Acesso acesso;
+    private Acesso acessoIdacesso;
     @JoinColumn(name = "empresa_idempresa", referencedColumnName = "idempresa")
     @ManyToOne(optional = false)
-    private Empresa empresa;
+    private Empresa empresaIdempresa;
 
     public Usuario() {
     }
@@ -131,22 +131,6 @@ public class Usuario implements Serializable {
         this.nivel = nivel;
     }
 
-    public Acesso getAcesso() {
-        return acesso;
-    }
-
-    public void setAcesso(Acesso acesso) {
-        this.acesso = acesso;
-    }
-
-    public Empresa getEmpresa() {
-        return empresa;
-    }
-
-    public void setEmpresa(Empresa empresa) {
-        this.empresa = empresa;
-    }
-
     public Boolean getStatus() {
         return status;
     }
@@ -171,6 +155,22 @@ public class Usuario implements Serializable {
         this.senha = senha;
     }
 
+    public Acesso getAcessoIdacesso() {
+        return acessoIdacesso;
+    }
+
+    public void setAcessoIdacesso(Acesso acessoIdacesso) {
+        this.acessoIdacesso = acessoIdacesso;
+    }
+
+    public Empresa getEmpresaIdempresa() {
+        return empresaIdempresa;
+    }
+
+    public void setEmpresaIdempresa(Empresa empresaIdempresa) {
+        this.empresaIdempresa = empresaIdempresa;
+    }
+    
     @Override
     public int hashCode() {
         int hash = 0;

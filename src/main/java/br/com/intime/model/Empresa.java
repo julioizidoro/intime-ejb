@@ -6,9 +6,7 @@
 package br.com.intime.model;
 
 import java.io.Serializable;
-import java.util.List;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -16,7 +14,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
@@ -75,7 +72,7 @@ public class Empresa implements Serializable {
     private Boolean utilizasubdepartamento;
     @JoinColumn(name = "usuario_idusuario", referencedColumnName = "idusuario")
     @ManyToOne(optional = false)
-    private Usuario usuario;
+    private Usuario usuarioIdusuario;
 
     public Empresa() {
     }
@@ -204,12 +201,12 @@ public class Empresa implements Serializable {
         this.utilizasubdepartamento = utilizasubdepartamento;
     }
 
-    public Usuario getUsuario() {
-        return usuario;
+    public Usuario getUsuarioIdusuario() {
+        return usuarioIdusuario;
     }
 
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
+    public void setUsuarioIdusuario(Usuario usuarioIdusuario) {
+        this.usuarioIdusuario = usuarioIdusuario;
     }
 
     @Override

@@ -83,7 +83,7 @@ public class Acesso implements Serializable {
     public void setCadastrousuairo(Integer cadastrousuairo) {
         this.cadastrousuairo = cadastrousuairo;
     }
-
+    
     @Override
     public int hashCode() {
         int hash = 0;

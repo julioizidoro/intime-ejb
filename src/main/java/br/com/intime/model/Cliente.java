@@ -37,7 +37,7 @@ public class Cliente implements Serializable {
     @Size(max = 100)
     @Column(name = "nomefantasia")
     private String nomefantasia;
-    @Column(name = "status") //Situação da empresa True - Ativo False - Inativo
+    @Column(name = "status")
     private Boolean status;
     @Column(name = "atividade")
     private Boolean atividade;
@@ -56,7 +56,7 @@ public class Cliente implements Serializable {
     private String responsavel;
     @JoinColumn(name = "empresa_idempresa", referencedColumnName = "idempresa")
     @ManyToOne(optional = false)
-    private Empresa empresa;
+    private Empresa empresaIdempresa;
 
     public Cliente() {
     }
@@ -137,12 +137,12 @@ public class Cliente implements Serializable {
         this.responsavel = responsavel;
     }
 
-    public Empresa getEmpresa() {
-        return empresa;
+    public Empresa getEmpresaIdempresa() {
+        return empresaIdempresa;
     }
 
-    public void setEmpresa(Empresa empresa) {
-        this.empresa = empresa;
+    public void setEmpresaIdempresa(Empresa empresaIdempresa) {
+        this.empresaIdempresa = empresaIdempresa;
     }
 
     @Override
