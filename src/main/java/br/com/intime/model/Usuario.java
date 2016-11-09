@@ -53,6 +53,8 @@ public class Usuario implements Serializable {
     @Size(max = 20)
     @Column(name = "nivel")
     private String nivel;
+    @Column(name = "status") //Situação da empresa True - Ativo False - Inativo
+    private Boolean status;
     @JoinColumn(name = "acesso_idacesso", referencedColumnName = "idacesso")
     @ManyToOne(optional = false)
     private Acesso acesso;
@@ -137,6 +139,14 @@ public class Usuario implements Serializable {
 
     public void setEmpresa(Empresa empresa) {
         this.empresa = empresa;
+    }
+
+    public Boolean getStatus() {
+        return status;
+    }
+
+    public void setStatus(Boolean status) {
+        this.status = status;
     }
 
     @Override
