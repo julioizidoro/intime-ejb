@@ -37,7 +37,7 @@ public class Cliente implements Serializable {
     @Size(max = 100)
     @Column(name = "nomefantasia")
     private String nomefantasia;
-    @Column(name = "status")
+    @Column(name = "status") //Situação da empresa True - Ativo False - Inativo
     private Boolean status;
     @Column(name = "atividade")
     private Boolean atividade;

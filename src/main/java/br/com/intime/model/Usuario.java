@@ -56,6 +56,9 @@ public class Usuario implements Serializable {
     @JoinColumn(name = "acesso_idacesso", referencedColumnName = "idacesso")
     @ManyToOne(optional = false)
     private Acesso acesso;
+    @JoinColumn(name = "empresa_idempresa", referencedColumnName = "idempresa")
+    @ManyToOne(optional = false)
+    private Empresa empresa;
 
     public Usuario() {
     }
@@ -126,6 +129,14 @@ public class Usuario implements Serializable {
 
     public void setAcesso(Acesso acesso) {
         this.acesso = acesso;
+    }
+
+    public Empresa getEmpresa() {
+        return empresa;
+    }
+
+    public void setEmpresa(Empresa empresa) {
+        this.empresa = empresa;
     }
 
     @Override
