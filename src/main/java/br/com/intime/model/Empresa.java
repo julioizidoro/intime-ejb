@@ -72,9 +72,8 @@ public class Empresa implements Serializable {
     private Boolean utilizadepartamento;
     @Column(name = "utilizasubdepartamento")
     private Boolean utilizasubdepartamento;
-    @JoinColumn(name = "usuario_idusuario", referencedColumnName = "idusuario")
-    @ManyToOne(optional = false)
-    private Usuario usuario;
+    @Column(name = "usuariomaster")
+    private int usuariomaster;
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "empresa")
     private Ftpdados ftpdados;
   
@@ -205,13 +204,15 @@ public class Empresa implements Serializable {
         this.utilizasubdepartamento = utilizasubdepartamento;
     }
 
-    public Usuario getUsuario() {
-        return usuario;
+    public int getUsuariomaster() {
+        return usuariomaster;
     }
 
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
+    public void setUsuariomaster(int usuariomaster) {
+        this.usuariomaster = usuariomaster;
     }
+
+    
 
     public Ftpdados getFtpdados() {
         return ftpdados;
