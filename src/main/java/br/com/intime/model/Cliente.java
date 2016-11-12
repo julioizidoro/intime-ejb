@@ -54,6 +54,9 @@ public class Cliente implements Serializable {
     @Size(max = 100)
     @Column(name = "responsavel")
     private String responsavel;
+    @Size(max = 10)
+    @Column(name = "nomefoto")
+    private String nomefoto;
     @JoinColumn(name = "empresa_idempresa", referencedColumnName = "idempresa")
     @ManyToOne(optional = false)
     private Empresa empresaIdempresa;
@@ -143,6 +146,14 @@ public class Cliente implements Serializable {
 
     public void setEmpresaIdempresa(Empresa empresaIdempresa) {
         this.empresaIdempresa = empresaIdempresa;
+    }
+
+    public String getNomefoto() {
+        return nomefoto;
+    }
+
+    public void setNomefoto(String nomefoto) {
+        this.nomefoto = nomefoto;
     }
 
     @Override

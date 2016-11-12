@@ -7,6 +7,7 @@ package br.com.intime.model;
 
 import java.io.Serializable;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,6 +15,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
@@ -72,8 +74,10 @@ public class Empresa implements Serializable {
     private Boolean utilizasubdepartamento;
     @JoinColumn(name = "usuario_idusuario", referencedColumnName = "idusuario")
     @ManyToOne(optional = false)
-    private Usuario usuarioIdusuario;
-
+    private Usuario usuario;
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "empresa")
+    private Ftpdados ftpdados;
+  
     public Empresa() {
     }
 
@@ -201,12 +205,20 @@ public class Empresa implements Serializable {
         this.utilizasubdepartamento = utilizasubdepartamento;
     }
 
-    public Usuario getUsuarioIdusuario() {
-        return usuarioIdusuario;
+    public Usuario getUsuario() {
+        return usuario;
     }
 
-    public void setUsuarioIdusuario(Usuario usuarioIdusuario) {
-        this.usuarioIdusuario = usuarioIdusuario;
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
+    public Ftpdados getFtpdados() {
+        return ftpdados;
+    }
+
+    public void setFtpdados(Ftpdados ftpdados) {
+        this.ftpdados = ftpdados;
     }
 
     @Override
@@ -233,5 +245,4 @@ public class Empresa implements Serializable {
     public String toString() {
         return "br.com.intime.model.Empresa[ idempresa=" + idempresa + " ]";
     }
-    
 }
