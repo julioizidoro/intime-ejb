@@ -33,98 +33,33 @@
                 </div> 
                 <br/>
                 <div class="row" style="margin-left:0.5%;width:97%;">    
-                    <div class="col-lg-3">  
-                        <div class="divConsultas" style="width:98%;margin:5px;height:140px;">  
-                            <h:panelGrid columns="2" style="width:98%;margin-top:5%;margin-left: 2%;">  
-                                <img src="../../resources/img/125.jpg"  class="imagemcliente" />  
-                                <h:panelGrid columns="1" style="color: #797979;">   
-                                    <p:commandLink value="Nome da Empresa"  title="Editar"
-                                                   class="hoverTextos"  style="font-size:15px;margin: 1px 7px;font-weight:bold;" />
-                                    <p:outputLabel
-                                        value="email@travelmate.com.br"
-                                        style="font-size:12px;margin: 1px 7px;font-weight: 300;" /> 
-                                    <p:outputLabel
-                                        value="CNPJ - 040020492506"
-                                        style="font-size:13px;margin: 1px 7px;font-weight: 300;" /> 
-                                    <p:outputLabel
-                                        value="Nome do Responsável"
-                                        style="font-size:13px;margin: 1px 7px;font-weight: 300;" /> 
-                                    <p:outputLabel
-                                        value="(41) 3259-9687"
-                                        style="font-size:13px;margin: 1px 7px;font-weight: 300;" /> 
-                                </h:panelGrid> 
-                            </h:panelGrid>        
-                        </div>  
-                    </div>  
-                    <div class="col-lg-3">  
-                        <div class="divConsultas" style="width:98%;margin:5px;height:140px;">  
-                            <h:panelGrid columns="2" style="width:98%;margin-top:5%;margin-left: 2%;">  
-                                <img src="../../resources/img/125.jpg"  class="imagemcliente" />  
-                                <h:panelGrid columns="1" style="color: #797979;">   
-                                    <p:commandLink value="Nome da Empresa"  title="Editar"
-                                                   class="hoverTextos"   style="font-size:15px;margin: 1px 7px;font-weight:bold;" />
-                                    <p:outputLabel
-                                        value="email@travelmate.com.br"
-                                        style="font-size:12px;margin: 1px 7px;font-weight: 300;" /> 
-                                    <p:outputLabel
-                                        value="CNPJ - 040020492506"
-                                        style="font-size:13px;margin: 1px 7px;font-weight: 300;" /> 
-                                    <p:outputLabel
-                                        value="Nome do Responsável"
-                                        style="font-size:13px;margin: 1px 7px;font-weight: 300;" /> 
-                                    <p:outputLabel
-                                        value="(41) 3259-9687"
-                                        style="font-size:13px;margin: 1px 7px;font-weight: 300;" /> 
-                                </h:panelGrid> 
-                            </h:panelGrid>        
-                        </div>  
-                    </div>  
-                     <div class="col-lg-3">  
-                        <div class="divConsultas" style="width:98%;margin:5px;height:140px;">  
-                            <h:panelGrid columns="2" style="width:98%;margin-top:5%;margin-left: 2%;">  
-                                <img src="../../resources/img/125.jpg"  class="imagemcliente" />  
-                                <h:panelGrid columns="1" style="color: #797979;">   
-                                    <p:commandLink value="Nome da Empresa"  title="Editar"
-                                                   class="hoverTextos"   style="font-size:15px;margin: 1px 7px;font-weight:bold;" />
-                                    <p:outputLabel
-                                        value="email@travelmate.com.br"
-                                        style="font-size:12px;margin: 1px 7px;font-weight: 300;" /> 
-                                    <p:outputLabel
-                                        value="CNPJ - 040020492506"
-                                        style="font-size:13px;margin: 1px 7px;font-weight: 300;" /> 
-                                    <p:outputLabel
-                                        value="Nome do Responsável"
-                                        style="font-size:13px;margin: 1px 7px;font-weight: 300;" /> 
-                                    <p:outputLabel
-                                        value="(41) 3259-9687"
-                                        style="font-size:13px;margin: 1px 7px;font-weight: 300;" /> 
-                                </h:panelGrid> 
-                            </h:panelGrid>        
-                        </div>  
-                    </div>  
-                     <div class="col-lg-3">  
-                        <div class="divConsultas" style="width:98%;margin:5px;height:140px;">  
-                            <h:panelGrid columns="2" style="width:98%;margin-top:5%;margin-left: 2%;">  
-                                <img src="../../resources/img/125.jpg"  class="imagemcliente" />  
-                                <h:panelGrid columns="1" style="color: #797979;">   
-                                    <p:commandLink value="Nome da Empresa" title="Editar"
-                                                   class="hoverTextos"   style="font-size:15px;margin: 1px 7px;font-weight:bold;" />
-                                    <p:outputLabel
-                                        value="email@travelmate.com.br"
-                                        style="font-size:12px;margin: 1px 7px;font-weight: 300;" /> 
-                                    <p:outputLabel
-                                        value="CNPJ - 040020492506"
-                                        style="font-size:13px;margin: 1px 7px;font-weight: 300;" /> 
-                                    <p:outputLabel
-                                        value="Nome do Responsável"
-                                        style="font-size:13px;margin: 1px 7px;font-weight: 300;" /> 
-                                    <p:outputLabel
-                                        value="(41) 3259-9687"
-                                        style="font-size:13px;margin: 1px 7px;font-weight: 300;" /> 
-                                </h:panelGrid> 
-                            </h:panelGrid>        
-                        </div>  
-                    </div>  
+                    <ui:repeat var="listaCliente" value="#{clienteMB.listaCliente}" >
+
+                        <div class="col-lg-3">  
+                            <div class="divConsultas" style="width:98%;margin:5px;height:140px;">  
+                                <h:panelGrid columns="2" style="width:98%;margin-top:5%;margin-left: 2%;">  
+                                    <img src="../../resources/img/125.jpg"  class="imagemcliente" />  
+                                    <h:panelGrid columns="1" style="color: #797979;">   
+                                        <p:commandLink value="#{listaCliente.nomefantasia}"  title="Editar"
+                                                       class="hoverTextos"  style="font-size:15px;margin: 1px 7px;font-weight:bold;" />
+                                        <p:outputLabel
+                                            value="#{listaCliente.email}"
+                                            style="font-size:12px;margin: 1px 7px;font-weight: 300;" /> 
+                                        <p:outputLabel
+                                            value="CNPJ - #{listaCliente.cnpj}"
+                                            style="font-size:13px;margin: 1px 7px;font-weight: 300;" /> 
+                                        <p:outputLabel
+                                            value="#{listaCliente.responsavel}"
+                                            style="font-size:13px;margin: 1px 7px;font-weight: 300;" /> 
+                                        <p:outputLabel
+                                            value="#{listaCliente.fone}"
+                                            style="font-size:13px;margin: 1px 7px;font-weight: 300;" /> 
+                                    </h:panelGrid> 
+                                </h:panelGrid>        
+                            </div>  
+                        </div>    
+
+                    </ui:repeat>
                 </div>
             </h:form>  
         </ui:define>
