@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title>INTIME</title>
+        <link rel="SHORTCUT ICON"  />
+
+        <link href="../../resources/css/bootstrap.min.css" rel="stylesheet"/>
+        <link href="../../resources/css/bootstrap-reset.css" rel="stylesheet"/>  
+        <link href="../../resources/css/font-awesome.css" rel="stylesheet" />   
+        <link href="../../resources/css/jquery.easy-pie-chart.css" rel="stylesheet" type="text/css" media="screen"/>
+        <link rel="stylesheet" href="../../resources/css/owl.carousel.css" type="text/css"/>  
+        <link href="../../resources/css/slidebars.css" rel="stylesheet"/> 
+        <link href="../../resources/css/style.css" rel="stylesheet"/>
+        <link href="../../resources/css/style-responsive.css" rel="stylesheet" /> 
+        <script>
+            PrimeFaces.locales['pt'] = {
+                closeText: 'Fechar',
+                prevText: 'Anterior',
+                nextText: 'Próximo',
+                currentText: 'Começo',
+                monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio',
+                    'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro',
+                    'Novembro', 'Dezembro'],
+                monthNamesShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun',
+                    'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+                dayNames: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta',
+                    'Sexta', 'Sábado'],
+                dayNamesShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
+                dayNamesMin: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'],
+                weekHeader: 'Semana',
+                firstDay: 0,
+                isRTL: false,
+                showMonthAfterYear: false,
+                yearSuffix: '',
+                timeOnlyTitle: 'Só Horas',
+                timeText: 'Tempo',
+                hourText: 'Hora',
+                minuteText: 'Minuto',
+                secondText: 'Segundo',
+                ampm: false,
+                month: 'Mês',
+                week: 'Semana',
+                day: 'Dia',
+                allDayText: 'Todo o Dia'
+            };
+        </script>
+    </h:head> 
+    <h:body class="overflow-hidden" style="background: #fff;">
+        <f:view encoding="ISO-8859-1">
+            <section id="container" > 
+                <ui:insert name="menu">
+                    <ui:include src="/pages/includes/menu.xhtml" />
+                </ui:insert>
+                <section id="main-content">
+                    <section class="wrapper">
+                        <ui:insert name="corpo">
+                            Corpo</ui:insert>
+                    </section>
+                </section>
+                <br></br>
+            </section>
+        </f:view>
+    </h:body>
+</html>

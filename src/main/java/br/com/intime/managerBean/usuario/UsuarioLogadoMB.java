@@ -9,20 +9,25 @@ import br.com.intime.model.Usuario;
 import br.com.intime.repository.UsuarioRepository;
 import br.com.intime.util.Criptografia;
 import br.com.intime.util.Mensagem;
+import java.io.Serializable;
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
+import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.inject.Named;
 
 /**
  *
  * @author Wolverine
  */
-public class UsuarioLogadoMB {
+@Named
+@SessionScoped
+public class UsuarioLogadoMB  implements Serializable{
     
     @EJB
     private UsuarioRepository usuarioRepository;
@@ -57,11 +62,15 @@ public class UsuarioLogadoMB {
             if (usuario == null) {
                 Mensagem.lancarMensagemInfo("", "Acesso negado!!");
             } else {
-                return "incial";
+                return "inicial";
             }
         }
         usuario  = new Usuario();
         return "";
+    }
+    
+    public String paginainicial(){
+        return "inicial";
     }
     
     public String deslogar(){
