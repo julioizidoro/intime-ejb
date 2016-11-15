@@ -6334,5 +6334,5 @@ header.blue-bg .search:focus {
     padding: 0;
     overflow: hidden;
     display: none;
-    margin-top: -190px !important;
+    top:80px !important;
 }

@@ -58,8 +58,12 @@
                                   class="titTela" style="font-size: 15px;text-align: left;margin-left:1%;"/> 
                 </h:panelGroup>
             </h:panelGrid> 
-            <br/><br/>
-            <div align="center">
+            <br/>
+            <p:fileUpload multiple="true"  dragDropSupport="false" fileLimit="1" style="font-size:12px; width:85%;" label="Anexar" fileUploadListener="#{cadClienteMB.fileUploadListener}" value="#{cadClienteMB.file}"  mode="advanced" 
+                     update="growl"  allowTypes="/(\.|\/)(gif|jpe?g|png|pdf|txt|docx|xls|xlsx|doc|pptx|cdr|eps|bmp|mp4|ai|psd)$/" sizeLimit="52428800">
+            </p:fileUpload>
+            <br/><br/>       
+            <div align="center">    
                 <p:commandButton id="btnConfirmar" action="#{cadClienteMB.salvar()}" class="btn btn-success" value="Confirmar" update="growl"/>
                 <p:commandButton id="btnCancelar" action="#{cadClienteMB.fechar()}" class="btn btn-danger" value="Cancelar"/>
             </div>
