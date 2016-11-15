@@ -1,0 +1,57 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"> 
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+        <link href="../../resources/css/bootstrap.min.css" rel="stylesheet"/>  
+        <link href="../../resources/css/style.css" rel="stylesheet"/> 
+    </h:head>
+    <h:body style="background:#FFFFFF;" > 
+        <h:form id="cadCliente"  style="font-size: 11px;width:95%;margin-left:3%;" enctype="multipart/form-data"> 
+            <title style="background: #cf7000">Usuário</title>
+            <br/>
+            <p:growl id="growl" showDetail="true" autoUpdate="true"  />
+            <h:panelGrid columns="2" columnClasses="tamanho50, tamanho20" style="width: 100%;font-size: 12px;">
+                <p:outputLabel for="idnome" value="Nome"/>
+                <p:outputLabel for="iddatanascimento" value="Data Nascimento"/>
+
+                <p:inputText id="idnome" value="#{cadUsuarioMB.usuario.nome}" style="width: 95%;"/>
+                <p:inputMask mask="99/99/9999" id="iddatanascimento" value="#{cadUsuarioMB.usuario.datanascimento}" style="width:95%;">
+                    <f:convertDateTime   pattern="dd/MM/yyyy" timeZone="America/Sao_Paulo"/>
+                </p:inputMask>
+            </h:panelGrid>
+            <br/>
+            <h:panelGrid columns="3" columnClasses="tamanho50, tamanho20, tamanho20" style="width: 100%;font-size: 12px;">
+                <p:outputLabel for="idemail" value="Email"/>
+                <p:outputLabel for="idcargo" value="Cargo"/>
+                <p:outputLabel for="idtelefone" value="Telefone"/>
+
+                <p:inputText id="idemail" value="#{cadUsuarioMB.usuario.email}" style="width: 95%;"/>
+                <p:inputText id="idcargo" value="#{cadUsuarioMB.usuario.cargo}" style="width: 95%;"/>
+                <p:inputText id="idtelefone" value="#{cadUsuarioMB.usuario.fone}" style="width: 95%;"/>
+            </h:panelGrid>
+            <br/>
+            <h:panelGrid columns="3" columnClasses="tamanho50, tamanho20, tamanho20" style="width: 100%;font-size: 12px;">
+                <p:outputLabel for="idempresa" value="Empresa"/>
+                <p:outputLabel for="idLogin" value="Login"/>
+                <p:outputLabel for="idSenha" value="Senha"/>
+
+                
+                <p:selectOneMenu id="idempresa"  style="width:95%;" value="#{cadUsuarioMB.empresa}" converter="EmpresaConverter"
+                                 filter="true" filterMatchMode="contains" panelStyle="width:180px" >
+                    <f:selectItem  itemLabel="Selecione" itemValue="0" noSelectionOption="true"/> 
+                    <f:selectItems  value="#{cadUsuarioMB.listaEmpresa}" var="em" itemLabel="#{em.nomefantasia}" itemValue="#{em}"/>
+                    <f:attribute name="listaEmpresa" value="#{cadUsuarioMB.listaEmpresa}"/>
+                </p:selectOneMenu>
+                <p:inputText id="idLogin" value="#{cadUsuarioMB.usuario.login}" style="width: 95%;"/>
+                <p:inputText id="idSenha" value="#{cadUsuarioMB.usuario.senha}" style="width: 95%;"/>
+            </h:panelGrid>
+            <br/><br/>
+            <div align="center">
+                <p:commandButton id="btnConfirmar" action="#{cadUsuarioMB.salvar()}" class="btn btn-success" value="Confirmar" update="growl"/>
+                <p:commandButton id="btnCancelar" action="#{cadUsuarioMB.cancelar()}" class="btn btn-danger" value="Cancelar"/>
+            </div>
+        </h:form> 
+    </h:body>
+</html>
