@@ -27,6 +27,7 @@ public class ClienteMB implements Serializable {
     @EJB
     private ClienteRepository clienteRepository;
     private List<Cliente> listaCliente;
+    private String nomefantasia;
 
     @PostConstruct
     public void init() {
@@ -49,13 +50,21 @@ public class ClienteMB implements Serializable {
         this.clienteRepository = clienteRepository;
     }
 
+    public String getNomefantasia() {
+        return nomefantasia;
+    }
+
+    public void setNomefantasia(String nomefantasia) {
+        this.nomefantasia = nomefantasia;
+    }
+
     public String novoCliente() {
         Map<String, Object> options = new HashMap<String, Object>();
         options.put("contentWidth", 630);
         RequestContext.getCurrentInstance().openDialog("cadCliente", options, null);
         return "";
     }
-    
+
     public String editar(Cliente cliente) {
         Map<String, Object> options = new HashMap<String, Object>();
         options.put("contentWidth", 630);
@@ -68,6 +77,13 @@ public class ClienteMB implements Serializable {
 
     public void gerarListaCliente() {
         listaCliente = clienteRepository.list("Select c from Cliente c");
+        if (listaCliente == null) {
+            listaCliente = new ArrayList<Cliente>();
+        }
+    }
+    
+    public void pesquisar(){
+        listaCliente = clienteRepository.list("Select c from Cliente c where c.nomefantasia like '%"+nomefantasia+"%'");
         if (listaCliente == null) {
             listaCliente = new ArrayList<Cliente>();
         }

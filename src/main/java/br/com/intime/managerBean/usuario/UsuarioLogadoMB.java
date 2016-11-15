@@ -48,7 +48,7 @@ public class UsuarioLogadoMB  implements Serializable{
     
     public String validarUsuario() {
         if ((usuario.getLogin() != null) && (usuario.getSenha() == null)) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro!", "Login Invalido."));
+            Mensagem.lancarMensagemErro("Erro!", "Login Invalido.");
         } else {
             String senha = "";
             try {

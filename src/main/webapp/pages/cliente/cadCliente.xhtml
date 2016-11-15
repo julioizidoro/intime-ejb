@@ -11,7 +11,7 @@
         <h:form id="cadCliente"  style="font-size: 11px;width:95%;margin-left:3%;" enctype="multipart/form-data"> 
             <title style="background: #cf7000">Cliente</title>
             <br/>
-            <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
+            <p:growl id="growl" showDetail="true" autoUpdate="true"  />
             <h:panelGrid columns="2" columnClasses="tamanho50, tamanho50" style="width: 100%;font-size: 12px;">
                 <p:outputLabel for="razaosocial" value="Razão Social"/>
                 <p:outputLabel for="nomefantaria" value="Nome Fantasia"/>
@@ -60,7 +60,7 @@
             </h:panelGrid> 
             <br/><br/>
             <div align="center">
-                <p:commandButton id="btnConfirmar" action="#{cadClienteMB.salvar()}" class="btn btn-success" value="Confirmar"/>
+                <p:commandButton id="btnConfirmar" action="#{cadClienteMB.salvar()}" class="btn btn-success" value="Confirmar" update="growl"/>
                 <p:commandButton id="btnCancelar" action="#{cadClienteMB.fechar()}" class="btn btn-danger" value="Cancelar"/>
             </div>
         </h:form> 

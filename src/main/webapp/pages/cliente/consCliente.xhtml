@@ -15,7 +15,7 @@
                             <p:outputLabel value="Home" style="margin-left:0.5%;font-weight: inherit;"/>
                         </p:commandLink>
                         <p:outputLabel value="/" style="margin-left:0.5%;color:#797979;font-weight: inherit;"/>
-                        <p:commandLink value="Clientes" style="margin-left:0.5%;color:#797979;"/>
+                        <p:outputLabel value="Clientes" style="margin-left:0.5%;color:#797979;font-weight: inherit;"/>
                     </h:panelGroup> 
                 </h:panelGrid> 
                 <br/>
@@ -23,7 +23,10 @@
                     <p:outputLabel value="Clientes" style="font-size:24px;font-weight: inherit;"/>
 
                     <h:panelGrid columns="2" style="width: 100%;">
-                        <input id="buscar" type="text" class="form-control search-consultas" placeholder="Buscar"/>
+                        <h:panelGroup style="text-align: right;"> 
+                            <p:inputText id="nomefantasia" value="#{clienteMB.nomefantasia}"  class="form-control search-consultas" placeholder="Buscar"/>
+                            <h:commandButton id="btnPesquisar" style="background: transparent;border: none;" actionListener="#{clienteMB.pesquisar()}" />  
+                        </h:panelGroup>  
                         <h:panelGroup style="text-align: right;"> 
                             <p:commandLink id="btnadicionar" title="Adicionar" action="#{clienteMB.novoCliente()}" class="hoverTextos">
                                 <i class="fa fa-3x fa-plus" />
@@ -31,6 +34,7 @@
                             </p:commandLink>  
                         </h:panelGroup>
                     </h:panelGrid>
+
                 </div> 
                 <br/>
                 <div class="row" style="margin-left:0.5%;width:97%;">    

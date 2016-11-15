@@ -4,6 +4,7 @@ import br.com.intime.model.Cliente;
 import br.com.intime.model.Empresa;
 import br.com.intime.repository.ClienteRepository;
 import br.com.intime.repository.EmpresaRepository;
+import br.com.intime.util.Mensagem;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,14 +40,16 @@ public class CadClienteMB implements Serializable {
         HttpSession session = (HttpSession) fc.getExternalContext().getSession(false);
         cliente = (Cliente) session.getAttribute("cliente");
         session.removeAttribute("cliente");
-        if(cliente==null){
+        if (cliente == null) {
             cliente = new Cliente();
             empresa = new Empresa();
-        }else{
+        } else {
             empresa = cliente.getEmpresaIdempresa();
-            if(cliente.getStatus()){
+            if (cliente.getStatus()) {
                 status = "Ativo";
-            }else status = "Inativo";
+            } else {
+                status = "Inativo";
+            }
         }
         gerarListaEmpresa();
     }
@@ -99,21 +102,24 @@ public class CadClienteMB implements Serializable {
         this.status = status;
     }
 
-    
-    public void gerarListaEmpresa(){
+    public void gerarListaEmpresa() {
         listaEmpresa = empresaRepository.list("Select e from Empresa e");
         if (listaEmpresa == null) {
             listaEmpresa = new ArrayList<Empresa>();
         }
-    } 
-    
+    }
+
     public String salvar() {
-        cliente.setEmpresaIdempresa(empresa);
-        if(status.equalsIgnoreCase("Ativo")){
-            cliente.setStatus(true);
-        }else cliente.setStatus(false);
-        cliente = clienteRepository.update(cliente);
-        RequestContext.getCurrentInstance().closeDialog(null);
+        if (validarDados()) {
+            cliente.setEmpresaIdempresa(empresa);
+            if (status.equalsIgnoreCase("Ativo")) {
+                cliente.setStatus(true);
+            } else {
+                cliente.setStatus(false);
+            }
+            cliente = clienteRepository.update(cliente);
+            RequestContext.getCurrentInstance().closeDialog(null); 
+        } 
         return "";
     }
 
@@ -122,4 +128,19 @@ public class CadClienteMB implements Serializable {
         return "";
     }
 
+    public boolean validarDados(){
+        if(empresa==null && empresa.getIdempresa()==null){
+            Mensagem.lancarMensagemErro("Atenção!", "Empresa não selecionada.");
+            return false;
+        } 
+        if(cliente.getNomefantasia()==null && cliente.getNomefantasia().length()==0){
+            Mensagem.lancarMensagemErro("Atenção!", "Nome fantasia não informado.");
+            return false;
+        }
+        if(cliente.getRazaosocial()==null && cliente.getRazaosocial().length()==0){
+            Mensagem.lancarMensagemErro("Atenção!", "Razão social não informado.");
+            return false;
+        } 
+        return true;
+    }
 }
