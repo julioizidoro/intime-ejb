@@ -9,8 +9,10 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
+import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import javax.servlet.http.HttpSession;
 import org.primefaces.context.RequestContext;
 
 /**
@@ -49,7 +51,17 @@ public class ClienteMB implements Serializable {
 
     public String novoCliente() {
         Map<String, Object> options = new HashMap<String, Object>();
-        options.put("contentWidth", 545);
+        options.put("contentWidth", 630);
+        RequestContext.getCurrentInstance().openDialog("cadCliente", options, null);
+        return "";
+    }
+    
+    public String editar(Cliente cliente) {
+        Map<String, Object> options = new HashMap<String, Object>();
+        options.put("contentWidth", 630);
+        FacesContext fc = FacesContext.getCurrentInstance();
+        HttpSession session = (HttpSession) fc.getExternalContext().getSession(false);
+        session.setAttribute("cliente", cliente);
         RequestContext.getCurrentInstance().openDialog("cadCliente", options, null);
         return "";
     }

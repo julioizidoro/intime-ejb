@@ -27,32 +27,35 @@
                         <h:panelGroup style="text-align: right;"> 
                             <p:commandLink id="btnadicionar" title="Adicionar" action="#{clienteMB.novoCliente()}" class="hoverTextos">
                                 <i class="fa fa-3x fa-plus" />
+                                <p:ajax event="dialogReturn" listener="#{clienteMB.gerarListaCliente()}" update="@form"/>
                             </p:commandLink>  
                         </h:panelGroup>
                     </h:panelGrid>
                 </div> 
                 <br/>
                 <div class="row" style="margin-left:0.5%;width:97%;">    
-                    <ui:repeat var="listaCliente" value="#{clienteMB.listaCliente}" >
+                    <ui:repeat id="listaCliente" var="cliente" value="#{clienteMB.listaCliente}" >
 
                         <div class="col-lg-3">  
                             <div class="divConsultas" style="width:98%;margin:5px;height:140px;">  
                                 <h:panelGrid columns="2" style="width:98%;margin-top:5%;margin-left: 2%;">  
                                     <img src="../../resources/img/125.jpg"  class="imagemcliente" />  
                                     <h:panelGrid columns="1" style="color: #797979;">   
-                                        <p:commandLink value="#{listaCliente.nomefantasia}"  title="Editar"
-                                                       class="hoverTextos"  style="font-size:15px;margin: 1px 7px;font-weight:bold;" />
+                                        <p:commandLink value="#{cliente.nomefantasia}" action="#{clienteMB.editar(cliente)}" title="Editar"
+                                                       class="hoverTextos"  style="font-size:15px;margin: 1px 7px;font-weight:bold;" >
+                                            <p:ajax event="dialogReturn" listener="#{clienteMB.gerarListaCliente()}" update="@form"/>
+                                        </p:commandLink>
                                         <p:outputLabel
-                                            value="#{listaCliente.email}"
+                                            value="#{cliente.email}"
                                             style="font-size:12px;margin: 1px 7px;font-weight: 300;" /> 
                                         <p:outputLabel
-                                            value="CNPJ - #{listaCliente.cnpj}"
+                                            value="CNPJ - #{cliente.cnpj}"
                                             style="font-size:13px;margin: 1px 7px;font-weight: 300;" /> 
                                         <p:outputLabel
-                                            value="#{listaCliente.responsavel}"
+                                            value="#{cliente.responsavel}"
                                             style="font-size:13px;margin: 1px 7px;font-weight: 300;" /> 
                                         <p:outputLabel
-                                            value="#{listaCliente.fone}"
+                                            value="#{cliente.fone}"
                                             style="font-size:13px;margin: 1px 7px;font-weight: 300;" /> 
                                     </h:panelGrid> 
                                 </h:panelGrid>        

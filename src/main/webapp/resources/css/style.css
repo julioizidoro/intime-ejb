@@ -3252,7 +3252,7 @@ table.sliders tr td {
 
 .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default { 
     border-radius:50% !important;
-    -webkit-border-radius: 3% !important;
+    -webkit-border-radius: 6% !important;
 }
 
 .ui-slider-vertical {
@@ -6320,4 +6320,19 @@ header.blue-bg .search:focus {
 
 .hoverTextos:hover{
     color:#FF6C60;
+}
+
+.ui-draggable .ui-dialog-titlebar {
+    cursor: move;
+    background: #2A3542;
+    color: #ffffff;
+    font-weight: inherit;
+}
+
+.ui-dialog {
+    position: absolute !important;   
+    padding: 0;
+    overflow: hidden;
+    display: none;
+    margin-top: -190px !important;
 }
