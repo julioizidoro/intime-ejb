@@ -60,7 +60,7 @@
             </h:panelGrid> 
             <br/>
             <p:fileUpload multiple="true"  dragDropSupport="false" fileLimit="1" style="font-size:12px; width:85%;" label="Anexar" fileUploadListener="#{cadClienteMB.fileUploadListener}" value="#{cadClienteMB.file}"  mode="advanced" 
-                     update="growl"  allowTypes="/(\.|\/)(gif|jpe?g|png|pdf|txt|docx|xls|xlsx|doc|pptx|cdr|eps|bmp|mp4|ai|psd)$/" sizeLimit="52428800">
+                     update="growl"  allowTypes="/(\.|\/)(|jpe?g|png)$/" sizeLimit="52428800">
             </p:fileUpload>
             <br/><br/>       
             <div align="center">    

@@ -41,7 +41,7 @@ public class CadClienteMB implements Serializable {
     @EJB
     private EmpresaRepository empresaRepository;
     @EJB
-    private FtpDadosRepository ftpDadosRepository;
+    private FtpDadosRepository ftpDadosRepository; 
     private Cliente cliente;
     private Empresa empresa;
     private List<Empresa> listaEmpresa;
@@ -149,6 +149,7 @@ public class CadClienteMB implements Serializable {
                 cliente.setStatus(false);
             }
             cliente = clienteRepository.update(cliente);
+            RequestContext.getCurrentInstance().closeDialog(null);
         }
         return "";
     }
@@ -192,6 +193,15 @@ public class CadClienteMB implements Serializable {
             Mensagem.lancarMensagemErro("Erro conectar FTP", "");
         }
         try {
+            if(cliente.getIdcliente()==null){
+                Empresa empresa = empresaRepository.find(1);
+                cliente.setEmpresa(empresa);
+                cliente = clienteRepository.update(cliente);
+            }else{
+                if(cliente.getNomefoto()!=null && cliente.getNomefoto().length()>0){
+                    excluirArquivoFTP();
+                }
+            }
             msg = ftp.enviarArquivo(file, cliente.getIdcliente() + ".png", "/intime/fotos/cliente/");
             FacesContext context = FacesContext.getCurrentInstance();
             cliente.setNomefoto(cliente.getIdcliente() + ".png");
@@ -206,6 +216,42 @@ public class CadClienteMB implements Serializable {
         } catch (IOException ex) {
             Logger.getLogger(CadClienteMB.class.getName()).log(Level.SEVERE, null, ex);
             Mensagem.lancarMensagemErro("Erro conectar FTP", "");
+        }
+        return false;
+    }
+    
+    public boolean excluirArquivoFTP() {
+        String msg = "";
+        Ftpdados dadosFTP = null;
+        dadosFTP = ftpDadosRepository.find("select f from Ftpdados f");
+        if (dadosFTP == null) {
+            return false;
+        }
+        Ftp ftp = new Ftp(dadosFTP.getHostupload(), dadosFTP.getUsuario(), dadosFTP.getSenha());
+        try {
+            if (!ftp.conectar()) {
+                Mensagem.lancarMensagemErro("Erro conectar FTP", "");
+                return false;
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(CadClienteMB.class.getName()).log(Level.SEVERE, null, ex);
+            Mensagem.lancarMensagemErro("Erro conectar FTP", "Erro");
+        }
+        try {
+            String nomeArquivoFTP = cliente.getNomefoto();
+            msg = ftp.excluirArquivo(nomeArquivoFTP, "/intime/fotos/cliente/");
+            FacesContext context = FacesContext.getCurrentInstance();
+            context.addMessage(null, new FacesMessage(msg, ""));
+            return true;
+        } catch (IOException ex) {
+            Logger.getLogger(CadClienteMB.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(null, "Erro Salvar Arquivo " + ex);
+        }
+        try {
+            ftp.desconectar();
+        } catch (IOException ex) {
+            Logger.getLogger(CadClienteMB.class.getName()).log(Level.SEVERE, null, ex);
+            Mensagem.lancarMensagemErro("Erro desconectar FTP", "Erro");
         }
         return false;
     }

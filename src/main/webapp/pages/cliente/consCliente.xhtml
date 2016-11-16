@@ -43,7 +43,9 @@
                         <div class="col-lg-3">  
                             <div class="divConsultas" style="width:98%;margin:5px;height:140px;">  
                                 <h:panelGrid columns="2" style="width:98%;margin-top:5%;margin-left: 2%;">  
-                                    <img src="http://200.175.61.147:82/ftproot/intime/fotos/cliente/#{cliente.nomefoto}"  class="imagemcliente" />  
+                                    <h:panelGroup rendered="#{clienteMB.possuiImagem(cliente)}">
+                                        <img src="http://#{clienteMB.ftpdados.hostdonwload}:82/ftproot/intime/fotos/cliente/#{cliente.nomefoto}"  class="imagemcliente" />  
+                                    </h:panelGroup>
                                     <h:panelGrid columns="1" style="color: #797979;">   
                                         <p:commandLink value="#{cliente.nomefantasia}" action="#{clienteMB.editar(cliente)}" title="Editar"
                                                        class="hoverTextos"  style="font-size:15px;margin: 1px 7px;font-weight:bold;" >

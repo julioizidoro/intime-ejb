@@ -6,7 +6,9 @@
 package br.com.intime.managerBean.usuario;
 
 import br.com.intime.model.Cliente;
+import br.com.intime.model.Ftpdados;
 import br.com.intime.model.Usuario;
+import br.com.intime.repository.FtpDadosRepository;
 import br.com.intime.repository.UsuarioRepository;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -32,11 +34,15 @@ public class UsuarioMB implements Serializable{
     @EJB
     private UsuarioRepository usuarioRepository;
     private String nome;
+    private Ftpdados ftpdados;
+    @EJB
+    private FtpDadosRepository ftpRepository;
     
     
     @PostConstruct
     public void init(){
         gerarListaUsuarios();
+        ftpdados = ftpRepository.find(1);
     }
 
     public Usuario getUsuario() {
@@ -69,6 +75,22 @@ public class UsuarioMB implements Serializable{
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    public Ftpdados getFtpdados() {
+        return ftpdados;
+    }
+
+    public void setFtpdados(Ftpdados ftpdados) {
+        this.ftpdados = ftpdados;
+    }
+
+    public FtpDadosRepository getFtpRepository() {
+        return ftpRepository;
+    }
+
+    public void setFtpRepository(FtpDadosRepository ftpRepository) {
+        this.ftpRepository = ftpRepository;
     }
     
     

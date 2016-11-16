@@ -92,7 +92,20 @@
                 <p:inputMask  mask="99.999.999/9999-99" value="#{cadEmpresaMB.empresa.cnpj}" size="15" style="width: 60%;"/>
                 <p:inputMask  mask="99999-999" value="#{cadEmpresaMB.empresa.cep}" style="width: 50%;"/>
             </h:panelGrid>
-            <br/>   
+            <br/>
+            <h:panelGroup>
+                <p:selectBooleanCheckbox id="idHabilitarCliente"
+                                         value="#{cadEmpresaMB.empresa.utilizacliente}" /> 
+                <p:outputLabel value="Habilitar Cadastro de  Cliente"  style="font-size: 15px;text-align: left;margin-left:1%;"/> 
+                <p:selectBooleanCheckbox id="idHabilitarDepartamento" style="margin-left: 5%;"
+                                         value="#{cadEmpresaMB.empresa.utilizadepartamento}" /> 
+                <p:outputLabel value="Adicionar Departamentos"  style="font-size: 15px;text-align: left;margin-left:1%;"/> 
+                <br/>
+                <p:selectBooleanCheckbox id="idHabilitarSubDepartamentos"
+                                         value="#{cadEmpresaMB.empresa.utilizasubdepartamento}" /> 
+                <p:outputLabel value="Adicionar Sub-Departamentos"  style="font-size: 15px;text-align: left;margin-left:1%;"/> 
+            </h:panelGroup>
+            <br/><br/>
             <div align="center">
                 <p:commandButton id="btnConfirmar" action="#{cadEmpresaMB.salvar()}" class="btn btn-success" value="Confirmar" update="growl"/>
                 <p:commandButton id="btnCancelar" action="#{cadEmpresaMB.cancelar()}" class="btn btn-danger" value="Cancelar"/>
