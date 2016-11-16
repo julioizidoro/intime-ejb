@@ -87,6 +87,7 @@ public class CadUsuarioMB implements Serializable{
             empresa = usuario.getEmpresa();
         }
         gerarListaEmpresa();
+        gerarListaDepartamentos();
         acesso = acessoRepository.find(1);
     }
 
@@ -270,6 +271,9 @@ public class CadUsuarioMB implements Serializable{
         if (status.length() == 0) {
             msg = msg + "Status do usuario não informado \r\n";
         }
+        if (subdepartamento == null) {
+            msg = msg + "Sub-Departamento não informado \r\n";
+        }
         return msg;
     }
     
@@ -286,6 +290,7 @@ public class CadUsuarioMB implements Serializable{
             if (mensagem.length() < 1) {
                 usuario.setEmpresa(empresa);
                 usuario.setAcesso(acesso);
+                usuario.setSubdepartamento(subdepartamento);
                 usuario = usuarioRepository.update(usuario);
                 RequestContext.getCurrentInstance().closeDialog(usuario);
             }
@@ -320,6 +325,8 @@ public class CadUsuarioMB implements Serializable{
                 usuario.setEmpresa(empresa);
                 Acesso acesso = acessoRepository.find(1);
                 usuario.setAcesso(acesso);
+                Subdepartamento subdepartamento = subDepartamentoRepository.find(1);
+                usuario.setSubdepartamento(subdepartamento);
                 usuario = usuarioRepository.update(usuario);
             }else{
                 if (usuario.getNomefoto() != null && usuario.getNomefoto().length() >0) {
@@ -389,6 +396,22 @@ public class CadUsuarioMB implements Serializable{
         } catch (UnsupportedEncodingException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();
+        }
+    }
+    
+    
+    public void gerarListaDepartamentos(){
+        listaDepartamento = departamentoRepository.list("Select d From Departamento d");
+        if (listaDepartamento == null || listaDepartamento.isEmpty()) {
+            listaDepartamento = new ArrayList<>();
+        }
+    }
+    
+    public void gerarListaSubDepartamento(){
+        if (departamento == null) {
+            listaSubDepartamento = new ArrayList<>();
+        }else{
+            listaSubDepartamento = departamento.getSubdepartamentoList();
         }
     }
 }

@@ -6272,6 +6272,10 @@ header.blue-bg .search:focus {
     width: 20%; 
 }
 
+.tamanho30{
+    width: 30%; 
+}
+
 .tamanho50rigth{
     width: 50%; 
     text-align: right;
