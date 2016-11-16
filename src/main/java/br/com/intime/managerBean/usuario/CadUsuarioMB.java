@@ -71,6 +71,7 @@ public class CadUsuarioMB implements Serializable{
     private DepartamentoRepository departamentoRepository;
     @EJB
     private SubDepartamentoRepository subDepartamentoRepository;
+    private String status;
     
     
     @PostConstruct
@@ -176,6 +177,70 @@ public class CadUsuarioMB implements Serializable{
     public void setFtpDadosRepository(FtpDadosRepository ftpDadosRepository) {
         this.ftpDadosRepository = ftpDadosRepository;
     }
+
+    public String getNivel() {
+        return nivel;
+    }
+
+    public void setNivel(String nivel) {
+        this.nivel = nivel;
+    }
+
+    public Departamento getDepartamento() {
+        return departamento;
+    }
+
+    public void setDepartamento(Departamento departamento) {
+        this.departamento = departamento;
+    }
+
+    public Subdepartamento getSubdepartamento() {
+        return subdepartamento;
+    }
+
+    public void setSubdepartamento(Subdepartamento subdepartamento) {
+        this.subdepartamento = subdepartamento;
+    }
+
+    public List<Departamento> getListaDepartamento() {
+        return listaDepartamento;
+    }
+
+    public void setListaDepartamento(List<Departamento> listaDepartamento) {
+        this.listaDepartamento = listaDepartamento;
+    }
+
+    public List<Subdepartamento> getListaSubDepartamento() {
+        return listaSubDepartamento;
+    }
+
+    public void setListaSubDepartamento(List<Subdepartamento> listaSubDepartamento) {
+        this.listaSubDepartamento = listaSubDepartamento;
+    }
+
+    public DepartamentoRepository getDepartamentoRepository() {
+        return departamentoRepository;
+    }
+
+    public void setDepartamentoRepository(DepartamentoRepository departamentoRepository) {
+        this.departamentoRepository = departamentoRepository;
+    }
+
+    public SubDepartamentoRepository getSubDepartamentoRepository() {
+        return subDepartamentoRepository;
+    }
+
+    public void setSubDepartamentoRepository(SubDepartamentoRepository subDepartamentoRepository) {
+        this.subDepartamentoRepository = subDepartamentoRepository;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
     
     
     
@@ -199,6 +264,12 @@ public class CadUsuarioMB implements Serializable{
         if (usuario.getNome().length() == 0) {
             msg = msg + "Nome do Usuário não informado \r\n";
         }
+        if (nivel.length() == 0) {
+             msg = msg + "Nivel de usuario não informado \r\n";
+        }
+        if (status.length() == 0) {
+            msg = msg + "Status do usuario não informado \r\n";
+        }
         return msg;
     }
     
@@ -215,10 +286,13 @@ public class CadUsuarioMB implements Serializable{
             if (mensagem.length() < 1) {
                 usuario.setEmpresaIdempresa(empresa);
                 usuario.setAcessoIdacesso(acesso);
+                usuario.setNivel(nivel);
+                if (status.equalsIgnoreCase("ativo")) {
+                    usuario.setStatus(true);
+                }else{
+                    usuario.setStatus(false);
+                }
                 usuario = usuarioRepository.update(usuario);
-//                if (file != null) {
-//                    salvarArquivoFTP();
-//                } 
                 RequestContext.getCurrentInstance().closeDialog(usuario);
             }
         } else if (usuario.getIdusuario() != null) {
@@ -247,6 +321,17 @@ public class CadUsuarioMB implements Serializable{
             Mensagem.lancarMensagemErro("Erro conectar FTP", "");
         }
         try {
+            if (usuario.getIdusuario() == null) {
+                Empresa empresa = empresaRepository.find(1);
+                usuario.setEmpresaIdempresa(empresa);
+                Acesso acesso = acessoRepository.find(1);
+                usuario.setAcessoIdacesso(acesso);
+                usuario = usuarioRepository.update(usuario);
+            }else{
+                if (usuario.getNomefoto() != null && usuario.getNomefoto().length() >0) {
+                    excluirArquivoFTP();
+                }
+            }
             msg = ftp.enviarArquivo(file, 10 + ".png", "/intime/fotos/usuario/");
             FacesContext context = FacesContext.getCurrentInstance();
             usuario.setNomefoto(10+ ".png");
@@ -261,6 +346,42 @@ public class CadUsuarioMB implements Serializable{
         } catch (IOException ex) {
             Logger.getLogger(CadUsuarioMB.class.getName()).log(Level.SEVERE, null, ex);
             Mensagem.lancarMensagemErro("Erro conectar FTP", "");
+        }
+        return false;
+    }
+    
+    public boolean excluirArquivoFTP() {
+        String msg = "";
+        Ftpdados dadosFTP = null;
+        dadosFTP = ftpDadosRepository.find("select f from Ftpdados f");
+        if (dadosFTP == null) {
+            return false;
+        }
+        Ftp ftp = new Ftp(dadosFTP.getHostupload(), dadosFTP.getUsuario(), dadosFTP.getSenha());
+        try {
+            if (!ftp.conectar()) {
+                Mensagem.lancarMensagemErro("Erro conectar FTP", "");
+                return false;
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(CadClienteMB.class.getName()).log(Level.SEVERE, null, ex);
+            Mensagem.lancarMensagemErro("Erro conectar FTP", "Erro");
+        }
+        try {
+            String nomeArquivoFTP = usuario.getNomefoto();
+            msg = ftp.excluirArquivo(nomeArquivoFTP, "/intime/fotos/usuario/");
+            FacesContext context = FacesContext.getCurrentInstance();
+            context.addMessage(null, new FacesMessage(msg, ""));
+            return true;
+        } catch (IOException ex) {
+            Logger.getLogger(CadClienteMB.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(null, "Erro Salvar Arquivo " + ex);
+        }
+        try {
+            ftp.desconectar();
+        } catch (IOException ex) {
+            Logger.getLogger(CadClienteMB.class.getName()).log(Level.SEVERE, null, ex);
+            Mensagem.lancarMensagemErro("Erro desconectar FTP", "Erro");
         }
         return false;
     }

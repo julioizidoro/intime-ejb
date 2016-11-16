@@ -49,21 +49,20 @@
             </h:panelGrid>
             <br/>
             <h:panelGrid columns="2" columnClasses="tamanho50, tamanho50" style="width:100%;font-size: 12px;">  
-                <p:outputLabel  value="Estado"/>
-                <p:outputLabel  value="Usuario Master"/> 
+                <p:outputLabel  value="Nivel"/>
+                <p:outputLabel  value="Status"/> 
             
-                <p:selectOneMenu  id="estado" value="#{cadEmpresaMB.empresa.estado}"  style="width:80%;">
-                    <f:selectItem itemLabel="Selecione" itemValue="sn" noSelectionOption="true"/> 
+                <p:selectOneMenu  id="idNivel" value="#{cadUsuarioMB.nivel}"  style="width:80%;">
+                    <f:selectItem itemLabel="Selecione" itemValue="" noSelectionOption="true"/> 
                     <f:selectItem itemLabel="Global" itemValue="1" /> 
                     <f:selectItem itemLabel="Departamental" itemValue="2" />  
                     <f:selectItem itemLabel="Sub-Departamental" itemValue="3" />  
                     <f:selectItem itemLabel="Individual" itemValue="4" />  
                 </p:selectOneMenu>
-                <p:selectOneMenu   id="plano"  style="width:95%;"  value="#{cadEmpresaMB.usuario}" converter="UsuarioConverter"
-                                  filter="true" filterMatchMode="contains" panelStyle="width:180px" >
-                    <f:selectItem  itemLabel="Selecione" itemValue="0" noSelectionOption="true"/>   
-                    <f:selectItems  value="#{cadEmpresaMB.listaUsuario}" var="usuarioselecionado" itemLabel="#{usuarioselecionado.nome}" itemValue="#{usuarioselecionado}"/>
-                    <f:attribute name="listaUsuarios" value="#{cadEmpresaMB.listaUsuario}"/>
+                <p:selectOneMenu  id="idStatus" value="#{cadUsuarioMB.status}"  style="width:80%;">
+                    <f:selectItem itemLabel="Selecione" itemValue="" noSelectionOption="true"/> 
+                    <f:selectItem itemLabel="Ativo" itemValue="ativo" /> 
+                    <f:selectItem itemLabel="Inativo" itemValue="inativo" />  
                 </p:selectOneMenu>
             </h:panelGrid>
             <br/>
