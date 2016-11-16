@@ -69,10 +69,13 @@ public class Usuario implements Serializable {
     private String nomefoto;
     @JoinColumn(name = "acesso_idacesso", referencedColumnName = "idacesso")
     @ManyToOne(optional = false)
-    private Acesso acessoIdacesso;
+    private Acesso acesso;
     @JoinColumn(name = "empresa_idempresa", referencedColumnName = "idempresa")
     @ManyToOne(optional = false)
-    private Empresa empresaIdempresa;
+    private Empresa empresa;
+    @JoinColumn(name = "subdepartamento_idsubdepartamento", referencedColumnName = "idsubdepartamento")
+    @ManyToOne(optional = false)
+    private Subdepartamento subdepartamento;
 
     public Usuario() {
     }
@@ -161,21 +164,31 @@ public class Usuario implements Serializable {
         this.senha = senha;
     }
 
-    public Acesso getAcessoIdacesso() {
-        return acessoIdacesso;
+    public Acesso getAcesso() {
+        return acesso;
     }
 
-    public void setAcessoIdacesso(Acesso acessoIdacesso) {
-        this.acessoIdacesso = acessoIdacesso;
+    public void setAcesso(Acesso acesso) {
+        this.acesso = acesso;
     }
 
-    public Empresa getEmpresaIdempresa() {
-        return empresaIdempresa;
+    public Empresa getEmpresa() {
+        return empresa;
     }
 
-    public void setEmpresaIdempresa(Empresa empresaIdempresa) {
-        this.empresaIdempresa = empresaIdempresa;
+    public void setEmpresa(Empresa empresa) {
+        this.empresa = empresa;
     }
+
+    public Subdepartamento getSubdepartamento() {
+        return subdepartamento;
+    }
+
+    public void setSubdepartamento(Subdepartamento subdepartamento) {
+        this.subdepartamento = subdepartamento;
+    }
+
+    
 
     public String getNomefoto() {
         return nomefoto;

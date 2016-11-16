@@ -59,7 +59,7 @@ public class CadClienteMB implements Serializable {
             cliente = new Cliente();
             empresa = new Empresa();
         } else {
-            empresa = cliente.getEmpresaIdempresa();
+            empresa = cliente.getEmpresa();
             if (cliente.getStatus()) {
                 status = "Ativo";
             } else {
@@ -142,7 +142,7 @@ public class CadClienteMB implements Serializable {
 
     public String salvar() {
         if (validarDados()) {
-            cliente.setEmpresaIdempresa(empresa);
+            cliente.setEmpresa(empresa);
             if (status.equalsIgnoreCase("Ativo")) {
                 cliente.setStatus(true);
             } else {

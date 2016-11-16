@@ -41,7 +41,7 @@ public class Departamento implements Serializable {
     private List<Subdepartamento> subdepartamentoList;
     @JoinColumn(name = "usuario_idusuario", referencedColumnName = "idusuario")
     @ManyToOne(optional = false)
-    private Usuario usuarioIdusuario;
+    private Usuario usuario;
 
     public Departamento() {
     }
@@ -74,12 +74,12 @@ public class Departamento implements Serializable {
         this.subdepartamentoList = subdepartamentoList;
     }
 
-    public Usuario getUsuarioIdusuario() {
-        return usuarioIdusuario;
+    public Usuario getUsuario() {
+        return usuario;
     }
 
-    public void setUsuarioIdusuario(Usuario usuarioIdusuario) {
-        this.usuarioIdusuario = usuarioIdusuario;
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 
     @Override

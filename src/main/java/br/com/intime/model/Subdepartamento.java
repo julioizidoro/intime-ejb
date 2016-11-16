@@ -38,7 +38,7 @@ public class Subdepartamento implements Serializable {
     private Boolean status;
     @JoinColumn(name = "departamento_iddepartamento", referencedColumnName = "iddepartamento")
     @ManyToOne(optional = false)
-    private Departamento departamentoIddepartamento;
+    private Departamento departamento;
 
     public Subdepartamento() {
     }
@@ -71,13 +71,14 @@ public class Subdepartamento implements Serializable {
         this.status = status;
     }
 
-    public Departamento getDepartamentoIddepartamento() {
-        return departamentoIddepartamento;
+    public Departamento getDepartamento() {
+        return departamento;
     }
 
-    public void setDepartamentoIddepartamento(Departamento departamentoIddepartamento) {
-        this.departamentoIddepartamento = departamentoIddepartamento;
+    public void setDepartamento(Departamento departamento) {
+        this.departamento = departamento;
     }
+
 
     @Override
     public int hashCode() {

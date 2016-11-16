@@ -55,7 +55,7 @@ public class CadUsuarioMB implements Serializable{
             usuario = new Usuario();
             empresa = new Empresa();
         } else {
-            empresa = usuario.getEmpresaIdempresa();
+            empresa = usuario.getEmpresa();
         }
         gerarListaEmpresa();
         acesso = acessoRepository.find(1);
@@ -142,8 +142,8 @@ public class CadUsuarioMB implements Serializable{
             usuario.setStatus(true);
             String mensagem = validarDados();
             if (mensagem.length() < 1) {
-                usuario.setEmpresaIdempresa(empresa);
-                usuario.setAcessoIdacesso(acesso);
+                usuario.setEmpresa(empresa);
+                usuario.setAcesso(acesso);
                 usuario = usuarioRepository.update(usuario);
                 RequestContext.getCurrentInstance().closeDialog(usuario);
             }

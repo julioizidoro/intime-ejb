@@ -59,7 +59,7 @@ public class Cliente implements Serializable {
     private String nomefoto;
     @JoinColumn(name = "empresa_idempresa", referencedColumnName = "idempresa")
     @ManyToOne(optional = false)
-    private Empresa empresaIdempresa;
+    private Empresa empresa;
 
     public Cliente() {
     }
@@ -140,13 +140,15 @@ public class Cliente implements Serializable {
         this.responsavel = responsavel;
     }
 
-    public Empresa getEmpresaIdempresa() {
-        return empresaIdempresa;
+    public Empresa getEmpresa() {
+        return empresa;
     }
 
-    public void setEmpresaIdempresa(Empresa empresaIdempresa) {
-        this.empresaIdempresa = empresaIdempresa;
+    public void setEmpresa(Empresa empresa) {
+        this.empresa = empresa;
     }
+
+    
 
     public String getNomefoto() {
         return nomefoto;
