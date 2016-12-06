@@ -4462,13 +4462,11 @@ tr.odd.gradeX td.sorting_1, tr.even.gradeX td.sorting_1, table.display tr.even.g
     width: 100%;
 }
 #sortable li {
-    padding-left: 3em;
-    font-size: 12px;
+    padding-left:1em;
+    font-size: 14px;
 }
-#sortable li i {
-    position: absolute;
-    left:6px;
-    padding:4px 10px 0 10px;
+#sortable li i { 
+    left:6px; 
     cursor: pointer;
 }
 
@@ -4476,8 +4474,7 @@ tr.odd.gradeX td.sorting_1, tr.even.gradeX td.sorting_1, table.display tr.even.g
     margin-top: 0;
 }
 
-.ui-sortable > li {
-    padding: 15px 0 15px 35px !important ;
+.ui-sortable > li { 
     position: relative;
     background: #f5f6f8;
     margin-bottom: 2px;
@@ -6283,7 +6280,7 @@ header.blue-bg .search:focus {
 
 
 .search-consultas { 
-    width: 240px;
+    width: 200px;
     -webkit-transition: all .3s ease;
     -moz-transition: all .3s ease;
     -ms-transition: all .3s ease;
@@ -6298,7 +6295,7 @@ header.blue-bg .search:focus {
 
 
 .search-consultas:focus { 
-    width: 240px;
+    width: 200px;
     border: 1px solid #eaeaea;
     box-shadow: none;
     -webkit-transition: all .3s ease;

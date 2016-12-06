@@ -1,0 +1,134 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets" >
+    <ui:composition template="/pages/templates/default.xhtml">
+        <ui:define name="corpo">
+            <h:form id="consTarefas"> 
+                <p:growl id="growl" showDetail="true" sticky="true" />
+                <h:panelGrid columns="2" style="width: 100%;margin-top: -1.5%;">
+                    <h:panelGroup> 
+                        <p:commandLink id="btnHome" action="#{usuarioLogadoMB.paginainicial()}" style="margin-left:0.5%;" class="hoverTextos">
+                            <i class="fa fa-home"/>
+                            <p:outputLabel value="Home" style="margin-left:0.5%;font-weight: inherit;"/>
+                        </p:commandLink>
+                        <p:outputLabel value="/" style="margin-left:0.5%;color:#797979;font-weight: inherit;"/>
+                        <p:outputLabel value="Do It!" style="margin-left:0.5%;color:#797979;font-weight: inherit;"/>
+                    </h:panelGroup> 
+                </h:panelGrid> 
+                <br/> 
+                <p:outputLabel value="Do It!" style="margin-left:0.5%;color:#797979;font-weight: inherit;font-size: 22px;"/>
+                <h:panelGrid columns="2" style="width: 100%;" columnClasses="tamanho75,tamanho"> 
+                    <h:panelGroup style="text-align: left;">    
+                        <p:commandLink id="btnhoje" action="#" style="margin-left:2%;">
+                            <span class="badge badge-sm label-radio">HOJE</span>
+                        </p:commandLink>
+                        <p:commandLink id="btnamanha" action="#" style="margin-left:0.5%;">
+                            <span class="badge badge-sm label-radio">AMANHÃ</span>
+                        </p:commandLink>
+                        <p:commandLink id="btn7dias" action="#" style="margin-left:0.5%;">
+                            <span class="badge badge-sm label-radio">7 DIAS</span>
+                        </p:commandLink>
+                        <p:commandLink id="btntodos" action="#" style="margin-left:0.5%;">
+                            <span class="badge badge-sm label-radio">TODOS</span>
+                        </p:commandLink> 
+                        <span class="badge badge-sm label-radio" style="margin-left:0.5%;">
+                            VISUALIZAR CONCLUÍDAS
+                        </span> 
+                        <span style="margin-left: 2%;">
+                            <p:inputText id="nomefantasia" class="form-control search-consultas" placeholder="Buscar"/>
+                            <h:commandButton id="btnPesquisar" style="background: transparent;border: none;" actionListener="#{clienteMB.pesquisar()}" />  
+                        </span>
+                    </h:panelGroup>
+                    <h:panelGroup style="text-align: right;"> 
+                        <p:commandLink id="btnadicionar" title="Adicionar" action="#" class="hoverTextos">
+                            <i class="fa fa-plus" style="font-size:35px;"/>
+                            <p:ajax event="dialogReturn"  update="@form"/>
+                        </p:commandLink>  
+                    </h:panelGroup>
+                </h:panelGrid>
+                <div class="row">
+                    <div class="col-md-12">
+                        <section class="panel tasks-widget">
+                            <div class="panel-body">
+                                <div class="task-content">
+                                    <ul id="sortable" class="task-list">
+                                        <li class="list">
+                                            <i class="fa fa-ellipsis-v" style="font-size: 14px;float: left;margin-top:0.3%;"></i>
+                                            <p:commandLink style="float: left;margin-top: -0.2%;margin-left:1%;" rendered="false">
+                                                <i class="fa fa-play" style="font-size: 14px;color:#B0B5B9;"></i>
+                                            </p:commandLink>
+                                            <p:commandLink style="float: left;margin-top: -0.2%;margin-left:1%;" rendered="true">
+                                                <i class="fa fa-pause" style="font-size: 14px;color:#B0B5B9;"></i>
+                                            </p:commandLink>   
+                                            <div class="task-checkbox" style="margin-left:1%;">
+                                                <input type="checkbox" class="list-child" value=""  />
+                                            </div>   
+                                            <div class="task-title">
+                                                <span class="task-title-sp">INICIAR DESENVOLVIMENTO DO IN TIME</span> |  
+                                                <span class="task-title-sp">FINANCEMATE</span> 
+                                                <span class="task-title-sp" style="font-weight: bold;" >(2)</span>
+                                                <span class="task-title-sp" style="font-style: oblique;font-size: 13px;font-weight:400;">06.12</span>
+                                                <span class="task-title-sp" style="font-style: oblique;font-size: 13px;font-weight:400;">19:00</span>
+                                                <h:panelGroup rendered="false">
+                                                    <span class="task-title-sp">
+                                                        <i class="fa fa-exclamation-triangle" style="font-size: 14px;color:#FF0000;cursor: default;"></i> 
+                                                    </span>
+                                                </h:panelGroup>
+                                                <h:panelGroup rendered="true">
+                                                    <span class="task-title-sp">
+                                                        <i class="fa fa-exclamation-triangle" style="font-size: 14px;color:#FFD700;cursor: default;"></i> 
+                                                    </span>
+                                                </h:panelGroup>
+
+
+                                                <div class="pull-right hidden-phone">
+                                                    <p:commandLink title="Alterar Data" action="#"> 
+                                                        <i class="fa fa-calendar" style="font-size:17px;color:#FFD700;"></i> 
+                                                    </p:commandLink>
+                                                    <p:commandLink title="Editar Tarefa" action="#"> 
+                                                        <i class="fa fa-edit" style="font-size:17px;color:#FF6C60;"></i> 
+                                                    </p:commandLink>
+                                                    <p:commandLink title="Menu" action="#"> 
+                                                        <i class="fa fa-bars" style="font-size:17px;color:#1C86EE;"></i> 
+                                                    </p:commandLink>
+                                                </div>
+                                            </div>
+                                        </li> 
+                                    </ul>
+                                </div> 
+                            </div>
+                        </section>
+                    </div>
+                </div>  
+                <script src="../../resources/js/jquery.js"></script>
+                <script src="../../resources/js/bootstrap.min.js"></script>   
+                <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+                <script class="include" type="text/javascript" src="../../resources/js/jquery.dcjqaccordion.2.7.js"></script>
+                <script src="../../resources/js/jquery.nicescroll.js" type="text/javascript"></script>
+                <script src="../../resources/js/jquery.scrollTo.min.js"></script> 
+
+                <script src="../../resources/js/slidebars.min.js"></script> 
+
+                <script src="../../resources/js/tasks.js"></script> 
+
+                <link href="../../resources/css/tasks.css" rel="stylesheet"/>   
+
+
+                <script>
+                    jQuery(document).ready(function () {
+                        TaskList.initTaskWidget();
+                    });
+
+                    $(function () {
+                        $("#sortable").sortable();
+                        $("#sortable").disableSelection();
+                    });
+
+                </script>
+            </h:form>  
+        </ui:define>
+    </ui:composition>
+</html>   

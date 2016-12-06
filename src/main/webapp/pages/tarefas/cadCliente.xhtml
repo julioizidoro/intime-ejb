@@ -1,0 +1,72 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"> 
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+        <link href="../../resources/css/bootstrap.min.css" rel="stylesheet"/>  
+        <link href="../../resources/css/style.css" rel="stylesheet"/> 
+    </h:head>
+    <h:body style="background:#FFFFFF;" > 
+        <h:form id="cadCliente"  style="font-size: 11px;width:95%;margin-left:3%;" enctype="multipart/form-data"> 
+            <title style="background: #cf7000">Cliente</title>
+            <br/>
+            <p:growl id="growl" showDetail="true" autoUpdate="true"  />
+            <h:panelGrid columns="2" columnClasses="tamanho50, tamanho50" style="width: 100%;font-size: 12px;">
+                <p:outputLabel for="razaosocial" value="Razão Social"/>
+                <p:outputLabel for="nomefantaria" value="Nome Fantasia"/>
+
+                <p:inputText id="razaosocial" value="#{cadClienteMB.cliente.razaosocial}" style="width: 95%;"/>
+                <p:inputText id="nomefantaria" value="#{cadClienteMB.cliente.nomefantasia}" style="width: 95%;"/>
+            </h:panelGrid>
+            <br/>
+            <h:panelGrid columns="2" columnClasses="tamanho50, tamanho50" style="width: 100%;font-size: 12px;">
+                <p:outputLabel for="email" value="Email"/>
+                <p:outputLabel for="responsavel" value="Responsável"/>
+
+                <p:inputText id="email" value="#{cadClienteMB.cliente.email}" style="width: 95%;"/>
+                <p:inputText id="responsavel" value="#{cadClienteMB.cliente.responsavel}" style="width: 95%;"/>
+            </h:panelGrid>
+            <br/>
+            <h:panelGrid columns="3" columnClasses="tamanho20, tamanho20, tamanho20" style="width: 100%;font-size: 12px;">
+                <p:outputLabel for="cnpj" value="CNPJ"/>
+                <p:outputLabel for="telefone" value="Telefone"/>
+                <p:outputLabel for="status" value="Status"/>
+
+                <p:inputText id="cnpj" value="#{cadClienteMB.cliente.cnpj}" style="width: 95%;"/>
+                <p:inputText id="telefone" value="#{cadClienteMB.cliente.fone}" style="width: 95%;"/>
+                <p:selectOneMenu id="status" value="#{cadClienteMB.status}"  style="width:90%;">
+                    <f:selectItem itemLabel="Ativo" itemValue="Ativo" />   
+                    <f:selectItem itemLabel="Inativo" itemValue="Inativo" />  
+                </p:selectOneMenu>
+            </h:panelGrid>
+            <br/>
+            <h:panelGrid columns="2" columnClasses="tamanho50, tamanho50" style="width: 100%;font-size: 12px;">
+                <p:outputLabel for="empresa" value="Empresa"/>
+                <p:outputLabel />
+
+                <p:selectOneMenu id="empresa"  style="width:80%;" value="#{cadClienteMB.empresa}" converter="EmpresaConverter"
+                                 filter="true" filterMatchMode="contains" panelStyle="width:180px" >
+                    <f:selectItem  itemLabel="Selecione" itemValue="0" noSelectionOption="true"/> 
+                    <f:selectItems  value="#{cadClienteMB.listaEmpresa}" var="em" itemLabel="#{em.nomefantasia}" itemValue="#{em}"/>
+                    <f:attribute name="listaEmpresa" value="#{cadClienteMB.listaEmpresa}"/>
+                </p:selectOneMenu>
+                <h:panelGroup>
+                    <p:selectBooleanCheckbox id="atividades"
+                                             value="#{cadClienteMB.cliente.atividade}" /> 
+                    <h:outputText value="Desempenhar atividades"
+                                  class="titTela" style="font-size: 15px;text-align: left;margin-left:1%;"/> 
+                </h:panelGroup>
+            </h:panelGrid> 
+            <br/>
+            <p:fileUpload multiple="true"  dragDropSupport="false" fileLimit="1" style="font-size:12px; width:85%;" label="Anexar" fileUploadListener="#{cadClienteMB.fileUploadListener}" value="#{cadClienteMB.file}"  mode="advanced" 
+                     update="growl"  allowTypes="/(\.|\/)(|jpe?g|png)$/" sizeLimit="52428800">
+            </p:fileUpload>
+            <br/><br/>       
+            <div align="center">    
+                <p:commandButton id="btnConfirmar" action="#{cadClienteMB.salvar()}" class="btn btn-success" value="Confirmar" update="growl"/>
+                <p:commandButton id="btnCancelar" action="#{cadClienteMB.fechar()}" class="btn btn-danger" value="Cancelar"/>
+            </div>
+        </h:form> 
+    </h:body>
+</html>

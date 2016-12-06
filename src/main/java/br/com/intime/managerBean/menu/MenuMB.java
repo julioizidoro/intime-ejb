@@ -25,6 +25,10 @@ public class MenuMB implements Serializable {
         return "consUsuario";
     }
     
+    public String tarefas() {
+        return "consTarefas";
+    }
+    
     public String novaEmpresa(){
         Map<String, Object> options = new HashMap<String, Object>();
         options.put("contentWidth", 580);
