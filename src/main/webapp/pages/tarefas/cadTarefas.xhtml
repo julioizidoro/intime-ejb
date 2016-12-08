@@ -1,7 +1,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://xmlns.jcp.org/jsf/core"> 
+      xmlns:f="http://xmlns.jcp.org/jsf/core" > 
     <h:head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
         <link href="../../resources/css/bootstrap.min.css" rel="stylesheet"/>  
@@ -18,9 +18,9 @@
                 <p:inputText id="titulo" placeholder="Título" style="width:99%;"/> 
             </h:panelGrid>
             <br/>
-            <h:panelGrid columns="3" columnClasses="tamanho50, tamanho50, tamanho50" style="width: 100%;font-size: 12px;">
-                <p:inputMask id="data" placeholder="    /   /    " mask="99/99/9999" value="#{cadClienteMB.cliente.email}" style="width: 95%;"/>
-                <p:selectOneMenu id="departamento"  style="width:95%;"  value="#"
+            <h:panelGrid columns="3" columnClasses="tamanho20, tamanho30, tamanho30" style="width: 100%;font-size: 12px;">
+                <p:inputMask id="data" placeholder="DD/MM/AAAA" mask="99/99/9999" value="#{cadClienteMB.cliente.email}" style="width:95%;"/>
+                <p:selectOneMenu id="departamento"  style="width:91%;"  value="#"
                         filter="true" filterMatchMode="contains" panelStyle="width:180px" >
                     <f:selectItem  itemLabel="Departamento" itemValue="0" noSelectionOption="true"/>    
                 </p:selectOneMenu>
@@ -30,9 +30,36 @@
                 </p:selectOneMenu>
             </h:panelGrid>
             <br/>         
-            <div align="center">    
+            <h:panelGrid columns="2" columnClasses="tamanho70, tamanho30rigth" style="width:99%;"> 
+                <h:panelGroup>
+                    <p:commandLink id="btnHorario" action="#" title="Adicionar horário">
+                        <i class="fa fa-clock-o" style="color:#C6C6C6;font-size:27px;"/>
+                    </p:commandLink>  
+                    <p:commandLink id="btnPrioridade" action="#" title="Adicionar prioridade">
+                        <i class="fa fa-warning" style="color:#C6C6C6;font-size:25px;"/>
+                    </p:commandLink> 
+                    <p:commandLink id="btnExecutor" action="#" title="Adicionar executor">
+                        <i class="fa fa-user" style="color:#C6C6C6;font-size:28px;"/>
+                    </p:commandLink> 
+                    <p:commandLink id="btnUsuarios" action="#" title="Adicionar mais usuários">
+                        <i class="fa fa-user-plus" style="color:#C6C6C6;font-size:28px;"/>
+                    </p:commandLink>  
+                    <p:commandLink id="btnComentarios" action="#" title="Comentários">
+                        <i class="fa fa-comments" style="color:#C6C6C6;font-size:28px;"/>
+                    </p:commandLink>
+                    <p:commandLink id="btnRotina" action="#" title="Rotina">
+                        <i class="fa fa-repeat" style="color:#C6C6C6;font-size:25px;"/>
+                    </p:commandLink>
+
+                    <p:commandLink id="btnNotificacao" action="#" title="Gerar notificação">
+                        <i class="fa fa-bell" style="color:#C6C6C6;font-size:25px;"/>
+                    </p:commandLink>
+                </h:panelGroup>
                 
-            </div>
+                <p:commandLink id="btnAdicionar" action="#" title="Adicionar">
+                    <i class="fa fa-check" style="color:#008B00;font-size:60px;"/>
+                </p:commandLink>
+            </h:panelGrid>
         </h:form> 
     </h:body>
 </html>

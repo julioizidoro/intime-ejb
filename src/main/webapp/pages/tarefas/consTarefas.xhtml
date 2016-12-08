@@ -3,7 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:ui="http://java.sun.com/jsf/facelets" >
+      xmlns:ui="http://java.sun.com/jsf/facelets" 
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
     <ui:composition template="/pages/templates/default.xhtml">
         <ui:define name="corpo">
             <h:form id="consTarefas"> 
@@ -20,23 +21,24 @@
                 </h:panelGrid> 
                 <br/> 
                 <p:outputLabel value="Do It!" style="margin-left:0.5%;color:#797979;font-weight: inherit;font-size: 22px;"/>
-                <h:panelGrid columns="2" style="width: 100%;" columnClasses="tamanho75,tamanho"> 
+                <h:panelGrid id="painelBtn" columns="2" style="width: 100%;" columnClasses="tamanho75,tamanho"> 
                     <h:panelGroup style="text-align: left;">    
-                        <p:commandLink id="btnhoje" action="#" style="margin-left:2%;">
-                            <span class="badge badge-sm label-radio" style="background:#E0E0E0;">HOJE</span>
+                        <p:commandLink id="btnhoje" action="#{tarefasMB.mudarCoresBotoes('hoje')}" style="margin-left:2%;" update="painelBtn">
+                            <span class="badge badge-sm label-radio" style="background:#{tarefasMB.hoje};">HOJE</span>
                         </p:commandLink>
-                        <p:commandLink id="btnamanha" action="#" style="margin-left:0.5%;">
-                            <span class="badge badge-sm label-radio" style="background:#cba135;">AMANHÃ</span>
+                        <p:commandLink id="btnamanha" action="#{tarefasMB.mudarCoresBotoes('amanha')}" style="margin-left:0.5%;" update="painelBtn"> 
+                            <span class="badge badge-sm label-radio" style="background:#{tarefasMB.amanha};">AMANHÃ</span>
                         </p:commandLink>
-                        <p:commandLink id="btn7dias" action="#" style="margin-left:0.5%;">
-                            <span class="badge badge-sm label-radio" style="background:#E0E0E0;">7 DIAS</span>
+                        <p:commandLink id="btn7dias" action="#{tarefasMB.mudarCoresBotoes('seteDias')}" style="margin-left:0.5%;" update="painelBtn">
+                            <span class="badge badge-sm label-radio" style="background:#{tarefasMB.seteDias};">7 DIAS</span>
                         </p:commandLink>
-                        <p:commandLink id="btntodos" action="#" style="margin-left:0.5%;">
-                            <span class="badge badge-sm label-radio" style="background: #E0E0E0;">TODOS</span>
+                        <p:commandLink id="btntodos" action="#{tarefasMB.mudarCoresBotoes('todos')}" style="margin-left:0.5%;" update="painelBtn">
+                            <span class="badge badge-sm label-radio" style="background:#{tarefasMB.todos};">TODOS</span>
                         </p:commandLink> 
-                        <span class="badge badge-sm label-radio" style="margin-left:0.5%;">
-                            VISUALIZAR CONCLUÍDAS
-                        </span> 
+                        <span id="visualizarConcluidas" class="badge badge-sm label-radio" style="margin-left:0.5%;height: 20px;">   
+                            <p:commandButton id="btnNaoVisualizarConcluidas" rendered="#{tarefasMB.naoconcluidas}" action="#{tarefasMB.visualizarConcluidas()}" value="VISUALIZAR CONCLUÍDAS" icon="fa fa-fw fa-toggle-off" style="border: transparent;background: transparent;font-size: 14px;top: -40%;font-weight: unset;color: #2A3542;" update="painelBtn"/>
+                            <p:commandButton id="btnVisualizarConcluidas" rendered="#{tarefasMB.concluidas}" action="#{tarefasMB.visualizarConcluidas()}" value="VISUALIZAR CONCLUÍDAS" icon="fa fa-fw fa-toggle-on" style="border: transparent;background: transparent;font-size: 14px;top: -40%;font-weight: unset;color: #2A3542;" update="painelBtn"/>  
+                        </span>     
                         <span style="margin-left: 2%;">
                             <p:inputText id="nomefantasia" class="form-control search-consultas" placeholder="Buscar"/>
                             <h:commandButton id="btnPesquisar" style="background: transparent;border: none;" actionListener="#{clienteMB.pesquisar()}" />  
@@ -68,8 +70,12 @@
                                             </div>   
                                             <div class="task-title">
                                                 <span id="nome" class="task-title-sp">INICIAR DESENVOLVIMENTO DO IN TIME</span> |  
-                                                <span id="empresa" class="task-title-sp">FINANCEMATE</span> 
-                                                <span id="comentarios" class="task-title-sp" style="font-weight: bold;" >(2)</span>
+                                                <span id="cliente" class="task-title-sp">FINANCEMATE</span> 
+                                                <span id="comentarios" class="task-title-sp" style="font-weight: bold;" >
+                                                    (
+                                                    <p:commandLink id="btnComentarios" title="Comentários" value="2" action="#{tarefasMB.visualizarComentarios()}"/>
+                                                    )
+                                                </span>
                                                 <span id="data" class="task-title-sp" style="font-style: oblique;font-size: 13px;font-weight:400;">06.12</span>
                                                 <span id="horario" class="task-title-sp" style="font-style: oblique;font-size: 13px;font-weight:400;">19:00</span>
                                                 <h:panelGroup id="importante" rendered="false">
@@ -85,13 +91,13 @@
 
 
                                                 <div class="pull-right hidden-phone">
-                                                    <p:commandLink id="btnAlterarData" title="Alterar Data" action="#"> 
+                                                    <p:commandLink id="btnAlterarData" title="Alterar Data"  update="dialog_alterarData" oncomplete="PF('alterarData').show()" > 
                                                         <i class="fa fa-calendar" style="font-size:17px;color:#FFD700;"></i> 
                                                     </p:commandLink>
-                                                    <p:commandLink id="btnEditar" title="Editar Tarefa" action="#"> 
+                                                    <p:commandLink id="btnEditar" title="Editar Tarefa" action="#{tarefasMB.editarTarefa()}"> 
                                                         <i class="fa fa-edit" style="font-size:17px;color:#FF6C60;"></i> 
                                                     </p:commandLink> 
-                                                    <a id="btnMenu" data-toggle="dropdown" class="dropdown-toggle" href="#">
+                                                    <a id="btnMenu" data-toggle="dropdown" class="dropdown-toggle">
                                                         <i class="fa fa-bars" style="font-size:17px;color:#1C86EE;"></i> 
                                                         <b class="caret"></b>
                                                     </a>
@@ -103,7 +109,7 @@
                                                         <li><p:commandLink><i class="fa fa-trash-o" style="color:#8E9398;font-size: 13px;">
                                                                     <p:outputLabel value="Excluir" style="margin-left: 8%;"/>
                                                                 </i></p:commandLink></li> 
-                                                        <li><p:commandLink><i class="fa fa-comments" style="color: #8E9398;font-size: 13px;">
+                                                        <li><p:commandLink action="#{tarefasMB.visualizarComentarios()}"><i class="fa fa-comments" style="color: #8E9398;font-size: 13px;">
                                                                     <p:outputLabel value="Comentários" style="margin-left: 8%;"/>
                                                                 </i></p:commandLink></li>    
                                                         <li><p:commandLink><i class="fa fa-copy" style="color: #8E9398;font-size: 13px;">  
@@ -118,6 +124,18 @@
                             </div>
                         </section>
                     </div>
+                    <p:dialog id="dialog_alterarData"  header="ALTERAR DATA" widgetVar="alterarData" resizable="false" >
+                        <div align="center">
+                            <p:calendar id="dataTarefa" pattern="dd/MM/yyyy" size="18" style="margin-top: 5px;">
+                                <f:convertDateTime   pattern="dd/MM/yyyy" timeZone="America/Sao_Paulo"/>
+                            </p:calendar>
+                            <div align="right">
+                                <p:commandLink id="btnAdicionar" action="#" title="Adicionar">
+                                    <i class="fa fa-check" style="color:#008B00;font-size:35px;"/>
+                                </p:commandLink>
+                            </div>
+                        </div>
+                    </p:dialog>
                 </div>  
                 <script src="../../resources/js/jquery.js"></script>
                 <script src="../../resources/js/bootstrap.min.js"></script>   
@@ -132,7 +150,7 @@
 
                 <link href="../../resources/css/tasks.css" rel="stylesheet"/>   
 
-
+                
                 <script>
                     jQuery(document).ready(function () {
                         TaskList.initTaskWidget();
