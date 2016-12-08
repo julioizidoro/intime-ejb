@@ -429,8 +429,7 @@ ul.top-menu > li > a:hover, ul.top-menu > li > a:focus {
 .dropdown-menu.extended {
     max-width: 300px !important;
     min-width: 160px !important;
-    top: 42px;
-    width: 235px !important;
+    top: 42px; 
     padding: 0;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.176) !important;
     border: none !important;
@@ -482,8 +481,8 @@ ul.top-menu > li > a:hover, ul.top-menu > li > a:focus {
 }
 
 .dropdown-menu.extended li a:hover {
-    background-color: #F7F8F9 !important;
-    color: #2E2E2E;
+    background-color: #E0E0E0 !important;
+    color: #FF6C60;
 }
 
 .dropdown-menu.tasks-bar .task-info .desc {
@@ -549,12 +548,7 @@ ul.top-menu > li > a:hover, ul.top-menu > li > a:focus {
     right: 0;
     left: auto;
 }
-
-.dropdown-menu.extended.logout > li {
-    float: left;
-    text-align: center;
-    width: 33.3%;
-}
+ 
 
 .dropdown-menu.extended.logout > li:last-child {
     float: left;
