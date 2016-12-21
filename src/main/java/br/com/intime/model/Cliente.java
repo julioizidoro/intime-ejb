@@ -51,6 +51,9 @@ public class Cliente implements Serializable {
     @Size(max = 20)
     @Column(name = "fone")
     private String fone;
+    @Size(max = 6)
+    @Column(name = "apelido")
+    private String apelido;
     @Size(max = 100)
     @Column(name = "responsavel")
     private String responsavel;
@@ -146,6 +149,14 @@ public class Cliente implements Serializable {
 
     public void setEmpresa(Empresa empresa) {
         this.empresa = empresa;
+    }
+
+    public String getApelido() {
+        return apelido;
+    }
+
+    public void setApelido(String apelido) {
+        this.apelido = apelido;
     }
 
     
