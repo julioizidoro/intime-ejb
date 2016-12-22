@@ -31,6 +31,9 @@ import org.hibernate.annotations.LazyCollectionOption;
 @Table(name = "departamento")
 public class Departamento implements Serializable {
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "departamento")
+    private List<Clientedepartamento> clientedepartamentoList;
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -109,6 +112,14 @@ public class Departamento implements Serializable {
     @Override
     public String toString() {
         return "br.com.intime.model.Departamento[ iddepartamento=" + iddepartamento + " ]";
+    }
+
+    public List<Clientedepartamento> getClientedepartamentoList() {
+        return clientedepartamentoList;
+    }
+
+    public void setClientedepartamentoList(List<Clientedepartamento> clientedepartamentoList) {
+        this.clientedepartamentoList = clientedepartamentoList;
     }
     
 }

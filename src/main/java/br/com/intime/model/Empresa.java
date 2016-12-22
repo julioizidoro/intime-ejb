@@ -6,6 +6,7 @@
 package br.com.intime.model;
 
 import java.io.Serializable;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -15,6 +16,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
@@ -26,6 +28,13 @@ import javax.validation.constraints.Size;
 @Entity
 @Table(name = "empresa")
 public class Empresa implements Serializable {
+
+    @Column(name = "usuariomaster")
+    private Integer usuariomaster;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "empresa")
+    private List<Cliente> clienteList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "empresa")
+    private List<Usuario> usuarioList;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -72,8 +81,6 @@ public class Empresa implements Serializable {
     private Boolean utilizadepartamento;
     @Column(name = "utilizasubdepartamento")
     private Boolean utilizasubdepartamento;
-    @Column(name = "usuariomaster")
-    private int usuariomaster;
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "empresa")
     private Ftpdados ftpdados;
   
@@ -204,13 +211,6 @@ public class Empresa implements Serializable {
         this.utilizasubdepartamento = utilizasubdepartamento;
     }
 
-    public int getUsuariomaster() {
-        return usuariomaster;
-    }
-
-    public void setUsuariomaster(int usuariomaster) {
-        this.usuariomaster = usuariomaster;
-    }
 
     
 
@@ -245,5 +245,29 @@ public class Empresa implements Serializable {
     @Override
     public String toString() {
         return "br.com.intime.model.Empresa[ idempresa=" + idempresa + " ]";
+    }
+
+    public Integer getUsuariomaster() {
+        return usuariomaster;
+    }
+
+    public void setUsuariomaster(Integer usuariomaster) {
+        this.usuariomaster = usuariomaster;
+    }
+
+    public List<Cliente> getClienteList() {
+        return clienteList;
+    }
+
+    public void setClienteList(List<Cliente> clienteList) {
+        this.clienteList = clienteList;
+    }
+
+    public List<Usuario> getUsuarioList() {
+        return usuarioList;
+    }
+
+    public void setUsuarioList(List<Usuario> usuarioList) {
+        this.usuarioList = usuarioList;
     }
 }

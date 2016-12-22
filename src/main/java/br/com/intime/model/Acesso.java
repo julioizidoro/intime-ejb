@@ -6,12 +6,15 @@
 package br.com.intime.model;
 
 import java.io.Serializable;
+import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
@@ -21,6 +24,9 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "acesso")
 public class Acesso implements Serializable {
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "acesso")
+    private List<Usuario> usuarioList;
 
 
     private static final long serialVersionUID = 1L;
@@ -108,6 +114,14 @@ public class Acesso implements Serializable {
     @Override
     public String toString() {
         return "br.com.intime.model.Acesso[ idacesso=" + idacesso + " ]";
+    }
+
+    public List<Usuario> getUsuarioList() {
+        return usuarioList;
+    }
+
+    public void setUsuarioList(List<Usuario> usuarioList) {
+        this.usuarioList = usuarioList;
     }
 
     
