@@ -28,9 +28,6 @@ import javax.validation.constraints.Size;
 @Table(name = "cliente")
 public class Cliente implements Serializable {
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "cliente")
-    private List<Clientedepartamento> clientedepartamentoList;
-
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -69,6 +66,8 @@ public class Cliente implements Serializable {
     @JoinColumn(name = "empresa_idempresa", referencedColumnName = "idempresa")
     @ManyToOne(optional = false)
     private Empresa empresa;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "cliente")
+    private List<Clientedepartamento> clientedepartamentoList;
 
     public Cliente() {
     }
@@ -206,6 +205,5 @@ public class Cliente implements Serializable {
 
     public void setClientedepartamentoList(List<Clientedepartamento> clientedepartamentoList) {
         this.clientedepartamentoList = clientedepartamentoList;
-    }
-    
+    }    
 }

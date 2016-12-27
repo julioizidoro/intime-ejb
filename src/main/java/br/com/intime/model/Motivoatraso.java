@@ -32,6 +32,7 @@ public class Motivoatraso implements Serializable {
     @Size(max = 50)
     @Column(name = "descricao")
     private String descricao;
+    
 
     public Motivoatraso() {
     }
@@ -55,6 +56,7 @@ public class Motivoatraso implements Serializable {
     public void setDescricao(String descricao) {
         this.descricao = descricao;
     }
+
 
     @Override
     public int hashCode() {
