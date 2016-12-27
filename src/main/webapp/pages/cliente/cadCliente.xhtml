@@ -41,9 +41,10 @@
                 </p:selectOneMenu>
             </h:panelGrid>
             <br/>
-            <h:panelGrid columns="2" columnClasses="tamanho50, tamanho50" style="width: 100%;font-size: 12px;">
+            <h:panelGrid columns="3" columnClasses="tamanho50, tamanho50, tamanho50" style="width: 100%;font-size: 12px;">
                 <p:outputLabel for="empresa" value="Empresa"/>
                 <p:outputLabel />
+                <p:outputLabel/>
 
                 <p:selectOneMenu id="empresa"  style="width:80%;" value="#{cadClienteMB.empresa}" converter="EmpresaConverter"
                                  filter="true" filterMatchMode="contains" panelStyle="width:180px" >
@@ -57,6 +58,7 @@
                     <h:outputText value="Desempenhar atividades"
                                   class="titTela" style="font-size: 15px;text-align: left;margin-left:1%;"/> 
                 </h:panelGroup>
+                <p:commandButton style="margin-left: -2%; width: 90%;" id="idCadDepartamentos" oncomplete="PF('cadDepartamento').show()" class="btn btn-success" value="Departamentos"/>
             </h:panelGrid> 
             <br/>
             <p:fileUpload multiple="true"  dragDropSupport="false" fileLimit="1" style="font-size:12px; width:85%;" label="Anexar" fileUploadListener="#{cadClienteMB.fileUploadListener}" value="#{cadClienteMB.file}"  mode="advanced" 
@@ -68,5 +70,34 @@
                 <p:commandButton id="btnCancelar" action="#{cadClienteMB.fechar()}" class="btn btn-danger" value="Cancelar"/>
             </div>
         </h:form> 
+        <h:form id="formClienteDepartamento">
+            <p:dialog id="dialog_cliente_departamento"  header="ADICIONAR DEPARTAMENTO" widgetVar="cadDepartamento" resizable="false" >
+                <h:panelGrid columns="2" columnClasses="tamanho50, tamanho50" style="width: 100%;font-size: 12px;">
+                    <p:outputLabel  value="Departamentos"/>
+                    <p:outputLabel  value=""/>
+
+                    <p:selectOneMenu id="Combodepartamento"  style="width:80%;" value="#{cadClienteMB.departamento}" converter="DepartamentoConverter"
+                                 filter="true" filterMatchMode="contains" panelStyle="width:180px" >
+                        <f:selectItem  itemLabel="Selecione" itemValue="0" noSelectionOption="true"/> 
+                        <f:selectItems  value="#{cadClienteMB.listaDepartamento}" var="em" itemLabel="#{em.nome}" itemValue="#{em}"/>
+                        <f:attribute name="listaDepartamento" value="#{cadClienteMB.listaDepartamento}"/>
+                    </p:selectOneMenu>
+                    <p:commandButton id="btnConfirmar" action="#{cadClienteMB.adicionarDepartamento()}" class="btn btn-success" value="Adicionar" style="font-size: 12px;" update=":formClienteDepartamento:Combodepartamento, :formClienteDepartamento:idTabelaDepartamentos"/>
+                </h:panelGrid>
+                <br/> 
+                <p:dataTable id="idTabelaDepartamentos"  var="clientedepartamento"  value="#{cadClienteMB.listaClienteDepartamento}" style="border:none;" class="tabelacontas" 
+                             scrollRows="10"  scrollable="true" scrollHeight="150" >
+
+                    <p:column headerText="Nome" sortBy="#{clientedepartamento.departamento.nome}" style=" font-size:12px; text-align:left	;">
+                        <h:outputText  value="#{clientedepartamento.departamento.nome}" />
+                    </p:column> 
+                    <p:column headerText=""  style="text-align:right;width:5%; font-size:11.5px;">
+                        <p:commandLink title="Excluir" update=":formClienteDepartamento:Combodepartamento, :formClienteDepartamento:idTabelaDepartamentos" action="#{cadClienteMB.excluirDepartamento(clientedepartamento)}" style="text-decoration: none;">
+                            <div class="fa fa-times"></div>
+                        </p:commandLink>
+                    </p:column>
+                </p:dataTable>
+            </p:dialog>
+        </h:form>
     </h:body>
 </html>

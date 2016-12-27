@@ -1,0 +1,45 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"> 
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+        <link href="../../resources/css/bootstrap.min.css" rel="stylesheet"/>  
+        <link href="../../resources/css/style.css" rel="stylesheet"/> 
+    </h:head>
+    <h:body style="background:#FFFFFF;" > 
+        <h:form id="listarSubDepartamentos"  style="font-size: 11px;width:95%;margin-left:3%;" enctype="multipart/form-data"> 
+            <title style="background: #cf7000">Listar Sub-Departamentos</title>
+            <br/>
+            <p:growl id="growl" showDetail="true" autoUpdate="true"  />
+            <h:panelGrid columns="1" columnClasses="tamanho50" style="width: 100%;font-size: 18px;">
+                <p:outputLabel  value="#{listarSubDepartamentosMB.departamento.nome}"/>
+            </h:panelGrid>
+            <br/>
+            <h:panelGrid columns="2" columnClasses="tamanho50, tamanho50" style="width: 100%;font-size: 12px;">
+                <p:outputLabel  value="Sub-Departamentos"/>
+                <p:outputLabel  value=""/>
+
+                <p:inputText id="idNomeSubDepartamento" value="#{listarSubDepartamentosMB.nomeSubDepartamento}" style="width: 95%;"/>
+                <p:commandButton id="btnConfirmar" action="#{listarSubDepartamentosMB.adicionarSubDepartamento()}" class="btn btn-success" value="Adicionar" style="font-size: 12px;" update=":listarSubDepartamentos:idNomeSubDepartamento, :listarSubDepartamentos:idTabelaSubDepartamentos, :listarSubDepartamentos:growl"/>
+            </h:panelGrid>
+            <br/>
+            <p:dataTable id="idTabelaSubDepartamentos"  var="subdepartamento"  value="#{listarSubDepartamentosMB.listaSubDepartamento}" style="border:none;" class="tabelacontas" 
+                         scrollRows="10"  scrollable="true" scrollHeight="150" >
+
+                <p:column headerText="Nome" sortBy="#{subdepartamento.nome}" style=" font-size:12px; text-align:left	;">
+                    <h:outputText  value="#{subdepartamento.nome}" />
+                </p:column> 
+                <p:column headerText=""  style="text-align:right;width:5%; font-size:11.5px;">
+                    <p:commandLink title="Excluir" update=":listarSubDepartamentos:idNomeSubDepartamento, :listarSubDepartamentos:idTabelaSubDepartamentos, :listarSubDepartamentos:growl" action="#{listarSubDepartamentosMB.excluirSubDepartamento(subdepartamento)}" style="text-decoration: none;">
+                        <div class="fa fa-times"></div>
+                    </p:commandLink>
+                </p:column>
+            </p:dataTable>
+            <br/><br/>       
+            <div align="center">    
+                <p:commandButton id="btnCancelar" action="#{listarSubDepartamentosMB.salvarSubDepartamento()}" class="btn btn-danger" value="Fechar"/>
+            </div>
+        </h:form> 
+    </h:body>
+</html>

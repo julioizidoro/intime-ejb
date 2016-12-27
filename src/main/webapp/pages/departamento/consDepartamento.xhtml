@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets" >
+    <ui:composition template="/pages/templates/default.xhtml">
+        <ui:define name="corpo">
+            <h:form id="consDepartamentos"> 
+                <p:growl id="growl" showDetail="true" sticky="true" />
+                <h:panelGrid columns="2" style="width: 100%;margin-top: -1.5%;">
+                    <h:panelGroup> 
+                        <p:commandLink id="btnHome" action="#{usuarioLogadoMB.paginainicial()}" style="margin-left:0.5%;" class="hoverTextos">
+                            <i class="fa fa-home"/>
+                            <p:outputLabel value="Home" style="margin-left:0.5%;font-weight: inherit;"/>
+                        </p:commandLink>
+                        <p:outputLabel value="/" style="margin-left:0.5%;color:#797979;font-weight: inherit;"/>
+                        <p:outputLabel value="Departamentos" style="margin-left:0.5%;color:#797979;font-weight: inherit;"/>
+                    </h:panelGroup> 
+                </h:panelGrid> 
+                <br/>
+                <div style="margin-left:1.6%;color:#797979;">
+                    <p:outputLabel value="Departamentos" style="font-size:24px;font-weight: inherit;"/>
+
+                    <h:panelGrid columns="2" style="width: 100%;">
+                        <h:panelGroup style="text-align: right;"> 
+                            <p:inputText id="nome" value="#{departamentoMB.nome}"  class="form-control search-consultas" placeholder="Buscar"/>
+                            <h:commandButton id="btnPesquisar" style="background: transparent;border: none;" actionListener="#{departamentoMB.pesquisar()}" />  
+                        </h:panelGroup>  
+                        <h:panelGroup style="text-align: right;"> 
+                            <p:commandLink id="btnadicionar" title="Adicionar" action="#{departamentoMB.novoDepartamento()}" class="hoverTextos">
+                                <i class="fa fa-3x fa-plus" />
+                                <p:ajax event="dialogReturn" listener="#{departamentoMB.retornoDialogNovo}" update="@form, listaDepartamentos, growl"/>
+                            </p:commandLink>  
+                        </h:panelGroup>
+                    </h:panelGrid>
+
+                </div> 
+                <br/>
+                <div class="row" style="margin-left:0.5%;width:97%;">    
+                    <ui:repeat id="listaDepartamentos" var="departamento" value="#{departamentoMB.listaDepartamento}" >
+
+                        <div class="col-lg-3">  
+                            <div class="divConsultas" style="width:98%;margin:5px;height:140px;">  
+                                <h:panelGrid columns="1" style="width:98%;margin-top:5%;margin-left: 2%;">  
+                                    <h:panelGrid columns="1" style="color: #797979;">   
+                                        <p:commandLink value="#{departamento.nome}" action="#{departamentoMB.editar(departamento)}" title="Editar"
+                                                       class="hoverTextos"  style="font-size:15px;margin: 1px 7px;font-weight:bold;" >
+                                             <p:ajax event="dialogReturn" listener="#{departamentoMB.retornoDialogNovo}" update="@form, :consDepartamentos:listaDepartamentos, :consDepartamentos:growl"/>
+                                        </p:commandLink>
+                                        <br/>
+                                        <p:commandLink value="Sub-Departamentos" action="#{departamentoMB.listarSubDepartamentos(departamento)}" title="Sub-Departamentos"
+                                                       class="hoverTextos"  style="font-size:15px;margin: 1px 7px;font-weight:bold;" >
+                                            <p:ajax event="dialogReturn" listener="#{departamentoMB.retornoDialogSubDepartamento}" update="@form, :consDepartamentos:growl"/>
+                                        </p:commandLink>
+                                    </h:panelGrid> 
+                                </h:panelGrid>        
+                            </div>  
+                        </div>    
+
+                    </ui:repeat>
+                </div>
+            </h:form>  
+        </ui:define>
+    </ui:composition>
+</html>

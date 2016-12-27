@@ -5,16 +5,15 @@
  */
 package br.com.intime.repository;
 
-import br.com.intime.model.Motivoatraso;
+import br.com.intime.model.Clientedepartamento;
 import javax.ejb.Stateless;
 
-@Stateless
-public class MotivoAtrasoRepository extends AbstractRepository<Motivoatraso>{
 
-    public MotivoAtrasoRepository() {
-        super(Motivoatraso.class);
+@Stateless
+public class ClienteDepartamentoRepository extends AbstractRepository<Clientedepartamento>{
+    
+    public ClienteDepartamentoRepository() {
+        super(Clientedepartamento.class);
     }
-    
-    
     
 }

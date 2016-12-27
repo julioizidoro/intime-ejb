@@ -31,7 +31,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 @Table(name = "departamento")
 public class Departamento implements Serializable {
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "departamento")
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "departamento")
     private List<Clientedepartamento> clientedepartamentoList;
 
     private static final long serialVersionUID = 1L;
@@ -43,8 +43,7 @@ public class Departamento implements Serializable {
     @Size(max = 100)
     @Column(name = "nome")
     private String nome; 
-    @LazyCollection(LazyCollectionOption.FALSE)
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "departamento")
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "departamento")
     private List<Subdepartamento> subdepartamentoList;
     @JoinColumn(name = "usuario_idusuario", referencedColumnName = "idusuario")
     @ManyToOne(optional = false)

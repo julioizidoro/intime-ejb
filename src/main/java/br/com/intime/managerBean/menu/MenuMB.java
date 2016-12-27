@@ -35,5 +35,14 @@ public class MenuMB implements Serializable {
         RequestContext.getCurrentInstance().openDialog("cadEmpresa", options, null);
         return "";
     }
+    
+    
+    public String departamentos() {
+        return "consDepartamento";
+    }
+    
+    public String motivosatraso() {
+        return "consMotivoAtraso";
+    }
 
 }

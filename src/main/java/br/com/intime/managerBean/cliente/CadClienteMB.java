@@ -1,9 +1,13 @@
 package br.com.intime.managerBean.cliente;
 
 import br.com.intime.model.Cliente;
+import br.com.intime.model.Clientedepartamento;
+import br.com.intime.model.Departamento;
 import br.com.intime.model.Empresa;
 import br.com.intime.model.Ftpdados;
+import br.com.intime.repository.ClienteDepartamentoRepository;
 import br.com.intime.repository.ClienteRepository;
+import br.com.intime.repository.DepartamentoRepository;
 import br.com.intime.repository.EmpresaRepository;
 import br.com.intime.repository.FtpDadosRepository;
 import br.com.intime.util.Ftp;
@@ -11,6 +15,7 @@ import br.com.intime.util.Mensagem;
 import java.io.IOException;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
+import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -48,6 +53,13 @@ public class CadClienteMB implements Serializable {
     private String status;
     private UploadedFile file;
     private FileUploadEvent ex;
+    private Departamento departamento;
+    private List<Departamento> listaDepartamento;
+    private List<Clientedepartamento> listaClienteDepartamento;
+    @EJB
+    private ClienteDepartamentoRepository clienteDepartamentoRepositoory;
+    @EJB
+    private DepartamentoRepository departamentoRepository;
 
     @PostConstruct
     public void init() {
@@ -58,6 +70,7 @@ public class CadClienteMB implements Serializable {
         if (cliente == null) {
             cliente = new Cliente();
             empresa = new Empresa();
+            listaClienteDepartamento = new ArrayList<>();
         } else {
             empresa = cliente.getEmpresa();
             if (cliente.getStatus()) {
@@ -65,8 +78,11 @@ public class CadClienteMB implements Serializable {
             } else {
                 status = "Inativo";
             }
+            listarClienteDepartamentos();
         }
         gerarListaEmpresa();
+        listarDepartamentos();
+        //verificarLista();
     }
 
     public ClienteRepository getClienteRepository() {
@@ -140,6 +156,32 @@ public class CadClienteMB implements Serializable {
         this.file = file;
     }
 
+    public Departamento getDepartamento() {
+        return departamento;
+    }
+
+    public void setDepartamento(Departamento departamento) {
+        this.departamento = departamento;
+    }
+
+    public List<Departamento> getListaDepartamento() {
+        return listaDepartamento;
+    }
+
+    public void setListaDepartamento(List<Departamento> listaDepartamento) {
+        this.listaDepartamento = listaDepartamento;
+    }
+
+    public List<Clientedepartamento> getListaClienteDepartamento() {
+        return listaClienteDepartamento;
+    }
+
+    public void setListaClienteDepartamento(List<Clientedepartamento> listaClienteDepartamento) {
+        this.listaClienteDepartamento = listaClienteDepartamento;
+    }
+    
+    
+
     public String salvar() {
         if (validarDados()) {
             cliente.setEmpresa(empresa);
@@ -149,6 +191,15 @@ public class CadClienteMB implements Serializable {
                 cliente.setStatus(false);
             }
             cliente = clienteRepository.update(cliente);
+            if (listaClienteDepartamento != null) {
+                if (listaClienteDepartamento.size() > 0) {
+                    for (int i = 0; i < listaClienteDepartamento.size(); i++) {
+                        listaClienteDepartamento.get(i).setCliente(cliente);
+                        clienteDepartamentoRepositoory.update(listaClienteDepartamento.get(i));
+                    }
+                }
+                listaClienteDepartamento = new ArrayList<>();
+            }
             RequestContext.getCurrentInstance().closeDialog(null);
         }
         return "";
@@ -265,6 +316,66 @@ public class CadClienteMB implements Serializable {
         } catch (UnsupportedEncodingException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();
+        }
+    }
+    
+    
+    public void adicionarDepartamento(){
+        Clientedepartamento clientedepartamento = new Clientedepartamento();
+        if (departamento != null) {
+            if (listaClienteDepartamento != null) {
+                clientedepartamento.setCliente(cliente);
+                clientedepartamento.setDepartamento(departamento);
+                listaClienteDepartamento.add(clientedepartamento);
+                //clienteDepartamentoRepositoory.update(clientedepartamento);
+                clientedepartamento = null;
+                listaDepartamento.remove(departamento);
+            }
+        }else{
+            Mensagem.lancarMensagemInfo("Escola um departamento", "");
+        }
+    }
+    
+    
+    public void excluirDepartamento(Clientedepartamento clientedepartamento){
+        listaDepartamento.add(clientedepartamento.getDepartamento());
+        listaClienteDepartamento.remove(clientedepartamento);
+        if (clientedepartamento.getIdclientedepartamento() != null) {
+            clienteDepartamentoRepositoory.remove(clientedepartamento.getIdclientedepartamento());
+        }
+        Mensagem.lancarMensagemInfo("Excluido com sucesso", "");
+    }
+    
+    
+    public void listarDepartamentos(){
+        listaDepartamento = departamentoRepository.list("Select d From Departamento d");
+        if (listaDepartamento == null || listaDepartamento.isEmpty()) {
+            listaDepartamento = new ArrayList<Departamento>();
+        }
+    }
+    
+    
+    public void listarClienteDepartamentos(){
+        listaClienteDepartamento = clienteDepartamentoRepositoory.list("Select c From Clientedepartamento c Where c.cliente.idcliente=" + cliente.getIdcliente());
+        if (listaClienteDepartamento == null || listaClienteDepartamento.isEmpty()) {
+            listaClienteDepartamento = new ArrayList<>();
+        }
+    }
+    
+    
+    public void verificarLista(){
+        if (listaDepartamento != null && listaClienteDepartamento != null) {
+            if (listaClienteDepartamento.size() > 0 && listaDepartamento.size() > 0) {
+                for (int i = 0; i < listaDepartamento.size(); i++) {
+                    if (i <= listaClienteDepartamento.size()) {
+                        int idclienteDepartamento = listaClienteDepartamento.get(i).getIdclientedepartamento();
+                        int iddepartamento = listaDepartamento.get(i).getIddepartamento();
+                        if (iddepartamento == idclienteDepartamento) {
+                            listaDepartamento.remove(listaClienteDepartamento.get(i));
+                        }
+                    }
+                }
+            }
         }
     }
 }
