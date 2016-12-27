@@ -206,4 +206,5 @@ public class Cliente implements Serializable {
     public void setClientedepartamentoList(List<Clientedepartamento> clientedepartamentoList) {
         this.clientedepartamentoList = clientedepartamentoList;
     }    
+
 }

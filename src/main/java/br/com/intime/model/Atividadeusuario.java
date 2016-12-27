@@ -28,7 +28,7 @@ import javax.validation.constraints.Size;
 @Entity
 @Table(name = "atividadeusuario")
 public class Atividadeusuario implements Serializable {
-
+    
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,6 +48,10 @@ public class Atividadeusuario implements Serializable {
     private Atividade atividade;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "atividadeusuario")
     private List<Atividadecomentario> atividadecomentarioList;
+    @JoinColumn(name = "usuario_idusuario", referencedColumnName = "idusuario")
+    @ManyToOne(optional = false)
+    private Usuario usuario;
+
 
     public Atividadeusuario() {
     }
@@ -127,6 +131,14 @@ public class Atividadeusuario implements Serializable {
     @Override
     public String toString() {
         return "br.com.intime.model.Atividadeusuario[ idatividadeusuario=" + idatividadeusuario + " ]";
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
     
 }

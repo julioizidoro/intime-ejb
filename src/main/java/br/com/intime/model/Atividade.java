@@ -166,5 +166,5 @@ public class Atividade implements Serializable {
     public String toString() {
         return "br.com.intime.model.Atividade[ idatividade=" + idatividade + " ]";
     }
-    
+
 }
