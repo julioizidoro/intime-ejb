@@ -22,11 +22,12 @@
         <link href="resources/css/style.css" rel="stylesheet"/>
         <link href="resources/css/style-responsive.css" rel="stylesheet" />
         <link href="resources/css/bootstrap-fullcalendar.css" rel="stylesheet" /> 
+        <link href="../../resources/css/tasks.css" rel="stylesheet"/>     
 
     </h:head>
 
     <h:body style="background: #fff;">
-        <h:form>
+        <h:form id="telaInicial">
             <p:growl id="growl" showDetail="true" sticky="true" />  
             <section id="container" > 
                 <header class="header white-bg">  
@@ -235,7 +236,7 @@
                         <section>
                             <section >
                                 <!-- page start-->
-                                <div class="row">  
+                                <div id="calendarioNotas" class="row">  
                                     <aside class="col-lg-9">
                                         <br></br>   
                                         <section class="panel" style="width: 100%;">       
@@ -265,34 +266,56 @@
                                                         <h:inputTextarea class="comment-text-area"         
                                                                          value="#{dashboardMB.nota.descricao}" 
                                                                          style="margin-left: 0%;color:#313D30;background:#E3DFC2;border:none;"
-                                                                         id="motivoCancelamento" rows="4" />  
+                                                                         id="motivoCancelamento" rows="4" />        
 
-                                                        <p:commandLink id="btnAdicionar" action="#{dashboardMB.adicionarNota()}" title="Adicionar" style="float: right;" update="@form">   
+                                                        <p:commandLink id="btnAdicionar" action="#{dashboardMB.adicionarNota()}" title="Adicionar" style="float: right;" update="listaNotas">     
                                                             <i class="fa fa-check" style="color:#008B00;font-size:35px;"/>
                                                         </p:commandLink>
                                                     </p:overlayPanel>  
                                                 </h:panelGrid>                 
-                                            </div>       
-                                            <p:dataScroller id="listaNotas" value="#{dashboardMB.listaNotas}" var="notas" chunkSize="10" mode="inline" scrollHeight="370">
-                                                <p:outputPanel>
-                                                    <h:panelGrid columns="2" style="width:100%;" columnClasses="tamanho20, tamanho45"> 
-                                                        <h:panelGroup>
-                                                            <h:panelGrid columns="1">
-                                                                <p:commandLink id="btnExcluirNota" title="Excluir" action="#{dashboardMB.excluir(notas)}">
-                                                                    <i class="fa fa-trash"/>
-                                                                </p:commandLink>
-                                                                <p:commandLink id="btnEditarNota" title="Editar" action="#{dashboardMB.editar(notas)}">
+                                            </div>         
+                                            <p:dataScroller id="listaNotas" value="#{dashboardMB.listaNotas}" var="notas" chunkSize="10" mode="inline" scrollHeight="370">   
+                                                <p:outputPanel>        
+                                                    <h:panelGrid columns="2" columnClasses="tamanho20, tamanho45" style="background: #E3DFC2;padding:3px; border-radius: 5px;width:100%;margin-top:2%;">   
+                                                        <h:panelGroup> 
+                                                            <h:panelGrid columns="1" style="margin-left:20%;">     
+                                                                <p:commandLink id="btnExcluirNota" title="Excluir" action="#{dashboardMB.excluir(notas)}" update="listaNotas">
+                                                                    <i class="fa fa-trash"/>      
+                                                                </p:commandLink>  
+                                                                <p:commandLink id="btnEditarNota" title="Editar" action="#{dashboardMB.editar(notas)}" update="listaNotas">
                                                                     <i class="fa fa-pencil"/>
-                                                                </p:commandLink>
-                                                            </h:panelGrid>
+                                                                </p:commandLink>   
+                                                                <p:overlayPanel id="painelEditarNotas" for="btnEditarNota"
+                                                                                hideEffect="fade" style="background:#fff;width:320px;text-align:left !important;" >
+                                                                    <i class="fa fa-file-text-o" style="font-size: 20px;"/>  
+                                                                    <p:outputLabel value="Nota" style="font-size: 20px;margin-left:2%;"/>
+                                                                    <h:inputTextarea class="comment-text-area"         
+                                                                                     value="#{dashboardMB.nota.descricao}" 
+                                                                                     style="margin-left: 0%;color:#313D30;background:#E3DFC2;border:none;"
+                                                                                     id="motivoCancelamento" rows="4" />  
+
+                                                                    <p:commandLink id="btnAdicionar" action="#{dashboardMB.adicionarNota()}" title="Adicionar" style="float: right;" update="@form">   
+                                                                        <i class="fa fa-check" style="color:#008B00;font-size:35px;"/>
+                                                                    </p:commandLink>
+                                                                </p:overlayPanel>     
+                                                            </h:panelGrid>  
                                                         </h:panelGroup>
-                                                        <p:outputLabel value="#{notas.descricao}"/>
-                                                    </h:panelGrid>
+                                                        <p:outputLabel value="#{notas.descricao}" style="float: right;margin-right:5%;"/>
+                                                    </h:panelGrid> 
                                                 </p:outputPanel> 
-                                            </p:dataScroller>    
-                                            <br/>
-                                        </section>
-                                        <br/><br/><br/>
+                                            </p:dataScroller>       
+                                        </section>   
+                                    </aside>      
+                                </div>  
+                                <div id="todoFeedFace" class="row">  
+                                    <aside  class="col-lg-4">    
+                                           
+                                    </aside>          
+                                    <aside  class="col-lg-4">    
+                                          
+                                    </aside>         
+                                    <aside  class="col-lg-4">  
+                                        <div class="fb-page" data-href="https://www.facebook.com/financemateassessoria" data-tabs="timeline" data-small-header="true" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="false"><blockquote cite="https://www.facebook.com/financemateassessoria" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/financemateassessoria">Financemate Assessoria Contábil e Financeira</a></blockquote></div>
                                     </aside>   
                                 </div>    
                             </section>
@@ -306,7 +329,27 @@
             <script src="resources/js/common-scripts.js"></script>   
             <script src="resources/js/jquery.nicescroll.js" type="text/javascript"></script> 
             <script src="resources/js/common-scripts.js"></script>    
+            <script>
+                window.fbAsyncInit = function () {
+                    FB.init({
+                        appId: 'your-app-id',
+                        xfbml: true,
+                        version: 'v2.8'
+                    });
+                    FB.AppEvents.logPageView();
+                };
 
+                (function (d, s, id) {
+                    var js, fjs = d.getElementsByTagName(s)[0];
+                    if (d.getElementById(id)) {
+                        return;
+                    }
+                    js = d.createElement(s);
+                    js.id = id;
+                    js.src = "//connect.facebook.net/en_US/sdk.js";
+                    fjs.parentNode.insertBefore(js, fjs);
+                }(document, 'script', 'facebook-jssdk'));
+            </script> 
         </h:form>   
     </h:body>
 </html>

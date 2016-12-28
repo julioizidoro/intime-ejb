@@ -1,6 +1,6 @@
 package br.com.intime.managerBean.dashboard;
 
-import br.com.intime.managerBean.usuario.UsuarioLogadoMB; 
+import br.com.intime.managerBean.usuario.UsuarioLogadoMB;
 import br.com.intime.model.Atividadeusuario;
 import br.com.intime.model.Ftpdados;
 import br.com.intime.model.Nota;
@@ -49,7 +49,7 @@ public class DashboardMB implements Serializable {
     private Ftpdados ftpdados;
     @EJB
     private FtpDadosRepository ftpRepository;
-     
+
     @PostConstruct
     public void init() {
         gerarListaAtivadadesAtraso();
@@ -156,9 +156,9 @@ public class DashboardMB implements Serializable {
     public void setFtpRepository(FtpDadosRepository ftpRepository) {
         this.ftpRepository = ftpRepository;
     }
-      
+
     public void gerarListaAtivadadesSemana() {
-        Date dataInicial = new Date(); 
+        Date dataInicial = new Date();
         Date dataFinal = Formatacao.SomarDiasData(new Date(), 7);
         String sql = "SELECT a FROM Atividadeusuario a where a.usuario.idusuario=" + usuarioLogadoMB.getUsuario().getIdusuario()
                 + " and a.situacao='Concluida' and a.atividade.dataexecucao>='" + Formatacao.ConvercaoDataSql(dataInicial)
@@ -185,63 +185,62 @@ public class DashboardMB implements Serializable {
     }
 
     public int retornarAtividadesAtrasadas() {
-        int numero=0;
-        if(listaAtividadesAtrasadas!=null){
-            numero=listaAtividadesAtrasadas.size();
+        int numero = 0;
+        if (listaAtividadesAtrasadas != null) {
+            numero = listaAtividadesAtrasadas.size();
         }
         return numero;
     }
 
     public int retornarAtividadesHoje() {
-        int numero=0;
-        if(listaAtividadesHoje!=null){
-            numero=listaAtividadesHoje.size();
+        int numero = 0;
+        if (listaAtividadesHoje != null) {
+            numero = listaAtividadesHoje.size();
         }
         return numero;
     }
 
     public int retornarAtividadesSemana() {
-       int numero=0;
-        if(listaAtividadesSemana!=null){
-            numero=listaAtividadesSemana.size();
+        int numero = 0;
+        if (listaAtividadesSemana != null) {
+            numero = listaAtividadesSemana.size();
         }
         return numero;
     }
 
-    
-    public String retornarHora(){
+    public String retornarHora() {
         String horario = Formatacao.formatarHoraString();
         return horario;
     }
-    
-    public String retornarDataPorExtenso(){
+
+    public String retornarDataPorExtenso() {
         Date data = new Date();
         String retorno = Formatacao.diaSemanaEscrito(data);
-        retorno = retorno +", "+Formatacao.getDiaData(data)+" "
-                +Formatacao.nomeMes(Formatacao.getMesData(data)+1) + " "+ Formatacao.getAnoData(data);
+        retorno = retorno + ", " + Formatacao.getDiaData(data) + " "
+                + Formatacao.nomeMes(Formatacao.getMesData(data) + 1) + " " + Formatacao.getAnoData(data);
         return retorno;
     }
-    
-    public void gerarListaNotas(){
+
+    public void gerarListaNotas() {
         String sql = "select n From Nota n where n.usuario.idusuario="
-                +usuarioLogadoMB.getUsuario().getIdusuario()+" order by n.idnota DESC";
+                + usuarioLogadoMB.getUsuario().getIdusuario() + " order by n.idnota DESC";
         listaNotas = notaRepository.list(sql);
     }
-    
-    public void gerarListaNotificacoes(){
+
+    public void gerarListaNotificacoes() {
         String sql = "select n From Notificacao n where n.lido=false and n.usuario.idusuario="
-                +usuarioLogadoMB.getUsuario().getIdusuario()+" order by n.descricao";
+                + usuarioLogadoMB.getUsuario().getIdusuario() + " order by n.descricao";
         listaNotificacoes = notificacoesRepository.list(sql);
     }
-    
+
     public int retornarNumeroNotificacoes() {
-       int numero=0;
-        if(listaNotificacoes!=null){
-            numero=listaNotificacoes.size();
+        int numero = 0;
+        if (listaNotificacoes != null) {
+            numero = listaNotificacoes.size();
         }
         return numero;
     }
-    
+
     public String visualizarNotificacoes() {
         Map<String, Object> options = new HashMap<String, Object>();
         options.put("contentWidth", 500);
@@ -251,18 +250,21 @@ public class DashboardMB implements Serializable {
         RequestContext.getCurrentInstance().openDialog("notificacoes", options, null);
         return "";
     }
-    
-    public void adicionarNota(){
+
+    public void adicionarNota() {
         nota.setUsuario(usuarioLogadoMB.getUsuario());
         notaRepository.update(nota);
-        nota = new Nota();
+        gerarListaNotas();
+        nota = new Nota(); 
     }
-    
-    public void editar(Nota nota){
+
+    public void editar(Nota nota) {
         this.nota = nota;
     }
-    
-    public void excluir(Nota nota){
+
+    public void excluir(Nota nota) {
         notaRepository.remove(nota.getIdnota());
+        gerarListaNotas();
     }
+ 
 }

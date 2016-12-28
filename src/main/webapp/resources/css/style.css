@@ -6388,3 +6388,19 @@ header.blue-bg .search:focus {
   width:98%;
   margin-left:2.5%;
 }
+
+.dataScrollerBranco{ 
+    background: #fff;
+}
+
+.dataScrollerBranco:hover{ 
+    background: #AEAEAE;
+}
+
+.dataScrollerCinza{ 
+    background: #E0E0E0;  
+}
+
+.dataScrollerCinza:hover{ 
+    background: #AEAEAE;
+} 
