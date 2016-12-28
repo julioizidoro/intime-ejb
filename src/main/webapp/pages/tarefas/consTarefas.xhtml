@@ -23,7 +23,7 @@
                 <p:outputLabel value="Do It!" style="margin-left:0.5%;color:#797979;font-weight: inherit;font-size: 22px;"/>
                 <h:panelGrid id="painelBtn" columns="2" style="width: 100%;" columnClasses="tamanho75,tamanho"> 
                     <h:panelGroup style="text-align: left;">    
-                        <p:commandLink id="btnhoje" action="#{tarefasMB.mudarCoresBotoes('hoje')}" style="margin-left:2%;" update="painelBtn">
+                        <p:commandLink id="btnhoje" action="#{tarefasMB.mudarCoresBotoes('hoje')}" style="margin-left:2%;" update="painelBtn" update="">
                             <span class="badge badge-sm label-radio" style="background:#{tarefasMB.hoje};">HOJE</span>
                         </p:commandLink>
                         <p:commandLink id="btnamanha" action="#{tarefasMB.mudarCoresBotoes('amanha')}" style="margin-left:0.5%;" update="painelBtn"> 
@@ -40,8 +40,8 @@
                             <p:commandButton id="btnVisualizarConcluidas" rendered="#{tarefasMB.concluidas}" action="#{tarefasMB.visualizarConcluidas()}" value="VISUALIZAR CONCLUÍDAS" icon="fa fa-fw fa-toggle-on" style="border: transparent;background: transparent;font-size: 14px;top: -40%;font-weight: unset;color: #2A3542;" update="painelBtn"/>  
                         </span>     
                         <span style="margin-left: 2%;">
-                            <p:inputText id="nomefantasia" class="form-control search-consultas" placeholder="Buscar"/>
-                            <h:commandButton id="btnPesquisar" style="background: transparent;border: none;" actionListener="#{clienteMB.pesquisar()}" />  
+                            <p:inputText id="inputbuscar" class="form-control search-consultas" placeholder="Buscar"/>
+                            <h:commandButton id="btnPesquisar" style="background: transparent;border: none;" action="#{tarefasMB.mudarCoresBotoes('todos')}" />  
                         </span>
                     </h:panelGroup>
                     <h:panelGroup style="text-align: right;">    

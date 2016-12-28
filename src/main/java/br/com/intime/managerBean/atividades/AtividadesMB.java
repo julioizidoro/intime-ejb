@@ -1,16 +1,31 @@
-package br.com.intime.managerBean.tarefas;
+package br.com.intime.managerBean.atividades;
 
+import br.com.intime.managerBean.usuario.UsuarioLogadoMB;
+import br.com.intime.model.Atividadeusuario;
+import br.com.intime.repository.AtividadeUsuarioRepository;
+import br.com.intime.util.Formatacao;
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
 import org.primefaces.context.RequestContext;
 
 @Named
 @ViewScoped
-public class TarefasMB implements Serializable{
+public class AtividadesMB implements Serializable{
+    
+    @Inject 
+    private UsuarioLogadoMB usuarioLogadoMB;
+    @EJB
+    private AtividadeUsuarioRepository atividadeUsuarioRepository;
+    private List<Atividadeusuario> listaAtividade;
     
     //btn executar atividade
     private String play="true";
@@ -23,7 +38,35 @@ public class TarefasMB implements Serializable{
     private String amanha="#E0E0E0";
     private String seteDias="#E0E0E0";
     private String todos="#E0E0E0"; 
+    
+    //Data para consultas
+    private LocalDate dataInicial;
+    private LocalDate dataFinal;
+    
+    private String buscar;
+    
+    @PostConstruct
+    public void init(){
+        mudarCoresBotoes("hoje");
+    }
+
+    public List<Atividadeusuario> getListaAtividade() {
+        return listaAtividade;
+    }
+
+    public void setListaAtividade(List<Atividadeusuario> listaAtividade) {
+        this.listaAtividade = listaAtividade;
+    }
+
+    public String getBuscar() {
+        return buscar;
+    }
+
+    public void setBuscar(String buscar) {
+        this.buscar = buscar;
+    }
      
+    
     
     public String getPlay() {
         return play;
@@ -115,22 +158,33 @@ public class TarefasMB implements Serializable{
             amanha="#E0E0E0";
             seteDias="#E0E0E0";
             todos="#E0E0E0";
+            dataInicial = LocalDate.now();
+            dataFinal = LocalDate.now();
         }else if(funcao.equalsIgnoreCase("amanha")){
             hoje="#E0E0E0";
             amanha="#cba135";
             seteDias="#E0E0E0";
             todos="#E0E0E0";
+            LocalDate hoje = LocalDate.now();
+            dataInicial = hoje.plusDays(1);
+            dataFinal = hoje.plusDays(1);
         }else if(funcao.equalsIgnoreCase("seteDias")){
             hoje="#E0E0E0";
             amanha="#E0E0E0";
             seteDias="#cba135";
             todos="#E0E0E0";
+            LocalDate hoje = LocalDate.now();
+            dataInicial = hoje;
+            dataFinal = hoje.plusDays(7);
         }else if(funcao.equalsIgnoreCase("todos")){
             hoje="#E0E0E0";
             amanha="#E0E0E0";
             seteDias="#E0E0E0";
             todos="#cba135";
+            dataInicial = null;
+            dataFinal = null;
         }
+        gerarListaAtivadades();
     }
     
     public String adicionarTarefa() {
@@ -153,5 +207,30 @@ public class TarefasMB implements Serializable{
         RequestContext.getCurrentInstance().openDialog("cadTarefas", options, null);
         return "";
     }
+    
+    public void gerarListaAtivadades(){
+        String sql ="SELECT a FROM Atividadeusuario a where a.usuario.idusuario=" + usuarioLogadoMB.getUsuario().getIdusuario() 
+                + " and a.atividade.descricao like '%" + buscar + "' ";
+        String sqlConcluida ="";
+        String sqlData ="";
+        String sqlOrderBy="";
+        if ((naoconcluidas.equalsIgnoreCase("true")) && (concluidas.equalsIgnoreCase("false"))){
+            sqlConcluida = " and a.situacao<>'Concluida' ";
+            if (dataInicial!=null){
+                sqlData = " and a.atividade.dataexecucao>='" + dataInicial.toString() + "' and a.atividade.dataexecucao<='" + dataFinal.toString() + "' ";
+            }
+            sqlOrderBy = " ORDER BY a.atividade.dataexecucao";
+        }else {
+            sqlConcluida = " and a.situacao='Concluida' ";
+            if (dataInicial!=null){
+                sqlData = " and a.dataconclusao>='" + dataInicial.toString() + "' and a.dataconclusao<='" + dataFinal.toString() + "' ";
+            }
+            sqlOrderBy = " ORDER BY a.dataconclusao";
+        }
+        sql = sql + sqlConcluida + sqlData + sqlOrderBy;
+        listaAtividade = atividadeUsuarioRepository.list(sql);
+    }
+    
+  
     
 }
