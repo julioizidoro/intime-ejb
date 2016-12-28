@@ -37,6 +37,7 @@ public class AtividadesMB implements Serializable{
     private String amanha="#E0E0E0";
     private String seteDias="#E0E0E0";
     private String todos="#E0E0E0"; 
+    private String aguardando="#E0E0E0"; 
     
     //Data para consultas
     private Date dataInicial;
@@ -130,6 +131,14 @@ public class AtividadesMB implements Serializable{
     public void setTodos(String todos) {
         this.todos = todos;
     }
+
+    public String getAguardando() {
+        return aguardando;
+    }
+
+    public void setAguardando(String aguardando) {
+        this.aguardando = aguardando;
+    }
     
     public void modificarStatusTarefa(){
         if(play.equalsIgnoreCase("false")){
@@ -158,6 +167,7 @@ public class AtividadesMB implements Serializable{
             amanha="#E0E0E0";
             seteDias="#E0E0E0";
             todos="#E0E0E0";
+            aguardando="#E0E0E0";
             dataInicial = new Date();
             dataFinal = new Date();
         }else if(funcao.equalsIgnoreCase("amanha")){
@@ -165,13 +175,15 @@ public class AtividadesMB implements Serializable{
             amanha="#cba135";
             seteDias="#E0E0E0";
             todos="#E0E0E0";
+            aguardando="#E0E0E0";
             dataInicial = Formatacao.SomarDiasData(new Date(), 1);
             dataFinal = Formatacao.SomarDiasData(new Date(), 1);
         }else if(funcao.equalsIgnoreCase("seteDias")){
-            hoje="#E0E0E0";
+            hoje="#E0E0E0";  
             amanha="#E0E0E0";
             seteDias="#cba135";
             todos="#E0E0E0";
+            aguardando="#E0E0E0";
             dataInicial = new Date();
             dataFinal = Formatacao.SomarDiasData(new Date(), 7);
         }else if(funcao.equalsIgnoreCase("todos")){
@@ -179,8 +191,15 @@ public class AtividadesMB implements Serializable{
             amanha="#E0E0E0";
             seteDias="#E0E0E0";
             todos="#cba135";
+            aguardando="#E0E0E0";
             dataInicial = null;
             dataFinal = null;
+        }else if(funcao.equalsIgnoreCase("aguardando")){
+            hoje="#E0E0E0";
+            amanha="#E0E0E0";
+            seteDias="#E0E0E0";
+            todos="#E0E0E0";
+            aguardando="#cba135";
         }
         gerarListaAtivadades();
     }
