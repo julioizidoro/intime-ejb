@@ -2,7 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" 
       xmlns:p="http://primefaces.org/ui"
-      xmlns:h="http://xmlns.jcp.org/jsf/html">
+      xmlns:h="http://xmlns.jcp.org/jsf/html">  
     <h:head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -22,17 +22,7 @@
         <link href="resources/css/style.css" rel="stylesheet"/>
         <link href="resources/css/style-responsive.css" rel="stylesheet" />
         <link href="resources/css/bootstrap-fullcalendar.css" rel="stylesheet" /> 
-        <style type="text/css">
-            .ui-widget-content {
-            width:95% ;
-            margin-left:2.5% ;
-            background:#D5D0B3 !important;
-            padding-bottom:1% ;
-            border: none !important;
-            border-radius: 15px !important;
-            -webkit-border-radius: 15px !important;
-            }
-        </style>
+
     </h:head>
 
     <h:body style="background: #fff;">
@@ -44,23 +34,16 @@
                     <div align="right" class="nav notify-row" id="top_menu"> 
 
                         <ul class="nav top-menu"> 
-                            <li class="dropdown">
-                                <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                                    <i class="fa fa-plus"></i> 
-                                </a> 
-                            </li> 
-                            <li id="header_inbox_bar" class="dropdown">
-                                <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                                    <i class="fa fa-envelope"></i>
-                                    <span class="badge bg-important">5</span>
-                                </a> 
-                            </li> 
+                            <li>
+                                <p:commandLink class="dropdown-toggle" title="Adicionar Tarefa" action="#{menuMB.adicionarAtividades()}">
+                                    <i class="fa fa-plus"></i>      
+                                </p:commandLink> 
+                            </li>   
                             <li id="header_notification_bar" class="dropdown">
-                                <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-
+                                <p:commandLink id="btnVisualizarNotificacoes" class="dropdown-toggle" action="#{dashboardMB.visualizarNotificacoes()}"> 
                                     <i class="fa fa-bell"></i>
-                                    <span class="badge bg-important">7</span>
-                                </a> 
+                                    <span class="badge bg-important"><p:outputLabel value="#{dashboardMB.retornarNumeroNotificacoes()}"/></span>
+                                </p:commandLink> 
                             </li> 
                         </ul>  
                     </div>
@@ -80,12 +63,12 @@
                                         <i class="fa fa-power-off"></i>
                                     </p:commandLink>  
                                 </h:panelGrid>
-                                <img src="resources/img/125.jpg"  class="imagemusuario" />  
-                                <h:panelGrid columns="1"> 
-                                    <p:outputLabel value="Kamila Rodrigues"
+                                <img src="http://#{dashboardMB.ftpdados.hostupload}:82/ftproot/intime/fotos/usuario/#{usuarioLogadoMB.usuario.nomefoto}"  class="imagemusuario" />  
+                                <h:panelGrid columns="1">  
+                                    <p:outputLabel value="#{usuarioLogadoMB.usuario.nome}"
                                                    style="font-size:11.7px;color:#ffffff;margin: 1px 7px;font-weight:bold;" />
                                     <p:outputLabel
-                                        value="Programador"
+                                        value="#{usuarioLogadoMB.usuario.cargo}"
                                         style="font-size:10px;color:#ffffff;margin: 1px 7px;font-weight: 300;" /> 
                                 </h:panelGrid>
                                 <br/> 
@@ -103,7 +86,7 @@
                                 </p:commandLink>
                             </li> 
                             <li class="sub-menu">   
-                                <p:commandLink action="#{menuMB.atividades()}" >
+                                <p:commandLink action="#{menuMB.atividades()}" type="button">
                                     <i class="fa fa-calendar"></i> 
                                     <span style="margin-left:2%;font-size:15px;">
                                         Minhas Tarefas
@@ -177,10 +160,10 @@
                                         <i class="fa fa-clock-o" style=""></i> 
                                     </div>
                                     <div class="value" style="padding-right: 8px;">       
-                                        <h1>0</h1>    
-                                        <br/><br/><br/>        
+                                        <h1><p:outputLabel value="#{dashboardMB.retornarAtividadesAtrasadas()}"/></h1>    
+                                        <br/><br/><br/> <br/>        
                                         <p>TAREFAS</p>
-                                        <p>EM ATRASO</p>  
+                                        <p>EM ATRASO</p>    
                                     </div> 
                                 </section>
                             </div>
@@ -190,8 +173,8 @@
                                         <i class="fa fa-calendar" style=""></i> 
                                     </div>  
                                     <div class="value" style="padding-right: 8px;">       
-                                        <h1>0</h1>    
-                                        <br/><br/><br/>        
+                                        <h1><p:outputLabel value="#{dashboardMB.retornarAtividadesHoje()}"/></h1>    
+                                        <br/><br/><br/><br/>        
                                         <p>TAREFAS</p>
                                         <p>PARA HOJE</p>  
                                     </div> 
@@ -203,27 +186,46 @@
                                         <i class="fa fa-check-circle-o" style=""></i> 
                                     </div>
                                     <div class="value" style="padding-right: 8px;">       
-                                        <h1>0</h1>    
-                                        <br/><br/><br/>        
+                                        <h1><p:outputLabel value="#{dashboardMB.retornarAtividadesSemana()}"/></h1>    
+                                        <br/><br/><br/>   <br/>      
                                         <p>CONCLUÍDAS</p>
-                                        <p>NA SEMANA</p>  
+                                        <p>NA SEMANA</p>     
                                     </div> 
                                 </section>
                             </div>
-                            <div class="col-lg-3 col-sm-6">   
+                            <div  class="col-lg-3 col-sm-6">         
+                                <p:poll interval="60"/>
                                 <section class="panel" style="background: #E3DFC2;width: 100%;">
-                                    <div class="symbol" style="background: #E3DFC2;width: 100%;padding:1px;">     
-                                        <h1 style="font-size:50px;color:#2E3828;margin-top: 2px;">10:22</h1>                   
-                                        <p style="font-size:14px;color:#2E3828;">SEGUNDA, 26 DEZEMBRO 2016</p>        
+                                    <div  class="symbol" style="background: #E3DFC2;width: 100%;padding:1px;">     
+                                        <h1 style="font-size:50px;color:#2E3828;margin-top: 2px;">#{dashboardMB.retornarHora()}</h1>                   
+                                        <p style="font-size:14px;color:#2E3828;">
+                                            <p:outputLabel value="#{dashboardMB.retornarDataPorExtenso()}"/>
+                                        </p>           
                                     </div>       
                                     <div class="symbol" style="background:#D5D0B3;width: 100%;padding:1px;"> 
                                         <div style="width:99%;padding:5px;text-align: right;"> 
-                                            <p:commandLink id="btnNovaTarefa" title="Adicionar Tarefa" style="padding:5px;">
+                                            <p:commandLink id="btnNovaTarefa" action="#{menuMB.adicionarAtividades()}" title="Adicionar Tarefa" style="padding:5px;">
                                                 <i class="fa fa-plus" style="font-size:21px;color:#313D30;"/>   
                                             </p:commandLink>     
-                                            <p:commandLink id="btnMenuRigth" title="Menu" >
+                                            <p:commandLink id="btnMenuRigth" title="Menu" class="dropdown-toggle">
                                                 <i class="fa fa-reorder" style="font-size:21px;color:#313D30;"/>   
-                                            </p:commandLink>
+                                                <b class="caret"></b>    
+                                            </p:commandLink>   
+                                            <p:overlayPanel id="painelMenuRigth" for="btnMenuRigth"
+                                                            hideEffect="fade" style="background:#fff;width:200px;text-align:left !important;" >
+                                                <p:commandLink action="#{menuMB.atividades()}">
+                                                    <i class="fa fa-calendar"  style="color: #8E9398;font-size: 14px;"/>
+                                                    <p:outputLabel value="Tarefas" style="margin-left: 1%;"/>
+                                                </p:commandLink><br/><br/>
+                                                <p:commandLink action="#{dashboardMB.visualizarNotificacoes()}">
+                                                    <i class="fa fa-bell" style="color:#8E9398;font-size: 14px;"/>
+                                                    <p:outputLabel value="Notificações" style="margin-left: 1%;"/>
+                                                </p:commandLink> <br/><br/>
+                                                <p:commandLink action="#{menuMB.cliente()}">  
+                                                    <i class="fa fa-user" style="color: #8E9398;font-size: 14px;"/>
+                                                    <p:outputLabel value="Cadastro de Clientes" style="margin-left: 1%;"/>
+                                                </p:commandLink>   
+                                            </p:overlayPanel>  
                                         </div>
                                     </div>      
                                 </section>    
@@ -235,9 +237,10 @@
                                 <!-- page start-->
                                 <div class="row">  
                                     <aside class="col-lg-9">
-                                        <section class="panel" style="width: 100%;">
-                                            <div>
-                                                <p:schedule id="schedule" value="#{scheduleView.eventModel}" widgetVar="myschedule" timeZone="GMT+2" locale="pt_BR">
+                                        <br></br>   
+                                        <section class="panel" style="width: 100%;">       
+                                            <div>            
+                                                <p:schedule id="schedule" value="#{scheduleView.eventModel}" locale="pt">   
                                                     <p:ajax event="dateSelect" listener="#{scheduleView.onDateSelect}" />
                                                     <p:ajax event="eventSelect" listener="#{scheduleView.onEventSelect}"  />
                                                     <p:ajax event="eventMove" listener="#{scheduleView.onEventMove}" update="growl" />
@@ -246,20 +249,46 @@
                                             </div>
                                         </section>
                                     </aside>
-                                    <aside class="col-lg-3">   
+                                    <aside  class="col-lg-3">   
                                         <section class="panel" style="background: #E3DFC2;width: 100%;border-radius: 4px;">
                                             <div class="symbol" style="background: #E3DFC2;width: 100%;padding:1px;border-radius: 4px;">     
                                                 <h:panelGrid columns="2" style="width: 100%;">
-                                                    <h1 style="font-size:27px;color:#2E3828;margin-top: 2px;">NOTAS</h1> 
+                                                    <h1 style="font-size:26px;color:#2E3828;margin-top: 2px;margin-left:6px;">NOTAS</h1> 
                                                     <p:commandLink id="btnAddNotas" title="ADICIONAR NOTA" style="float:right;margin-right: 5px;">
                                                         <i class="fa fa-plus-circle" style="font-size:28px;color:#C9A469;"/>   
                                                     </p:commandLink>  
+
+                                                    <p:overlayPanel id="painelAddNotas" for="btnAddNotas"
+                                                                    hideEffect="fade" style="background:#fff;width:320px;text-align:left !important;" >
+                                                        <i class="fa fa-file-text-o" style="font-size: 20px;"/>  
+                                                        <p:outputLabel value="Nota" style="font-size: 20px;margin-left:2%;"/>
+                                                        <h:inputTextarea class="comment-text-area"         
+                                                                         value="#{dashboardMB.nota.descricao}" 
+                                                                         style="margin-left: 0%;color:#313D30;background:#E3DFC2;border:none;"
+                                                                         id="motivoCancelamento" rows="4" />  
+
+                                                        <p:commandLink id="btnAdicionar" action="#{dashboardMB.adicionarNota()}" title="Adicionar" style="float: right;" update="@form">   
+                                                            <i class="fa fa-check" style="color:#008B00;font-size:35px;"/>
+                                                        </p:commandLink>
+                                                    </p:overlayPanel>  
                                                 </h:panelGrid>                 
                                             </div>       
-                                            <p:dataScroller value="#" var="notas" chunkSize="10" mode="inline" scrollHeight="370">
-                                                <h:panelGrid columns="2" style="width:100%;" columnClasses="logo,detail"> 
-
-                                                </h:panelGrid>
+                                            <p:dataScroller id="listaNotas" value="#{dashboardMB.listaNotas}" var="notas" chunkSize="10" mode="inline" scrollHeight="370">
+                                                <p:outputPanel>
+                                                    <h:panelGrid columns="2" style="width:100%;" columnClasses="tamanho20, tamanho45"> 
+                                                        <h:panelGroup>
+                                                            <h:panelGrid columns="1">
+                                                                <p:commandLink id="btnExcluirNota" title="Excluir" action="#{dashboardMB.excluir(notas)}">
+                                                                    <i class="fa fa-trash"/>
+                                                                </p:commandLink>
+                                                                <p:commandLink id="btnEditarNota" title="Editar" action="#{dashboardMB.editar(notas)}">
+                                                                    <i class="fa fa-pencil"/>
+                                                                </p:commandLink>
+                                                            </h:panelGrid>
+                                                        </h:panelGroup>
+                                                        <p:outputLabel value="#{notas.descricao}"/>
+                                                    </h:panelGrid>
+                                                </p:outputPanel> 
                                             </p:dataScroller>    
                                             <br/>
                                         </section>
@@ -269,72 +298,15 @@
                             </section>
                         </section>  
                     </section>       
-                </section>     
-            </section>
-            <script src="resources/js/fullcalendar.min.js"></script>
-            <script src="resources/js/external-dragging-calendar.js"></script>
-            <script src="resources/js/jquery.js"></script>
-            <script src="resources/js/bootstrap.min.js"></script>
+                </section>       
+            </section>      
+            <script src="resources/js/calendario.js"></script>
             <script class="include" type="text/javascript" src="resources/js/jquery.dcjqaccordion.2.7.js"></script>
             <script src="resources/js/jquery.scrollTo.min.js"></script>
-            <script src="resources/js/jquery.nicescroll.js" type="text/javascript"></script>
-            <script src="resources/js/jquery.sparkline.js" type="text/javascript"></script>
-            <script src="resources/js/jquery.easy-pie-chart.js"></script>
-            <script src="resources/js/owl.carousel.js" ></script>
-            <script src="resources/js/jquery.customSelect.min.js" ></script>
-            <script src="resources/js/respond.min.js" ></script> 
-            <script src="resources/js/slidebars.min.js"></script> 
-            <script src="resources/js/common-scripts.js"></script> 
-            <script src="resources/js/sparkline-chart.js"></script>
-            <script src="resources/js/easy-pie-chart.js"></script>
-            <script src="resources/js/count.js"></script>
+            <script src="resources/js/common-scripts.js"></script>   
+            <script src="resources/js/jquery.nicescroll.js" type="text/javascript"></script> 
+            <script src="resources/js/common-scripts.js"></script>    
 
-            <script>
-            PrimeFaces.locales['pt_BR'] = {
-            closeText: 'Fechar',
-                    prevText: 'Anterior',
-                    nextText: 'Próximo',
-                    currentText: 'Começo',
-                    monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
-                    monthNamesShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
-                    dayNames: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'],
-                    dayNamesShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
-                    dayNamesMin: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'],
-                    weekHeader: 'Semana',
-                    firstDay: 1,
-                    isRTL: false,
-                    showMonthAfterYear: false,
-                    yearSuffix: '',
-                    timeOnlyTitle: 'Só Horas',
-                    timeText: 'Tempo',
-                    hourText: 'Hora',
-                    minuteText: 'Minuto',
-                    secondText: 'Segundo',
-                    currentText: 'Data Atual',
-                    ampm: false,
-                    month: 'Mês',
-                    week: 'Semana',
-                    day: 'Dia',
-                    allDayText: 'Todo Dia'
-            };
-            $(document).ready(function () {
-            $("#owl-demo").owlCarousel({
-            navigation: true,
-                    slideSpeed: 300,
-                    paginationSpeed: 400,
-                    singleItem: true,
-                    autoPlay: true
-
-            });
-            });
-            $(function () {
-            $('select.styled').customSelect();
-            });
-            $(window).on("resize", function () {
-            var owl = $("#owl-demo").data("owlCarousel");
-            owl.reinit();
-            });
-            </script> 
         </h:form>   
     </h:body>
 </html>

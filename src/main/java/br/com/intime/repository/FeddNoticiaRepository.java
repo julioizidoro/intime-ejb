@@ -6,11 +6,13 @@
 package br.com.intime.repository;
 
 import br.com.intime.model.Feednoticia;
+import javax.ejb.Stateless;
 
 /**
  *
  * @author jizid
  */
+@Stateless
 public class FeddNoticiaRepository extends AbstractRepository<Feednoticia>{
 
     public FeddNoticiaRepository() {

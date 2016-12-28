@@ -4,8 +4,8 @@
  * and open the template in the editor.
  */
 package br.com.intime.repository;
-
-import br.com.intime.model.Nota;
+ 
+import br.com.intime.model.Notificacao;
 import javax.ejb.Stateless;
 
 /**
@@ -13,9 +13,9 @@ import javax.ejb.Stateless;
  * @author jizid
  */
 @Stateless
-public class NotaRepository extends AbstractRepository<Nota>{
+public class NotificacoesRepository extends AbstractRepository<Notificacao>{
 
-    public NotaRepository() {
-        super(Nota.class);
+    public NotificacoesRepository() {
+        super(Notificacao.class);
     }
 }

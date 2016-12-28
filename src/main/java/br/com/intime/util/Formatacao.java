@@ -725,7 +725,7 @@ public class Formatacao {
       return resultado;
   }
   
-  public static String foramtarHoraString(){
+  public static String formatarHoraString(){
       DateFormat formato = new SimpleDateFormat("HH:mm");  
       String formattedDate = formato.format(new Date());  
       return formattedDate;

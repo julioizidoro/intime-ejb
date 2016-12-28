@@ -3229,14 +3229,10 @@ table.sliders tr td {
 
 #eq span {
     height:120px; float:left; margin:15px
-}
+} 
 
-
-.ui-widget-content {
-    background: #f0f2f7 !important;
-    border: none !important;
-    border-radius: 15px !important;
-    -webkit-border-radius: 15px !important;
+.ui-widget-content {              
+    -webkit-border-radius: 8px !important;  
 }
 
 .ui-slider-horizontal {
@@ -6381,3 +6377,14 @@ header.blue-bg .search:focus {
     color:#FF6C60;
 }
 
+.fc-basic-view tbody .fc-row {
+    min-height: 4em;         
+    height:57px !important;   
+}
+
+  
+.comment-text-area {
+  float: left;
+  width:98%;
+  margin-left:2.5%;
+}

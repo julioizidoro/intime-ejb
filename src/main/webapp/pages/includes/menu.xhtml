@@ -8,22 +8,15 @@
         <div align="right" class="nav notify-row" id="top_menu">  
             <ul class="nav top-menu"> 
                 <li class="dropdown">
-                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                    <p:commandLink class="dropdown-toggle" title="Adicionar Tarefa" action="#{menuMB.adicionarAtividades()}">
                         <i class="fa fa-plus"></i> 
-                    </a> 
-                </li> 
-                <li id="header_inbox_bar" class="dropdown">
-                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                        <i class="fa fa-envelope"></i>
-                        <span class="badge bg-important">5</span>
-                    </a> 
-                </li> 
+                    </p:commandLink>   
+                </li>  
                 <li id="header_notification_bar" class="dropdown">
-                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-
+                    <p:commandLink id="btnVisualizarNotificacoes" class="dropdown-toggle" action="#{dashboardMB.visualizarNotificacoes()}"> 
                         <i class="fa fa-bell"></i>
-                        <span class="badge bg-important">7</span>
-                    </a> 
+                        <span class="badge bg-important"><p:outputLabel value="#{dashboardMB.retornarNumeroNotificacoes()}"/></span>
+                    </p:commandLink>   
                 </li> 
             </ul>  
         </div>
@@ -43,12 +36,12 @@
                             <i class="fa fa-power-off"></i>
                         </p:commandLink>  
                     </h:panelGrid>
-                    <img src="../../resources/img/125.jpg"  class="imagemusuario" />  
-                    <h:panelGrid columns="1"> 
-                        <p:outputLabel value="Kamila Rodrigues"
+                    <img src="http://#{dashboardMB.ftpdados.hostupload}:82/ftproot/intime/fotos/usuario/#{usuarioLogadoMB.usuario.nomefoto}"  class="imagemusuario" />  
+                    <h:panelGrid columns="1">  
+                        <p:outputLabel value="#{usuarioLogadoMB.usuario.nome}"
                                        style="font-size:11.7px;color:#ffffff;margin: 1px 7px;font-weight:bold;" />
                         <p:outputLabel
-                            value="Programador"
+                            value="#{usuarioLogadoMB.usuario.cargo}"
                             style="font-size:10px;color:#ffffff;margin: 1px 7px;font-weight: 300;" /> 
                     </h:panelGrid>
                     <br/> 
@@ -98,7 +91,7 @@
                         <li><p:commandLink value="Dashboard Gerencial" action="#" style="font-size: 14px;"/></li>
                         <li><p:commandLink value="Rotinas do Departamento" style="font-size: 14px;" action="#"/></li>
                         <li><p:commandLink value="Atividades da Equipe" style="font-size: 14px;" action="#"/></li>
-                    </ul> 
+                    </ul>   
                 </li>  
                 <li class="sub-menu">   
                     <a href="javascript:;"  >  

@@ -34,6 +34,9 @@
                         </p:commandLink>
                         <p:commandLink id="btntodos" action="#{atividadesMB.mudarCoresBotoes('todos')}" style="margin-left:0.5%;" update="painelBtn,tabelaAtividades">
                             <span class="badge badge-sm label-radio" style="background:#{atividadesMB.todos};">TODOS</span>
+                        </p:commandLink>   
+                        <p:commandLink id="btnaguardando" action="#{atividadesMB.mudarCoresBotoes('aguardando')}" style="margin-left:0.5%;" update="painelBtn,tabelaAtividades">
+                            <span class="badge badge-sm label-radio" style="background:#{atividadesMB.aguardando};">AGUARDANDO</span>
                         </p:commandLink> 
                         <span id="visualizarConcluidas" class="badge badge-sm label-radio" style="margin-left:0.5%;height: 20px;">   
                             <p:commandButton id="btnNaoVisualizarConcluidas" rendered="#{atividadesMB.naoconcluidas}" action="#{atividadesMB.visualizarConcluidas()}" value="VISUALIZAR CONCLUÍDAS" icon="fa fa-fw fa-toggle-off" style="border: transparent;background: transparent;font-size: 14px;top: -40%;font-weight: unset;color: #2A3542;" update="painelBtn,tabelaAtividades"/>
@@ -172,6 +175,11 @@
                     });
 
                 </script>
+                <style>
+                    .ui-widget-content {
+                        border: none !important;
+                    }
+                </style>
             </h:form>  
         </ui:define>
     </ui:composition>

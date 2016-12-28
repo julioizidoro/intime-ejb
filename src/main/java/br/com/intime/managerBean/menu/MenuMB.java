@@ -45,4 +45,11 @@ public class MenuMB implements Serializable {
         return "consMotivoAtraso";
     }
 
+    
+    public String adicionarAtividades() {
+        Map<String, Object> options = new HashMap<String, Object>();
+        options.put("contentWidth", 500);
+        RequestContext.getCurrentInstance().openDialog("cadAtividades", options, null);
+        return "";
+    }
 }
