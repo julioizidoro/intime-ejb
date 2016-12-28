@@ -5,7 +5,6 @@ import br.com.intime.model.Atividadeusuario;
 import br.com.intime.repository.AtividadeUsuarioRepository;
 import br.com.intime.util.Formatacao;
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -40,8 +39,8 @@ public class AtividadesMB implements Serializable{
     private String todos="#E0E0E0"; 
     
     //Data para consultas
-    private LocalDate dataInicial;
-    private LocalDate dataFinal;
+    private Date dataInicial;
+    private Date dataFinal;
     
     private String buscar;
     
@@ -158,24 +157,22 @@ public class AtividadesMB implements Serializable{
             amanha="#E0E0E0";
             seteDias="#E0E0E0";
             todos="#E0E0E0";
-            dataInicial = LocalDate.now();
-            dataFinal = LocalDate.now();
+            dataInicial = new Date();
+            dataFinal = new Date();
         }else if(funcao.equalsIgnoreCase("amanha")){
             hoje="#E0E0E0";
             amanha="#cba135";
             seteDias="#E0E0E0";
             todos="#E0E0E0";
-            LocalDate hoje = LocalDate.now();
-            dataInicial = hoje.plusDays(1);
-            dataFinal = hoje.plusDays(1);
+            dataInicial = Formatacao.SomarDiasData(new Date(), 1);
+            dataFinal = Formatacao.SomarDiasData(new Date(), 1);
         }else if(funcao.equalsIgnoreCase("seteDias")){
             hoje="#E0E0E0";
             amanha="#E0E0E0";
             seteDias="#cba135";
             todos="#E0E0E0";
-            LocalDate hoje = LocalDate.now();
-            dataInicial = hoje;
-            dataFinal = hoje.plusDays(7);
+            dataInicial = new Date();
+            dataFinal = Formatacao.SomarDiasData(new Date(), 7);
         }else if(funcao.equalsIgnoreCase("todos")){
             hoje="#E0E0E0";
             amanha="#E0E0E0";
@@ -217,13 +214,13 @@ public class AtividadesMB implements Serializable{
         if ((naoconcluidas.equalsIgnoreCase("true")) && (concluidas.equalsIgnoreCase("false"))){
             sqlConcluida = " and a.situacao<>'Concluida' ";
             if (dataInicial!=null){
-                sqlData = " and a.atividade.dataexecucao>='" + dataInicial.toString() + "' and a.atividade.dataexecucao<='" + dataFinal.toString() + "' ";
+                sqlData = " and a.atividade.dataexecucao>='" + Formatacao.ConvercaoDataSql(dataInicial) + "' and a.atividade.dataexecucao<='" + Formatacao.ConvercaoDataSql(dataFinal) + "' ";
             }
             sqlOrderBy = " ORDER BY a.atividade.dataexecucao";
         }else {
             sqlConcluida = " and a.situacao='Concluida' ";
             if (dataInicial!=null){
-                sqlData = " and a.dataconclusao>='" + dataInicial.toString() + "' and a.dataconclusao<='" + dataFinal.toString() + "' ";
+                sqlData = " and a.dataconclusao>='" + Formatacao.ConvercaoDataSql(dataInicial) + "' and a.dataconclusao<='" + Formatacao.ConvercaoDataSql(dataFinal) + "' ";
             }
             sqlOrderBy = " ORDER BY a.dataconclusao";
         }
