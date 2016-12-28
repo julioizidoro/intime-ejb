@@ -33,7 +33,7 @@
     </header> 
     <aside> 
         <div id="sidebar"  class="nav-collapse ">   
-            <ul class="sidebar-menu" id="nav-accordion">  
+            <ul class="sidebar-menu" id="nav-accordion">    
                 <li>
                     <h:panelGrid columns="2" columnClasses="tamanho50, tamanho50rigth" style="width:100%;"> 
                         <p:commandLink>
@@ -58,12 +58,57 @@
                     <br/>   
                 </li>
                 <li class="sub-menu">   
-                    <p:commandLink action="#{menuMB.tarefas()}" >
-                        <i class="fa fa-calendar"></i> 
+                    <p:commandLink action="#{usuarioLogadoMB.paginainicial()}" >
+                        <i class="fa fa-home"></i> 
                         <span style="margin-left:2%;font-size:15px;">
-                            Do It!
+                            Início
                         </span>
                     </p:commandLink>
+                </li> 
+                <li class="sub-menu">   
+                    <p:commandLink action="#{menuMB.atividades()}" >
+                        <i class="fa fa-calendar"></i> 
+                        <span style="margin-left:2%;font-size:15px;">
+                            Minhas Tarefas
+                        </span>
+                    </p:commandLink>
+                </li> 
+                <li class="sub-menu">   
+                    <p:commandLink action="#" >  
+                        <i class="fa fa-cogs"></i> 
+                        <span style="margin-left:2%;font-size:15px;">
+                            Processos
+                        </span>
+                    </p:commandLink>
+                </li>
+                <li class="sub-menu">   
+                    <p:commandLink action="#" >
+                        <i class="fa fa-rotate-left"></i> 
+                        <span style="margin-left:2%;font-size:15px;">
+                            Rotinas
+                        </span>
+                    </p:commandLink>
+                </li>
+                <li class="sub-menu">   
+                    <a href="javascript:;"  >  
+                        <i class="fa fa-suitcase"></i> 
+                        <span style="margin-left:2%;font-size:15px;">Gerencial</span>
+                    </a>
+                    <ul class="sub">
+                        <li><p:commandLink value="Dashboard Gerencial" action="#" style="font-size: 14px;"/></li>
+                        <li><p:commandLink value="Rotinas do Departamento" style="font-size: 14px;" action="#"/></li>
+                        <li><p:commandLink value="Atividades da Equipe" style="font-size: 14px;" action="#"/></li>
+                    </ul> 
+                </li>  
+                <li class="sub-menu">   
+                    <a href="javascript:;"  >  
+                        <i class="fa fa-print"></i>   
+                        <span style="margin-left:2%;font-size:15px;">Relatórios</span>
+                    </a>
+                    <ul class="sub">
+                        <li><p:commandLink value="Atividades Concluidas" action="#" style="font-size: 14px;"/></li>
+                        <li><p:commandLink value="Por cliente" style="font-size: 14px;" action="#"/></li> 
+                    </ul> 
                 </li> 
                 <li class="sub-menu">   
                     <a href="javascript:;"  >
@@ -78,6 +123,7 @@
                         <li><p:commandLink value="Motivos Atraso" style="font-size: 14px;" action="#{menuMB.motivosatraso()}"/></li>
                     </ul> 
                 </li>  
+                <br></br><br></br>
             </ul> 
         </div>
     </aside>

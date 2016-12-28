@@ -19,11 +19,11 @@
         <div class="container"> 
            
             <h:form class="form-signin" >
-                <p:growl autoUpdate="true" id="growl" showDetail="true"/> 
+               <p:growl id="growl" showDetail="true" sticky="true" />  
                 <h2 class="form-signin-heading" style="background:#2A3542;"> Login</h2> 
                 <div class="login-wrap">
-                    <p:inputText id="usuario" value="#{usuarioLogadoMB.usuario.login}" type="text" class="form-control" placeholder="Usuário"/>
-                    <p:inputText id="senha" value="#{usuarioLogadoMB.usuario.senha}" type="password" class="form-control" placeholder="Senha"/>
+                    <p:inputText id="usuario" value="#{usuarioLogadoMB.login}" type="text" class="form-control" placeholder="Usuário"/>
+                    <p:inputText id="senha" value="#{usuarioLogadoMB.senha}" type="password" class="form-control" placeholder="Senha"/>
                     <br/>
                     <p:commandButton id="btnEntrar" class="btn btn-lg btn-login btn-block"  update="growl" action="#{usuarioLogadoMB.validarUsuario()}" value="Entrar"/>
                 </div> 
@@ -31,8 +31,6 @@
                     <img src="resources/img/logoIntime.png" width="80" />
                 </div>
             </h:form> 
-        </div>   
-        <script src="js/jquery.js"></script>  
-        <script src="js/bootstrap.min.js"></script> 
+        </div>    
     </h:body>
 </html>

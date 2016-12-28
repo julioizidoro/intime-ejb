@@ -32,6 +32,8 @@ public class UsuarioLogadoMB  implements Serializable{
     @EJB
     private UsuarioRepository usuarioRepository;
     private Usuario usuario;
+    private String senha;
+    private String login; 
     
     @PostConstruct
     public void init(){
@@ -45,20 +47,36 @@ public class UsuarioLogadoMB  implements Serializable{
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
     }
+
+    public String getSenha() {
+        return senha;
+    }
+
+    public void setSenha(String senha) {
+        this.senha = senha;
+    }
+
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
     
     public String validarUsuario() {
-        if ((usuario.getLogin() != null) && (usuario.getSenha() == null)) {
+        if ((login== null || login.length()==0) || (senha == null || senha.length()==0)) {
             Mensagem.lancarMensagemErro("Erro!", "Login Invalido.");
         } else {
-            String senha = "";
+            String senhaCrip = "";
             try {
-                senha = Criptografia.encript(usuario.getSenha());
+                senhaCrip = Criptografia.encript(this.senha);
             } catch (NoSuchAlgorithmException ex) {
                 Logger.getLogger(UsuarioLogadoMB.class.getName()).log(Level.SEVERE, null, ex);
                 FacesMessage mensagem = new FacesMessage("Erro: " + ex);
                 FacesContext.getCurrentInstance().addMessage(null, mensagem);
             }
-            usuario = usuarioRepository.find("Select u from Usuario u where u.login='" + usuario.getLogin() + "' and u.senha='" + senha + "'");
+            usuario = usuarioRepository.find("Select u from Usuario u where u.login='" + login + "' and u.senha='" + senhaCrip + "'");
             if (usuario == null) {
                 Mensagem.lancarMensagemInfo("", "Acesso negado!!");
             } else {

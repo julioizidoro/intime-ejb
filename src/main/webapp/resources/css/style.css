@@ -748,16 +748,20 @@ ul.top-menu > li > a:hover, ul.top-menu > li > a:focus {
 .state-overview .value h1, .state-overview .value p  {
     margin: 0;
     padding: 0;
-    color: #c6cad6;
+    color: #fff;
+    font-size: 15px;
+    float: right;
 }
 
 .state-overview .value h1 {
-    font-weight: 300;
+    font-size: 50px;
+    color: #fff;
 }
 
 .state-overview .symbol i {
-    color: #fff;
-    font-size: 50px;
+    color: #fff; 
+    font-size: 90px;
+    margin-top: -10px;
 }
 
 .state-overview .symbol {
@@ -766,10 +770,9 @@ ul.top-menu > li > a:hover, ul.top-menu > li > a:focus {
     -webkit-border-radius: 4px 0px 0px 4px;
     border-radius: 4px 0px 0px 4px;
 }
-
+  
 .state-overview .value {
-    width: 58%;
-    padding-top: 21px;
+    width: 58%; 
 }
 
 .state-overview .terques {
@@ -4451,7 +4454,7 @@ tr.odd.gradeX td.sorting_1, tr.even.gradeX td.sorting_1, table.display tr.even.g
 
 #sortable {
     list-style-type: none;
-    margin: 0 0 20px 0;
+    margin: 0 0 0px 0;
     padding: 0;
     width: 100%;
 }
@@ -6377,3 +6380,4 @@ header.blue-bg .search:focus {
 .houverBtn:hover{
     color:#FF6C60;
 }
+

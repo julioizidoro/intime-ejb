@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 public abstract class AbstractRepository<T> {
 
@@ -42,7 +43,13 @@ public abstract class AbstractRepository<T> {
     }
     
     public T find(String sql) {
-        T t = (T) em.createQuery(sql).getSingleResult();
+        Query q = em.createQuery(sql);
+         T t = null;
+         if (q != null) {
+            if (q.getResultList().size()>0){
+                t = (T) q.getSingleResult();
+            }
+        }
         return (T) t;
     }
 

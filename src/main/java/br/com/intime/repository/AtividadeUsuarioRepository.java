@@ -6,11 +6,9 @@
 package br.com.intime.repository;
 
 import br.com.intime.model.Atividadeusuario;
+import javax.ejb.Stateless;
 
-/**
- *
- * @author jizid
- */
+@Stateless
 public class AtividadeUsuarioRepository extends AbstractRepository<Atividadeusuario>{
 
     public AtividadeUsuarioRepository() {

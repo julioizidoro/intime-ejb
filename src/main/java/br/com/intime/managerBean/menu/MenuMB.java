@@ -25,8 +25,8 @@ public class MenuMB implements Serializable {
         return "consUsuario";
     }
     
-    public String tarefas() {
-        return "consTarefas";
+    public String atividades() {
+        return "consAtividades";
     }
     
     public String novaEmpresa(){

@@ -1,7 +1,7 @@
 package br.com.intime.managerBean.atividades;
 
 import br.com.intime.managerBean.usuario.UsuarioLogadoMB;
-import br.com.intime.model.Atividadeusuario;
+import br.com.intime.model.Atividadeusuario; 
 import br.com.intime.repository.AtividadeUsuarioRepository;
 import br.com.intime.util.Formatacao;
 import java.io.Serializable;
@@ -21,10 +21,10 @@ import org.primefaces.context.RequestContext;
 public class AtividadesMB implements Serializable{
     
     @Inject 
-    private UsuarioLogadoMB usuarioLogadoMB;
+    private UsuarioLogadoMB usuarioLogadoMB; 
+    private List<Atividadeusuario> listaAtividade;
     @EJB
     private AtividadeUsuarioRepository atividadeUsuarioRepository;
-    private List<Atividadeusuario> listaAtividade;
     
     //btn executar atividade
     private String play="true";
@@ -149,6 +149,7 @@ public class AtividadesMB implements Serializable{
             naoconcluidas="false";
             concluidas="true";
         }
+        gerarListaAtivadades();
     }
     
     public void mudarCoresBotoes(String funcao){
@@ -184,30 +185,33 @@ public class AtividadesMB implements Serializable{
         gerarListaAtivadades();
     }
     
-    public String adicionarTarefa() {
+    public String adicionarAtividades() {
         Map<String, Object> options = new HashMap<String, Object>();
         options.put("contentWidth", 500);
-        RequestContext.getCurrentInstance().openDialog("cadTarefas", options, null);
+        RequestContext.getCurrentInstance().openDialog("cadAtividades", options, null);
         return "";
     }
     
     public String visualizarComentarios() {
         Map<String, Object> options = new HashMap<String, Object>();
         options.put("contentWidth", 500);
-        RequestContext.getCurrentInstance().openDialog("comentariosTarefa", options, null);
+        RequestContext.getCurrentInstance().openDialog("comentariosAtividades", options, null);
         return "";
     }
     
-    public String editarTarefa() {
+    public String editarAtividades() {
         Map<String, Object> options = new HashMap<String, Object>();
         options.put("contentWidth", 500);
-        RequestContext.getCurrentInstance().openDialog("cadTarefas", options, null);
+        RequestContext.getCurrentInstance().openDialog("cadAtividades", options, null);
         return "";
     }
     
     public void gerarListaAtivadades(){
+        if(buscar==null){
+            buscar="";
+        }
         String sql ="SELECT a FROM Atividadeusuario a where a.usuario.idusuario=" + usuarioLogadoMB.getUsuario().getIdusuario() 
-                + " and a.atividade.descricao like '%" + buscar + "' ";
+                + " and a.atividade.descricao like '" + buscar + "%' ";
         String sqlConcluida ="";
         String sqlData ="";
         String sqlOrderBy="";

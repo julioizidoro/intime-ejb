@@ -46,8 +46,8 @@
     <navigation-rule>
         <from-view-id>*</from-view-id>
         <navigation-case>
-            <from-outcome>consTarefas</from-outcome> 
-            <to-view-id>/pages/tarefas/consTarefas.xhtml</to-view-id>
+            <from-outcome>consAtividades</from-outcome> 
+            <to-view-id>/pages/atividades/consAtividades.xhtml</to-view-id>
             <redirect />
         </navigation-case> 
     </navigation-rule>
