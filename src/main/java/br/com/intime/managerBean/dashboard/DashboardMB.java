@@ -10,6 +10,7 @@ import br.com.intime.repository.FtpDadosRepository;
 import br.com.intime.repository.NotaRepository;
 import br.com.intime.repository.NotificacoesRepository;
 import br.com.intime.util.Formatacao;
+import br.com.intime.util.Mensagem;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Date;
@@ -50,6 +51,9 @@ public class DashboardMB implements Serializable {
     private Ftpdados ftpdados;
     @EJB
     private FtpDadosRepository ftpRepository;
+    private boolean play;
+    private boolean pause;
+    private boolean atividadeConcluida;
 
     @PostConstruct
     public void init() {
@@ -57,8 +61,7 @@ public class DashboardMB implements Serializable {
         gerarListaAtivadadesHoje();
         gerarListaAtivadadesSemana();
         gerarListaNotificacoes();
-        gerarListaNotas();
-        nota = new Nota();
+        gerarListaNotas(); 
         ftpdados = ftpRepository.find(1);
     }
 
@@ -149,13 +152,34 @@ public class DashboardMB implements Serializable {
     public void setFtpdados(Ftpdados ftpdados) {
         this.ftpdados = ftpdados;
     }
-
-    public FtpDadosRepository getFtpRepository() {
-        return ftpRepository;
-    }
+ 
 
     public void setFtpRepository(FtpDadosRepository ftpRepository) {
         this.ftpRepository = ftpRepository;
+    }
+
+    public boolean isPlay() {
+        return play;
+    }
+
+    public void setPlay(boolean play) {
+        this.play = play;
+    }
+
+    public boolean isPause() {
+        return pause;
+    }
+
+    public void setPause(boolean pause) {
+        this.pause = pause;
+    }
+
+    public boolean isAtividadeConcluida() {
+        return atividadeConcluida;
+    }
+
+    public void setAtividadeConcluida(boolean atividadeConcluida) {
+        this.atividadeConcluida = atividadeConcluida;
     }
 
     public void gerarListaAtivadadesSemana() {
@@ -250,21 +274,52 @@ public class DashboardMB implements Serializable {
         RequestContext.getCurrentInstance().openDialog("notificacoes", options, null);
         return "";
     }
-
+    
+    
     public void adicionarNota() {
-        nota.setUsuario(usuarioLogadoMB.getUsuario());
-        notaRepository.update(nota);
-        gerarListaNotas();
-        nota = new Nota(); 
+        nota = new Nota();
+        Map<String, Object> options = new HashMap<String, Object>();
+        options.put("contentWidth", 350);
+        RequestContext.getCurrentInstance().openDialog("cadNotas", options, null); 
     }
 
+    public void salvarNota() { 
+        if(listaNotas.size()<6){
+            nota.setUsuario(usuarioLogadoMB.getUsuario()); 
+            notaRepository.update(nota);  
+            gerarListaNotas();  
+            RequestContext.getCurrentInstance().closeDialog(null);   
+        }else{
+            Mensagem.lancarMensagemErro("Atenção!", "Você atingiu o limite maxímo de notas.");
+        }
+    }
+   
     public void editar(Nota nota) {
         this.nota = nota;
+        Map<String, Object> options = new HashMap<String, Object>();
+        options.put("contentWidth", 350);
+        RequestContext.getCurrentInstance().openDialog("cadNotas", options, null);
     }
 
     public void excluir(Nota nota) {
         notaRepository.remove(nota.getIdnota());
         gerarListaNotas();
+    }
+    
+    public void retornarSituacaoAtividade(Atividadeusuario atividadeusuario){
+        if(atividadeusuario.getSituacao().equalsIgnoreCase("Play")){
+            atividadeConcluida=false;
+            pause=true;
+            play=false;
+        }else if(atividadeusuario.getSituacao().equalsIgnoreCase("Pause")){
+            atividadeConcluida=false;
+            pause=false;
+            play=true;
+        }else if(atividadeusuario.getSituacao().equalsIgnoreCase("Concluido")){
+            atividadeConcluida=true;
+            pause=false;    
+            play=false;  
+        }
     }
  
 }

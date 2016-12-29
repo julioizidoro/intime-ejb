@@ -17,9 +17,36 @@
             <h:panelGrid columns="1" style="width:100%;font-size: 12px;"> 
                 <p:inputText id="titulo" placeholder="Título" style="width:99%;"/> 
             </h:panelGrid>
+            <br/>  
+            <h:panelGrid columns="2" columnClasses="tamanho20, tamanho30" style="width: 100%;font-size: 12px;">
+                <p:inputMask id="data" placeholder="DD/MM/AAAA" mask="99/99/9999" value="#{cadAtividadeMB.atividadeusuario.atividade.dataexecucao}" style="width:70%;"/>
+                <p:inputText id="buscarCliente" placeholder="BUSCAR CLIENTE" style="width:99%;"> 
+                    <p:ajax event="keyup"  update="tabelaCliente" />
+                </p:inputText>
+  
+                <p:overlayPanel id="painelAdicionar" for="buscarCliente"
+                                hideEffect="fade" style="width:340px;background:#fff;">
+                    <p:dataScroller id="tabelaCliente" var="cliente"
+                                    value="#" chunkSize="10" mode="inline"
+                                    scrollHeight="110">
+                        <p:outputPanel>   
+                            <h:panelGrid columns="3" style="width:100%;"
+                                         columnClasses="tamanhoavisos2, tamanho8, tamanho6">
+                                <h:outputLabel value="#"
+                                               style="margin-left:1.5%;font-size: 13px;color:#4C4C4C;font-weight: 500;" /> 
+                                <p:commandLink id="btnSelecionarCliente"
+                                               action="#"
+                                               style="float:right;" title="Selecionar Cliente" update="@form">
+                                    <i class="fa fa-check" style="color:#008B00;font-size:16px;"/>   
+                                </p:commandLink>
+                            </h:panelGrid>
+                        </p:outputPanel>
+                    </p:dataScroller>
+
+                </p:overlayPanel>
+            </h:panelGrid>
             <br/>
-            <h:panelGrid columns="3" columnClasses="tamanho20, tamanho30, tamanho30" style="width: 100%;font-size: 12px;">
-                <p:inputMask id="data" placeholder="DD/MM/AAAA" mask="99/99/9999" value="#{cadAtividadeMB.atividadeusuario.atividade.dataexecucao}" style="width:95%;"/>
+            <h:panelGrid columns="2" columnClasses="tamanho30, tamanho30" style="width: 100%;font-size: 12px;">
                 <p:selectOneMenu id="departamento"  style="width:91%;"  value="#{cadAtividadeMB.departamento}" converter="ClienteDepartamentoConverter"
                                  filter="true" filterMatchMode="contains" panelStyle="width:180px" >
                     <f:selectItem  itemLabel="Departamento" itemValue="0" noSelectionOption="true"/>    

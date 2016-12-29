@@ -6392,9 +6392,9 @@ header.blue-bg .search:focus {
 .dataScrollerBranco{ 
     background: #fff;
 }
-
+  
 .dataScrollerBranco:hover{ 
-    background: #AEAEAE;
+    background: #e8e8e8;
 }
 
 .dataScrollerCinza{ 
@@ -6403,4 +6403,12 @@ header.blue-bg .search:focus {
 
 .dataScrollerCinza:hover{ 
     background: #AEAEAE;
-} 
+}    
+
+.ui-datascroller .ui-datascroller-header{ 
+    padding: 4px 10px;      
+    background: #2E383B;   
+    color: #fff;
+    text-align: left;       
+    font-weight: 300;
+}    
