@@ -21,9 +21,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
-import javax.enterprise.context.SessionScoped;
+import javax.ejb.EJB; 
 import javax.faces.context.FacesContext;
+import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
@@ -34,7 +34,7 @@ import org.primefaces.context.RequestContext;
  * @author Kamila
  */
 @Named
-@SessionScoped
+@ViewScoped
 public class DashboardMB implements Serializable {
 
     @Inject
@@ -310,7 +310,7 @@ public class DashboardMB implements Serializable {
         gerarListaNotas();
     }
 
-    public void retornarSituacaoAtividade(Atividadeusuario atividadeusuario, String situacao) {
+    public void mudarSituacaoAtividade(Atividadeusuario atividadeusuario, String situacao) {
         atividadeusuario.setSituacao(situacao);  
         if (atividadeusuario.getSituacao().equalsIgnoreCase("Concluida")) {
             LocalTime hora = LocalTime.of(23 , 59 ,00);
@@ -321,7 +321,20 @@ public class DashboardMB implements Serializable {
         }
         atividadeUsuarioRepository.update(atividadeusuario);
     }
-
+    
+    public boolean mostrarBotaoPlay(String situacao){
+        if(situacao.equalsIgnoreCase("Play")){
+            return false;
+        }else return true;
+    }
+    
+    public boolean mostrarBotaoPause(String situacao){
+        if(situacao.equalsIgnoreCase("Pause")){
+            return false;
+        }else return true;
+    }
+    
+    
     public void gerarListas() {
         gerarListaAtivadadesAtraso();
         gerarListaAtivadadesHoje();
