@@ -2,10 +2,12 @@ package br.com.intime.managerBean.dashboard;
 
 import br.com.intime.managerBean.usuario.UsuarioLogadoMB;
 import br.com.intime.model.Atividadeusuario;
+import br.com.intime.model.Feednoticia;
 import br.com.intime.model.Ftpdados;
 import br.com.intime.model.Nota;
 import br.com.intime.model.Notificacao;
 import br.com.intime.repository.AtividadeUsuarioRepository;
+import br.com.intime.repository.FeedNoticiaRepository;
 import br.com.intime.repository.FtpDadosRepository;
 import br.com.intime.repository.NotaRepository;
 import br.com.intime.repository.NotificacoesRepository;
@@ -13,6 +15,7 @@ import br.com.intime.util.Formatacao;
 import br.com.intime.util.Mensagem;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -41,27 +44,24 @@ public class DashboardMB implements Serializable {
     private List<Atividadeusuario> listaAtividadesSemana;
     private List<Notificacao> listaNotificacoes;
     private List<Nota> listaNotas;
+    private List<Feednoticia> listaFeedNoticia;
     private Nota nota;
+    private Ftpdados ftpdados;
+    private Feednoticia feednoticia;
     @EJB
     private AtividadeUsuarioRepository atividadeUsuarioRepository;
     @EJB
     private NotificacoesRepository notificacoesRepository;
     @EJB
     private NotaRepository notaRepository;
-    private Ftpdados ftpdados;
     @EJB
     private FtpDadosRepository ftpRepository;
-    private boolean play;
-    private boolean pause;
-    private boolean atividadeConcluida;
+    @EJB
+    private FeedNoticiaRepository feedNoticiaRepository;
 
     @PostConstruct
     public void init() {
-        gerarListaAtivadadesAtraso();
-        gerarListaAtivadadesHoje();
-        gerarListaAtivadadesSemana();
-        gerarListaNotificacoes();
-        gerarListaNotas(); 
+        gerarListas();
         ftpdados = ftpRepository.find(1);
     }
 
@@ -152,34 +152,33 @@ public class DashboardMB implements Serializable {
     public void setFtpdados(Ftpdados ftpdados) {
         this.ftpdados = ftpdados;
     }
- 
 
     public void setFtpRepository(FtpDadosRepository ftpRepository) {
         this.ftpRepository = ftpRepository;
     }
 
-    public boolean isPlay() {
-        return play;
+    public List<Feednoticia> getListaFeedNoticia() {
+        return listaFeedNoticia;
     }
 
-    public void setPlay(boolean play) {
-        this.play = play;
+    public void setListaFeedNoticia(List<Feednoticia> listaFeedNoticia) {
+        this.listaFeedNoticia = listaFeedNoticia;
     }
 
-    public boolean isPause() {
-        return pause;
+    public Feednoticia getFeednoticia() {
+        return feednoticia;
     }
 
-    public void setPause(boolean pause) {
-        this.pause = pause;
+    public void setFeednoticia(Feednoticia feednoticia) {
+        this.feednoticia = feednoticia;
     }
 
-    public boolean isAtividadeConcluida() {
-        return atividadeConcluida;
+    public FeedNoticiaRepository getFeedNoticiaRepository() {
+        return feedNoticiaRepository;
     }
 
-    public void setAtividadeConcluida(boolean atividadeConcluida) {
-        this.atividadeConcluida = atividadeConcluida;
+    public void setFeedNoticiaRepository(FeedNoticiaRepository feedNoticiaRepository) {
+        this.feedNoticiaRepository = feedNoticiaRepository;
     }
 
     public void gerarListaAtivadadesSemana() {
@@ -251,6 +250,12 @@ public class DashboardMB implements Serializable {
         listaNotas = notaRepository.list(sql);
     }
 
+    public void gerarListaFeed() {  
+        String sql = "select f From Feednoticia f where f.data>= :dataInicial"
+                + " and f.data<= :dataFinal order by f.idfeednoticia DESC";     
+        listaFeedNoticia = feedNoticiaRepository.list(sql, LocalDate.now(),LocalDate.now());
+    }
+  
     public void gerarListaNotificacoes() {
         String sql = "select n From Notificacao n where n.lido=false and n.usuario.idusuario="
                 + usuarioLogadoMB.getUsuario().getIdusuario() + " order by n.descricao";
@@ -274,26 +279,25 @@ public class DashboardMB implements Serializable {
         RequestContext.getCurrentInstance().openDialog("notificacoes", options, null);
         return "";
     }
-    
-    
+
     public void adicionarNota() {
         nota = new Nota();
         Map<String, Object> options = new HashMap<String, Object>();
         options.put("contentWidth", 350);
-        RequestContext.getCurrentInstance().openDialog("cadNotas", options, null); 
+        RequestContext.getCurrentInstance().openDialog("cadNotas", options, null);
     }
 
-    public void salvarNota() { 
-        if(listaNotas.size()<6){
-            nota.setUsuario(usuarioLogadoMB.getUsuario()); 
-            notaRepository.update(nota);  
-            gerarListaNotas();  
-            RequestContext.getCurrentInstance().closeDialog(null);   
-        }else{
+    public void salvarNota() {
+        if (listaNotas.size() == 6 && nota.getIdnota() == null) {
             Mensagem.lancarMensagemErro("Atenção!", "Você atingiu o limite maxímo de notas.");
+        } else {
+            nota.setUsuario(usuarioLogadoMB.getUsuario());
+            notaRepository.update(nota);
+            gerarListaNotas();
+            RequestContext.getCurrentInstance().closeDialog(null);
         }
     }
-   
+
     public void editar(Nota nota) {
         this.nota = nota;
         Map<String, Object> options = new HashMap<String, Object>();
@@ -305,23 +309,41 @@ public class DashboardMB implements Serializable {
         notaRepository.remove(nota.getIdnota());
         gerarListaNotas();
     }
-    
-    public void retornarSituacaoAtividade(Atividadeusuario atividadeusuario, String situacao){
-        atividadeusuario.setSituacao(situacao);
-        atividadeusuario = atividadeUsuarioRepository.update(atividadeusuario);  
-        if(atividadeusuario.getSituacao().equalsIgnoreCase("Play")){
-            atividadeConcluida=false;
-            pause=true;
-            play=false;
-        }else if(atividadeusuario.getSituacao().equalsIgnoreCase("Pause")){
-            atividadeConcluida=false;
-            pause=false;
-            play=true;
-        }else if(atividadeusuario.getSituacao().equalsIgnoreCase("Concluido")){
-            atividadeConcluida=true;
-            pause=false;    
-            play=false;  
-        }   
+
+    public void retornarSituacaoAtividade(Atividadeusuario atividadeusuario, String situacao) {
+        atividadeusuario.setSituacao(situacao);  
+        if (atividadeusuario.getSituacao().equalsIgnoreCase("Concluida")) {
+            LocalTime hora = LocalTime.of(23 , 59 ,00);
+            atividadeusuario.setHoraconclusao(hora);
+            atividadeusuario.setDataconclusao(LocalDate.now());
+            atividadeusuario.setConcluido(true);  
+            gerarListaAtivadadesHoje();
+        }
+        atividadeUsuarioRepository.update(atividadeusuario);
     }
- 
+
+    public void gerarListas() {
+        gerarListaAtivadadesAtraso();
+        gerarListaAtivadadesHoje();
+        gerarListaAtivadadesSemana();
+        gerarListaNotificacoes();
+        gerarListaNotas();
+        gerarListaFeed();
+    }
+
+    public void adicionarFeedNoticia() {
+        feednoticia = new Feednoticia();
+        Map<String, Object> options = new HashMap<String, Object>();
+        options.put("contentWidth", 350);
+        RequestContext.getCurrentInstance().openDialog("cadFeedNoticia", options, null);
+    }
+
+    public void salvarFeedNoticia() {
+        feednoticia.setUsuario(usuarioLogadoMB.getUsuario());
+        feednoticia.setData(LocalDate.now());
+        feedNoticiaRepository.update(feednoticia);
+        gerarListaFeed();
+        RequestContext.getCurrentInstance().closeDialog(null);
+    }
+
 }

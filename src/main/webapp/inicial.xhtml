@@ -23,15 +23,16 @@
         <link href="resources/css/style.css" rel="stylesheet"/>
         <link href="resources/css/style-responsive.css" rel="stylesheet" />
         <link href="resources/css/bootstrap-fullcalendar.css" rel="stylesheet" /> 
-        <link href="../../resources/css/tasks.css" rel="stylesheet"/>     
-
-    </h:head>
+        <link href="resources/css/css.css" rel="stylesheet"/>    
+   
+    </h:head>   
 
     <h:body style="background: #fff;">
         <h:form id="telaInicial">
+            <p:poll interval="180" listener="#{dashboardMB.gerarListas()}" update="colunaTodoList, calendarioAtividades, colunaNumTarefas, colunaFeed"/>
             <p:growl id="growl" showDetail="true" sticky="true" />  
-            <section id="container" > 
-                <header class="header white-bg">  
+            <section id="container" >    
+                <header class="header white-bg">        
 
                     <div align="right" class="nav notify-row" id="top_menu"> 
 
@@ -137,7 +138,7 @@
                                     <i class="fa fa-plus"></i> 
                                     <span style="margin-left:2%;font-size:15px;">Cadastro</span>
                                 </a>
-                                <ul class="sub">
+                                <ul class="sub">   
                                     <li><p:commandLink value="Clientes" action="#{menuMB.cliente()}" style="font-size: 14px;"/></li>
                                     <li><p:commandLink value="Departamentos" style="font-size: 14px;" action="#{menuMB.departamentos()}"/></li>
                                     <li><p:commandLink value="Usuários" style="font-size: 14px;" action="#{menuMB.usuario()}"/></li>
@@ -156,45 +157,47 @@
                     <section class="wrapper">
                         <!--state overview start-->
                         <div class="row state-overview">
-                            <div class="col-lg-3 col-sm-6">     
-                                <section class="panel" style="background: #C9A471;">
-                                    <div class="symbol terques" style="background: #C9A471;">
-                                        <i class="fa fa-clock-o" style=""></i> 
-                                    </div>
-                                    <div class="value" style="padding-right: 8px;">       
-                                        <h1><p:outputLabel value="#{dashboardMB.retornarAtividadesAtrasadas()}"/></h1>    
-                                        <br/><br/><br/> <br/>        
-                                        <p>TAREFAS</p>
-                                        <p>EM ATRASO</p>    
-                                    </div> 
-                                </section>
-                            </div>
-                            <div class="col-lg-3 col-sm-6">
-                                <section class="panel" style="background: #006D4D;">
-                                    <div class="symbol terques" style="background: #006D4D;">
-                                        <i class="fa fa-calendar" style=""></i> 
-                                    </div>  
-                                    <div class="value" style="padding-right: 8px;">       
-                                        <h1><p:outputLabel value="#{dashboardMB.retornarAtividadesHoje()}"/></h1>    
-                                        <br/><br/><br/><br/>        
-                                        <p>TAREFAS</p>
-                                        <p>PARA HOJE</p>  
-                                    </div> 
-                                </section>
-                            </div>   
-                            <div class="col-lg-3 col-sm-6">
-                                <section class="panel" style="background: #005552;">
-                                    <div class="symbol terques" style="background: #005552;">
-                                        <i class="fa fa-check-circle-o" style=""></i> 
-                                    </div>
-                                    <div class="value" style="padding-right: 8px;">       
-                                        <h1><p:outputLabel value="#{dashboardMB.retornarAtividadesSemana()}"/></h1>    
-                                        <br/><br/><br/>   <br/>      
-                                        <p>CONCLUÍDAS</p>
-                                        <p>NA SEMANA</p>     
-                                    </div> 
-                                </section>  
-                            </div>
+                            <h:panelGroup id="colunaNumTarefas">
+                                <div class="col-lg-3 col-sm-6">     
+                                    <section class="panel" style="background: #C9A471;">
+                                        <div class="symbol terques" style="background: #C9A471;">
+                                            <i class="fa fa-clock-o" style=""></i> 
+                                        </div>
+                                        <div class="value" style="padding-right: 8px;">       
+                                            <h1><p:outputLabel value="#{dashboardMB.retornarAtividadesAtrasadas()}"/></h1>    
+                                            <br/><br/><br/> <br/>        
+                                            <p>TAREFAS</p>
+                                            <p>EM ATRASO</p>    
+                                        </div> 
+                                    </section>
+                                </div>
+                                <div class="col-lg-3 col-sm-6">
+                                    <section class="panel" style="background: #006D4D;">
+                                        <div class="symbol terques" style="background: #006D4D;">
+                                            <i class="fa fa-calendar" style=""></i> 
+                                        </div>  
+                                        <div class="value" style="padding-right: 8px;">       
+                                            <h1><p:outputLabel value="#{dashboardMB.retornarAtividadesHoje()}"/></h1>    
+                                            <br/><br/><br/><br/>        
+                                            <p>TAREFAS</p>
+                                            <p>PARA HOJE</p>  
+                                        </div> 
+                                    </section>
+                                </div>   
+                                <div class="col-lg-3 col-sm-6">
+                                    <section class="panel" style="background: #005552;">
+                                        <div class="symbol terques" style="background: #005552;">
+                                            <i class="fa fa-check-circle-o" style=""></i> 
+                                        </div>
+                                        <div class="value" style="padding-right: 8px;">       
+                                            <h1><p:outputLabel value="#{dashboardMB.retornarAtividadesSemana()}"/></h1>    
+                                            <br/><br/><br/>   <br/>      
+                                            <p>CONCLUÍDAS</p>
+                                            <p>NA SEMANA</p>     
+                                        </div> 
+                                    </section>  
+                                </div> 
+                            </h:panelGroup>
                             <div  class="col-lg-3 col-sm-6">         
                                 <p:poll interval="20" update="colunaHorario"/>
                                 <h:panelGroup id="colunaHorario">
@@ -240,19 +243,21 @@
                             <section >
                                 <!-- page start-->
                                 <div id="calendarioNotas" class="row">  
-                                    <aside class="col-lg-9">
-                                        <br></br>   
-                                        <section class="panel" style="width: 100%;">       
-                                            <div>            
-                                                <p:schedule id="schedule" value="#{scheduleView.eventModel}" locale="pt">   
-                                                    <p:ajax event="dateSelect" listener="#{scheduleView.onDateSelect}" />
-                                                    <p:ajax event="eventSelect" listener="#{scheduleView.onEventSelect}"  />
-                                                    <p:ajax event="eventMove" listener="#{scheduleView.onEventMove}" update="growl" />
-                                                    <p:ajax event="eventResize" listener="#{scheduleView.onEventResize}" update="growl" /> 
-                                                </p:schedule>
-                                            </div>
-                                        </section>
-                                    </aside>
+                                    <h:panelGroup id="calendarioAtividades">
+                                        <aside class="col-lg-9">
+                                            <br></br>   
+                                            <section class="panel" style="width: 100%;">       
+                                                <div>            
+                                                    <p:schedule id="schedule" value="#{scheduleView.eventModel}" locale="pt">   
+                                                        <p:ajax event="dateSelect" listener="#{scheduleView.onDateSelect}" />
+                                                        <p:ajax event="eventSelect" listener="#{scheduleView.onEventSelect}"  />
+                                                        <p:ajax event="eventMove" listener="#{scheduleView.onEventMove}" update="growl" />
+                                                        <p:ajax event="eventResize" listener="#{scheduleView.onEventResize}" update="growl" /> 
+                                                    </p:schedule>
+                                                </div>
+                                            </section>
+                                        </aside>
+                                    </h:panelGroup>
                                     <aside  class="col-lg-3"> 
                                         <h:panelGroup id="colunaNotas">
                                             <section class="panel" style="background: #E3DFC2;width: 100%;border-radius: 4px;">
@@ -271,14 +276,14 @@
                                                             <h:panelGroup> 
                                                                 <h:panelGrid columns="1" style="margin-left:20%;">     
                                                                     <p:commandLink id="btnExcluirNota" title="Excluir" action="#{dashboardMB.excluir(notas)}" update="listaNotas">
-                                                                        <i class="fa fa-trash"/>      
+                                                                        <i class="fa fa-trash" style="color: #C9A469;"/>      
                                                                     </p:commandLink>  
                                                                     <p:commandLink id="btnEditarNota" title="Editar" action="#{dashboardMB.editar(notas)}" >
-                                                                        <i class="fa fa-pencil"/>  
+                                                                        <i class="fa fa-pencil" style="color: #C9A469;"/>  
                                                                         <p:ajax event="dialogReturn" update="listaNotas"/>
                                                                     </p:commandLink>    
                                                                 </h:panelGrid>  
-                                                            </h:panelGroup>
+                                                            </h:panelGroup> 
                                                             <p:outputLabel value="#{notas.descricao}" style="float: right;margin-right:5%;"/>
                                                         </h:panelGrid> 
                                                     </p:outputPanel> 
@@ -292,47 +297,64 @@
                                         <h:panelGroup id="colunaTodoList">
                                             <p:dataScroller id="tabelaAtividades" value="#{dashboardMB.listaAtividadesHoje}" var="atividades" mode="inline" style="border:none !important;" scrollHeight="460">  
                                                 <f:facet name="header">      
-                                                    To do List
-                                                </f:facet>
-
-                                                <p:outputPanel> 
-                                                    <h:panelGrid columns="1" style="width:100%;"
+                                                    <p:outputLabel value="To do List" style="font-weight: 300;"/>
+                                                    <i class="fa fa-check" style="font-size:11px;color:#079363;"/> 
+                                                </f:facet>  
+                                                <p:outputPanel>    
+                                                    <h:panelGrid columns="1" style="width:100%;"     
                                                                  class="dataScrollerBranco">   
                                                         <h:panelGroup > 
-                                                            <p:commandLink id="btnPlay" action="#{dashboardMB.retornarSituacaoAtividade(atividades, 'Play')}" update=":telaInicial:colunaTodoList" style="float: left;margin-top: -0.6%;margin-left:1.5%;" rendered="#{atividadesMB.play}">
-                                                                <i class="fa fa-play" style="font-size: 14px;color:#B0B5B9;"></i>  
-                                                            </p:commandLink>            
-                                                            <p:commandLink id="btnPause" action="#{dashboardMB.retornarSituacaoAtividade(atividades, 'Pause')}" update=":telaInicial:colunaTodoList" style="float: left;margin-top:-0.6%;margin-left:1.5%;" rendered="#{atividadesMB.pause}">
-                                                                <i class="fa fa-pause" style="font-size: 14px;color:#B0B5B9;"></i>            
-                                                            </p:commandLink>                       
-                                                            <input id="cbxConcluido" type="checkbox" class="list-child" value="#{dashboardMB.atividadeConcluida}"  style="float: left;margin-top:0.6%;margin-left:1.5%;"> 
-                                                                <p:ajax event="click" listener="#{dashboardMB.retornarSituacaoAtividade(atividades, 'Concluido')}"/>
+                                                            <h:panelGroup rendered="#{atividades.play}" > 
+                                                                <p:commandLink id="btnPlay" action="#{dashboardMB.retornarSituacaoAtividade(atividades, 'Play')}" update=":telaInicial:colunaTodoList" style="float: left;margin-top: -0.6%;margin-left:1.5%;">
+                                                                    <i class="fa fa-play" style="font-size: 14px;color:#B0B5B9;"></i>       
+                                                                </p:commandLink>   
+                                                            </h:panelGroup>        
+                                                            <h:panelGroup rendered="#{atividades.pause}"> 
+                                                                <p:commandLink id="btnPause" action="#{dashboardMB.retornarSituacaoAtividade(atividades, 'Pause')}" update=":telaInicial:colunaTodoList" style="float: left;margin-top:-0.6%;margin-left:1.5%;">
+                                                                    <i class="fa fa-pause" style="font-size: 14px;color:#B0B5B9;"></i>            
+                                                                </p:commandLink>                                  
+                                                            </h:panelGroup>        
+                                                            <input id="cbxConcluido" type="checkbox" class="list-child" value="#{atividades.concluido}"  style="float: left;margin-top:0.6%;margin-left:1.5%;"> 
+                                                                <p:ajax event="click" listener="#{dashboardMB.retornarSituacaoAtividade(atividades, 'Concluida')}" update=":telaInicial:colunaTodoList, :telaInicial:colunaNumTarefas, :telaInicial:calendarioAtividades"/>
                                                             </input>
-                                                            <h:outputLabel id="nome" value="#{atividades.atividade.descricao}" class="task-title-sp" style="margin-left: 2%;"/> |    
-                                                            <h:outputLabel id="cliente" value="#{atividades.atividade.cliente.nomefantasia}" class="task-title-sp"/>        
+                                                            <h:outputLabel id="nome" value="#{atividades.atividade.descricao}" class="task-title-sp" style="margin-left: 2%;"/>       
                                                         </h:panelGroup>  
-                                                    </h:panelGrid>  
+                                                    </h:panelGrid>      
                                                     <hr/>  
                                                 </p:outputPanel>  
                                             </p:dataScroller>
                                         </h:panelGroup>
                                     </aside>          
                                     <aside  class="col-lg-4">    
-                                        
-                                        <h:panelGroup id="colunaFeed">
-                                            <p:dataScroller id="tabelaFeedDia" value="#" var="feed" mode="inline" style="border:none !important;" scrollHeight="460">   
-                                                <f:facet name="header">        
-                                                    Feed do Dia
-                                                </f:facet> 
-                                                <p:outputPanel>   
 
+                                        <h:panelGroup id="colunaFeed">
+                                            <p:dataScroller id="tabelaFeedDia" value="#{dashboardMB.listaFeedNoticia}" var="feed" mode="inline" style="border:none !important;" scrollHeight="460">   
+                                                <f:facet name="header">         
+                                                    <p:outputLabel value="Feed do Dia" style="font-weight: 300;"/>
+                                                    <p:commandLink id="btnAddFeed" action="#{dashboardMB.adicionarFeedNoticia()}" title="ADICIONAR" style="float:right;">
+                                                        <i class="fa fa-plus-circle" style="font-size:21px;color:#FFFFFF;"/>    
+                                                        <p:ajax event="dialogReturn" listener="#{dashboardMB.gerarListaFeed()}" update=":telaInicial:colunaFeed"/>    
+                                                    </p:commandLink>       
+                                                </f:facet>     
+                                                <p:outputPanel>     
+                                                    <h:panelGrid columns="1" style="width:100%;"     
+                                                                 class="dataScrollerBranco">    
+                                                        <h:panelGroup>                
+                                                            <h:panelGrid columns="2" style="width:90%;" columnClasses="tamanho12,tamanho80">  
+                                                                <img src="http://#{dashboardMB.ftpdados.hostupload}:82/ftproot/intime/fotos/usuario/#{feed.usuario.nomefoto}"  class="imagemusuario" />
+                                                                <h:outputLabel value="#{feed.usuario.nome}" style="margin-left:2%;color:#8A8A8A;"/>
+                                                            </h:panelGrid>    
+                                                            <p:outputLabel value="#{feed.descricao}" style="margin-left:15%;"/> 
+                                                            <hr/>
+                                                        </h:panelGroup>   
+                                                    </h:panelGrid> 
                                                 </p:outputPanel>  
-                                            </p:dataScroller>
+                                            </p:dataScroller>     
                                         </h:panelGroup>       
                                     </aside>         
-                                    <aside  class="col-lg-4">  
-                                        <div class="fb-page" data-href="https://www.facebook.com/financemateassessoria" data-tabs="timeline" data-small-header="true" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="false"><blockquote cite="https://www.facebook.com/financemateassessoria" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/financemateassessoria">Financemate Assessoria Contábil e Financeira</a></blockquote></div>
-                                    </aside>   
+                                    <aside  class="col-lg-4">     
+                                        <div style="height:350px;" class="fb-page" data-href="https://www.facebook.com/financemateassessoria" data-tabs="timeline" data-small-header="true" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="false"><blockquote cite="https://www.facebook.com/financemateassessoria" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/financemateassessoria">Financemate Assessoria Contábil e Financeira</a></blockquote></div>
+                                    </aside>      
                                 </div>       
                             </section>
                         </section>  

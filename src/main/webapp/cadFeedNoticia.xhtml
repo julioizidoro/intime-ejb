@@ -1,0 +1,26 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core" > 
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+        <link href="resources/css/bootstrap.min.css" rel="stylesheet"/>  
+        <link href="resources/css/style.css" rel="stylesheet"/>   
+    </h:head>    
+    <h:body style="background:#FFFFFF;" >    
+        <h:form id="cadFeed"  style="font-size: 11px;width:95%;margin-left:3%;" enctype="multipart/form-data"> 
+             <p:growl id="growl" showDetail="true" autoUpdate="true"  /><br/>  
+            <i class="fa fa-list-ul" style="font-size: 20px;"/>  
+            <p:outputLabel value="Feed do Dia" style="font-size: 20px;margin-left:2%;"/>
+            <br/>  
+            <h:inputTextarea class="comment-text-area"       
+                             value="#{dashboardMB.feednoticia.descricao}"   
+                             style="margin-left: 0%;color:#313D30;background:#E3DFC2;border:none;"
+                             id="motivoCancelamento" rows="4" />           
+            <br/>
+            <p:commandLink id="btnAdicionar" action="#{dashboardMB.salvarFeedNoticia()}" title="Adicionar" style="float: right;" update="growl">     
+                <i class="fa fa-check" style="color:#008B00;font-size:35px;"/>
+            </p:commandLink> 
+        </h:form>
+    </h:body>
+</html>

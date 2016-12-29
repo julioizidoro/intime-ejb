@@ -7,6 +7,7 @@ package br.com.intime.model;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -19,6 +20,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.Size;
 
 /**
@@ -41,7 +43,7 @@ public class Atividadeusuario implements Serializable {
     @Column(name = "dataconclusao")
     private LocalDate dataconclusao;
     @Column(name = "horaconclusao")
-    private LocalDate horaconclusao;
+    private LocalTime horaconclusao;
     @Size(max = 5)
     @Column(name = "tempo")
     private String tempo;
@@ -52,8 +54,9 @@ public class Atividadeusuario implements Serializable {
     private List<Atividadecomentario> atividadecomentarioList;
     @JoinColumn(name = "usuario_idusuario", referencedColumnName = "idusuario")
     @ManyToOne(optional = false)
-    private Usuario usuario;
-
+    private Usuario usuario; 
+    @Transient
+    private boolean concluido;
 
     public Atividadeusuario() {
     }
@@ -86,11 +89,11 @@ public class Atividadeusuario implements Serializable {
         this.dataconclusao = dataconclusao;
     }
 
-    public LocalDate getHoraconclusao() {
+    public LocalTime getHoraconclusao() {
         return horaconclusao;
     }
 
-    public void setHoraconclusao(LocalDate horaconclusao) {
+    public void setHoraconclusao(LocalTime horaconclusao) {
         this.horaconclusao = horaconclusao;
     }
 
@@ -118,7 +121,16 @@ public class Atividadeusuario implements Serializable {
 
     public void setAtividadecomentarioList(List<Atividadecomentario> atividadecomentarioList) {
         this.atividadecomentarioList = atividadecomentarioList;
+    } 
+    
+    public boolean isConcluido() {
+        return concluido;
     }
+
+    public void setConcluido(boolean concluido) {
+        this.concluido = concluido;
+    }
+
 
     @Override
     public int hashCode() {

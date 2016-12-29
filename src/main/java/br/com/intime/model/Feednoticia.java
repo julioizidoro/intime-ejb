@@ -6,6 +6,7 @@
 package br.com.intime.model;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -14,12 +15,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.ManyToOne; 
+import javax.persistence.Table; 
 import javax.validation.constraints.Size;
 
 /**
@@ -40,7 +37,7 @@ public class Feednoticia implements Serializable {
     @Column(name = "descricao")
     private String descricao;
     @Column(name = "data", nullable = false)
-    private Date data;
+    private LocalDate data;
     @JoinColumn(name = "usuario_idusuario", referencedColumnName = "idusuario")
     @ManyToOne(optional = false)
     private Usuario usuario;
@@ -68,11 +65,11 @@ public class Feednoticia implements Serializable {
         this.descricao = descricao;
     }
 
-    public Date getData() {
+    public LocalDate getData() {
         return data;
     }
 
-    public void setData(Date data) {
+    public void setData(LocalDate data) {
         this.data = data;
     }
 
