@@ -6,7 +6,7 @@
 package br.com.intime.model;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -36,7 +36,7 @@ public class Atividadeaguardando implements Serializable {
     @Column(name = "descricao")
     private String descricao;
     @Column(name = "dataretorno", nullable = false)
-    private Date dataretorno;
+    private LocalDate dataretorno;
     @JoinColumn(name = "motivoatraso_idmotivoatraso", referencedColumnName = "idmotivoatraso")
     @ManyToOne(optional = false)
     private Motivoatraso motivoatraso;
@@ -67,11 +67,11 @@ public class Atividadeaguardando implements Serializable {
         this.descricao = descricao;
     }
 
-    public Date getDataretorno() {
+    public LocalDate getDataretorno() {
         return dataretorno;
     }
 
-    public void setDataretorno(Date dataretorno) {
+    public void setDataretorno(LocalDate dataretorno) {
         this.dataretorno = dataretorno;
     }
 

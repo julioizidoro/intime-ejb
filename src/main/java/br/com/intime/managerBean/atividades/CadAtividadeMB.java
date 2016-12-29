@@ -8,8 +8,13 @@ package br.com.intime.managerBean.atividades;
 import br.com.intime.managerBean.usuario.UsuarioLogadoMB;
 import br.com.intime.model.Atividade;
 import br.com.intime.model.Atividadeusuario;
+import br.com.intime.model.Cliente;
+import br.com.intime.model.Departamento;
 import br.com.intime.repository.AtividadeUsuarioRepository;
+import br.com.intime.util.LocalDatePersistenceConverter;
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Date;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -32,9 +37,12 @@ public class CadAtividadeMB implements Serializable{
     @EJB
     private AtividadeUsuarioRepository atividadeUsuarioRepository;
     private Atividadeusuario atividadeusuario;
+    private Cliente cliente;
+    private Departamento departamento;
+    
     
     @PostConstruct
-    private void init(){
+    public void init(){
         FacesContext fc = FacesContext.getCurrentInstance();
 	HttpSession session = (HttpSession) fc.getExternalContext().getSession(false);
         atividadeusuario = (Atividadeusuario) session.getAttribute("atividadeusuario");
@@ -43,11 +51,16 @@ public class CadAtividadeMB implements Serializable{
             atividadeusuario.setAtividade(new Atividade());
             atividadeusuario.setSituacao("execucao");
             atividadeusuario.setUsuario(usuarioLogadoMB.getUsuario());
-            atividadeusuario.getAtividade().setDatalancamento(new Date());
+            atividadeusuario.getAtividade().setDatalancamento(LocalDate.now());
             atividadeusuario.getAtividade().setNotificacaohorario(false);
             atividadeusuario.getAtividade().setPrioridade("normal");
             atividadeusuario.getAtividade().setRotina(false);
             atividadeusuario.getAtividade().setSubdepartamento(usuarioLogadoMB.getUsuario().getSubdepartamento());
+            cliente = new Cliente();
+            departamento = new Departamento();
+        }else {
+            cliente = atividadeusuario.getAtividade().getCliente();
+            departamento = atividadeusuario.getAtividade().getSubdepartamento().getDepartamento();
         }
     }
 
@@ -58,9 +71,31 @@ public class CadAtividadeMB implements Serializable{
     public void setAtividadeusuario(Atividadeusuario atividadeusuario) {
         this.atividadeusuario = atividadeusuario;
     }
+
+    public Cliente getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
+    }
+
+    public Departamento getDepartamento() {
+        return departamento;
+    }
+
+    public void setDepartamento(Departamento departamento) {
+        this.departamento = departamento;
+    }
     
-    
-    
-    
+    public String salvar(){
+        if (atividadeusuario.getAtividade().getHoraexecucao()==null){
+            LocalTime hora = LocalTime.of(23 , 59 ,00);
+            atividadeusuario.getAtividade().setHoraexecucao(hora);
+        }
+        atividadeusuario.getAtividade().setCliente(cliente);
+        atividadeUsuarioRepository.update(atividadeusuario);
+        return "";
+    }
     
 }

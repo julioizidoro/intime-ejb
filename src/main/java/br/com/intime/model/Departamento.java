@@ -11,28 +11,24 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 
 /**
  *
- * @author Wolverine
+ * @author jizid
  */
 @Entity
 @Table(name = "departamento")
 public class Departamento implements Serializable {
-
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "departamento")
-    private List<Clientedepartamento> clientedepartamentoList;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -42,8 +38,8 @@ public class Departamento implements Serializable {
     private Integer iddepartamento;
     @Size(max = 100)
     @Column(name = "nome")
-    private String nome; 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "departamento")
+    private String nome;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "departamento")
     private List<Subdepartamento> subdepartamentoList;
     @JoinColumn(name = "usuario_idusuario", referencedColumnName = "idusuario")
     @ManyToOne(optional = false)
@@ -111,14 +107,6 @@ public class Departamento implements Serializable {
     @Override
     public String toString() {
         return "br.com.intime.model.Departamento[ iddepartamento=" + iddepartamento + " ]";
-    }
-
-    public List<Clientedepartamento> getClientedepartamentoList() {
-        return clientedepartamentoList;
-    }
-
-    public void setClientedepartamentoList(List<Clientedepartamento> clientedepartamentoList) {
-        this.clientedepartamentoList = clientedepartamentoList;
     }
     
 }

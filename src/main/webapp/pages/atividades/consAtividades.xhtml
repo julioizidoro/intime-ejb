@@ -84,11 +84,11 @@
                                                             )
                                                         </span>
                                                         <span id="data" class="task-title-sp" style="font-style: oblique;font-size: 13px;font-weight:400;">
-                                                            <p:outputLabel value="#{atividades.atividade.dataexecucao}">
-                                                                <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Sao_Paulo" />
+                                                            <p:outputLabel value="#{atividades.atividade.dataMostrar}">
+                                                                
                                                             </p:outputLabel>
                                                         </span>
-                                                        <span id="horario" class="task-title-sp" style="font-style: oblique;font-size: 13px;font-weight:400;">#{atividades.atividade.metatempo}</span>
+                                                        <span id="horario" class="task-title-sp" style="font-style: oblique;font-size: 13px;font-weight:400;">#{atividades.atividade.horaMostrar}</span>
                                                         <h:panelGroup id="importante" rendered="false">
                                                             <span class="task-title-sp">
                                                                 <i class="fa fa-exclamation-triangle" style="font-size: 14px;color:#FF0000;cursor: default;"></i> 

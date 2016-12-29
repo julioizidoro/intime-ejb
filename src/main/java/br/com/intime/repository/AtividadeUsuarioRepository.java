@@ -14,7 +14,4 @@ public class AtividadeUsuarioRepository extends AbstractRepository<Atividadeusua
     public AtividadeUsuarioRepository() {
         super(Atividadeusuario.class);
     }
-    
-    
-    
 }

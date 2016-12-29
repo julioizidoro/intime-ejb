@@ -6,7 +6,7 @@
 package br.com.intime.model;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -38,8 +38,10 @@ public class Atividadeusuario implements Serializable {
     @Size(max = 50)
     @Column(name = "situacao")
     private String situacao;
-    @Column(name = "dataconclusao", nullable = false)
-    private Date dataconclusao;
+    @Column(name = "dataconclusao")
+    private LocalDate dataconclusao;
+    @Column(name = "horaconclusao")
+    private LocalDate horaconclusao;
     @Size(max = 5)
     @Column(name = "tempo")
     private String tempo;
@@ -76,13 +78,23 @@ public class Atividadeusuario implements Serializable {
         this.situacao = situacao;
     }
 
-    public Date getDataconclusao() {
+    public LocalDate getDataconclusao() {
         return dataconclusao;
     }
 
-    public void setDataconclusao(Date dataconclusao) {
+    public void setDataconclusao(LocalDate dataconclusao) {
         this.dataconclusao = dataconclusao;
     }
+
+    public LocalDate getHoraconclusao() {
+        return horaconclusao;
+    }
+
+    public void setHoraconclusao(LocalDate horaconclusao) {
+        this.horaconclusao = horaconclusao;
+    }
+
+    
 
     public String getTempo() {
         return tempo;

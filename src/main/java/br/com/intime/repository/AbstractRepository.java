@@ -1,5 +1,6 @@
 package br.com.intime.repository;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -33,9 +34,24 @@ public abstract class AbstractRepository<T> {
     public T find(Integer id) {
         return (T) em.find(clazz, id);
     }
-
+    
     public List<T> list(String sql) {
         List<T> list = em.createQuery(sql).getResultList();
+        if (list==null){
+            list = new ArrayList<>();
+        }
+        return list;
+    }
+
+    public List<T> list(String sql, LocalDate dataInicial, LocalDate dataFinal) {
+        Query q = em.createQuery(sql);
+        if (dataInicial!=null){
+            q.setParameter("dataInicial", dataInicial);
+        }
+        if (dataFinal!=null){
+            q.setParameter("dataFinal", dataFinal);
+        }
+        List<T> list = q.getResultList();
         if (list==null){
             list = new ArrayList<>();
         }

@@ -6,11 +6,13 @@
 package br.com.intime.repository;
 
 import br.com.intime.model.Atividadeatraso;
+import javax.ejb.Stateless;
 
 /**
  *
  * @author jizid
  */
+@Stateless
 public class AtvidadeAtrasoRepository extends AbstractRepository<Atividadeatraso>{
 
     public AtvidadeAtrasoRepository() {

@@ -1,11 +1,15 @@
 package br.com.intime.managerBean.atividades;
 
 import br.com.intime.managerBean.usuario.UsuarioLogadoMB;
+import br.com.intime.model.Atividadeaguardando;
 import br.com.intime.model.Atividadeusuario; 
+import br.com.intime.repository.AtividadeAguardandoRepository;
 import br.com.intime.repository.AtividadeUsuarioRepository;
-import br.com.intime.util.Formatacao;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +29,8 @@ public class AtividadesMB implements Serializable{
     private List<Atividadeusuario> listaAtividade;
     @EJB
     private AtividadeUsuarioRepository atividadeUsuarioRepository;
+    @EJB
+    private AtividadeAguardandoRepository atividadeAguardandoRepository;
     
     //btn executar atividade
     private String play="true";
@@ -40,8 +46,8 @@ public class AtividadesMB implements Serializable{
     private String aguardando="#E0E0E0"; 
     
     //Data para consultas
-    private Date dataInicial;
-    private Date dataFinal;
+    private LocalDate dataInicial;
+    private LocalDate dataFinal;
     
     private String buscar;
     
@@ -168,24 +174,30 @@ public class AtividadesMB implements Serializable{
             seteDias="#E0E0E0";
             todos="#E0E0E0";
             aguardando="#E0E0E0";
-            dataInicial = new Date();
-            dataFinal = new Date();
+            dataInicial = LocalDate.now();
+            dataFinal = LocalDate.now();
+            gerarListaAtivadades();
         }else if(funcao.equalsIgnoreCase("amanha")){
             hoje="#E0E0E0";
             amanha="#cba135";
             seteDias="#E0E0E0";
             todos="#E0E0E0";
             aguardando="#E0E0E0";
-            dataInicial = Formatacao.SomarDiasData(new Date(), 1);
-            dataFinal = Formatacao.SomarDiasData(new Date(), 1);
+            LocalDate hoje = LocalDate.now();
+            dataInicial = hoje.plusDays(1);
+            dataFinal = hoje.plusDays(1);
+            gerarListaAtivadades();
         }else if(funcao.equalsIgnoreCase("seteDias")){
             hoje="#E0E0E0";  
             amanha="#E0E0E0";
             seteDias="#cba135";
             todos="#E0E0E0";
             aguardando="#E0E0E0";
-            dataInicial = new Date();
-            dataFinal = Formatacao.SomarDiasData(new Date(), 7);
+            LocalDate hoje = LocalDate.now();
+            dataInicial = LocalDate.now();
+            dataFinal = hoje.plusDays(7);
+            gerarListaAtivadades();
+            gerarListaAtivadades();
         }else if(funcao.equalsIgnoreCase("todos")){
             hoje="#E0E0E0";
             amanha="#E0E0E0";
@@ -194,14 +206,15 @@ public class AtividadesMB implements Serializable{
             aguardando="#E0E0E0";
             dataInicial = null;
             dataFinal = null;
+            gerarListaAtivadades();
         }else if(funcao.equalsIgnoreCase("aguardando")){
             hoje="#E0E0E0";
             amanha="#E0E0E0";
             seteDias="#E0E0E0";
             todos="#E0E0E0";
             aguardando="#cba135";
+            gerarListaAtivadadesAguardando();
         }
-        gerarListaAtivadades();
     }
     
     public String adicionarAtividades() {
@@ -227,28 +240,78 @@ public class AtividadesMB implements Serializable{
     
     public void gerarListaAtivadades(){
         if(buscar==null){
-            buscar="";
+            buscar=" ";
         }
         String sql ="SELECT a FROM Atividadeusuario a where a.usuario.idusuario=" + usuarioLogadoMB.getUsuario().getIdusuario() 
-                + " and a.atividade.descricao like '" + buscar + "%' ";
+                + " and a.atividade.descricao like '%" + buscar + "%' ";
         String sqlConcluida ="";
         String sqlData ="";
         String sqlOrderBy="";
         if ((naoconcluidas.equalsIgnoreCase("true")) && (concluidas.equalsIgnoreCase("false"))){
             sqlConcluida = " and a.situacao<>'Concluida' ";
             if (dataInicial!=null){
-                sqlData = " and a.atividade.dataexecucao>='" + Formatacao.ConvercaoDataSql(dataInicial) + "' and a.atividade.dataexecucao<='" + Formatacao.ConvercaoDataSql(dataFinal) + "' ";
+                sqlData = " and a.atividade.dataexecucao>= :dataInicial and a.atividade.dataexecucao<= :dataFinal ";
             }
             sqlOrderBy = " ORDER BY a.atividade.dataexecucao";
         }else {
             sqlConcluida = " and a.situacao='Concluida' ";
             if (dataInicial!=null){
-                sqlData = " and a.dataconclusao>='" + Formatacao.ConvercaoDataSql(dataInicial) + "' and a.dataconclusao<='" + Formatacao.ConvercaoDataSql(dataFinal) + "' ";
+                sqlData = " and a.dataconclusao>= :dataInicial and a.dataconclusao<= :dataFinal ";
             }
             sqlOrderBy = " ORDER BY a.dataconclusao";
         }
         sql = sql + sqlConcluida + sqlData + sqlOrderBy;
-        listaAtividade = atividadeUsuarioRepository.list(sql);
+        listaAtividade = atividadeUsuarioRepository.list(sql, dataInicial, dataFinal);
+        if ((naoconcluidas.equalsIgnoreCase("true")) && (concluidas.equalsIgnoreCase("false"))){
+            gerarDataHoraMostrarNaoConcluidas();
+        }else {
+            
+        }
+    }
+    
+    public void gerarListaAtivadadesAguardando(){
+        if(buscar==null){
+            buscar=" ";
+        }
+        String sql = "SELECT a FROM Atividadeaguardando a where a.atividadeusuario.usuario.idusuario=" + usuarioLogadoMB.getUsuario().getIdusuario()
+                + " a.dataretotno>= :dataInicial "
+                + " a.atividadeusuario.atividade.descricao like '%" + buscar + "%'"
+                + "' ORDER BY a.dataretorno ";
+        List<Atividadeaguardando> lista = atividadeAguardandoRepository.list(sql, LocalDate.now(), null);
+        if (lista!=null){
+            listaAtividade = new ArrayList<Atividadeusuario>();
+            for(int i=0;i<lista.size();i++){
+                listaAtividade.add(lista.get(i).getAtividadeusuario());
+            }
+        }
+    }
+    
+    public void gerarDataHoraMostrarNaoConcluidas(){
+        if (listaAtividade!=null){
+            DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM");
+            for(int i=0;i<listaAtividade.size();i++){
+                LocalDate data = listaAtividade.get(i).getAtividade().getDataexecucao();
+                LocalTime hora = listaAtividade.get(i).getAtividade().getHoraexecucao();
+                String dataMostrar = data.format(formatador);
+                String horaMostrar ="";
+                listaAtividade.get(i).getAtividade().setDataMostrar(dataMostrar);
+                if ((hora.getHour()==23) && (hora.getMinute()==59)){
+                    horaMostrar = "";
+                }else {
+                    int ih = hora.getHour();
+                    int im = hora.getMinute();
+                    if (ih<=9){
+                        horaMostrar = "0";
+                    }
+                    horaMostrar = horaMostrar + String.valueOf(ih) + ":";
+                    if (im<=9){
+                        horaMostrar = horaMostrar + "0";
+                    }
+                    horaMostrar = horaMostrar + String.valueOf(im);
+                }
+                listaAtividade.get(i).getAtividade().setHoraMostrar(horaMostrar);
+            }
+        }
     }
     
   

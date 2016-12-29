@@ -19,14 +19,19 @@
             </h:panelGrid>
             <br/>
             <h:panelGrid columns="3" columnClasses="tamanho20, tamanho30, tamanho30" style="width: 100%;font-size: 12px;">
-                <p:inputMask id="data" placeholder="DD/MM/AAAA" mask="99/99/9999" value="#{cadClienteMB.cliente.email}" style="width:95%;"/>
-                <p:selectOneMenu id="departamento"  style="width:91%;"  value="#"
+                <p:inputMask id="data" placeholder="DD/MM/AAAA" mask="99/99/9999" value="#{cadAtividadeMB.atividadeusuario.atividade.dataexecucao}" style="width:95%;"/>
+                <p:selectOneMenu id="departamento"  style="width:91%;"  value="#{cadAtividadeMB.departamento}" converter="ClienteDepartamentoConverter"
                                  filter="true" filterMatchMode="contains" panelStyle="width:180px" >
                     <f:selectItem  itemLabel="Departamento" itemValue="0" noSelectionOption="true"/>    
+                    <f:selectItems  value="#{cadAtividadeMB.cliente.clientedepartamentoList}" var="departamentoselecionado" itemLabel="#{departamentoselecionado.departamento.nome}" itemValue="#{departamentoselecionado.departamento}"/>
+                    <f:attribute name="listaClienteDepartamento" value="#{cadAtividadeMB.cliente.clientedepartamentoList}"/>
+                    <p:ajax event="change" update="subdepartamento"/>
                 </p:selectOneMenu>
-                <p:selectOneMenu id="subdepartamento"  style="width:95%;"  value="#"
+                <p:selectOneMenu id="subdepartamento"  style="width:95%;"  value="#{cadAtividadeMB.atividadeusuario.atividade.subdepartamento}" converter="SubDepartamentoConverter"
                                  filter="true" filterMatchMode="contains" panelStyle="width:180px" >
                     <f:selectItem  itemLabel="Sub-Departamento" itemValue="0" noSelectionOption="true"/>    
+                    <f:selectItems  value="#{cadAtividadeMB.departamento.subdepartamentoList}" var="subdepartamentoselecionado" itemLabel="#{subdepartamentoselecionado.nome}" itemValue="#{subdepartamentoselecionado}"/>
+                    <f:attribute name="listaSubDepartamento" value="#{cadAtividadeMB.departamento.subdepartamentoList}"/>
                 </p:selectOneMenu>
             </h:panelGrid>
             <br/>         
@@ -56,7 +61,7 @@
                     </p:commandLink>
                 </h:panelGroup>
 
-                <p:commandLink id="btnAdicionar" action="#" title="Adicionar">
+                <p:commandLink id="btnAdicionar" action="#{cadAtividadeMB.salvar()}" title="Adicionar">
                     <i class="fa fa-check" style="color:#008B00;font-size:60px;"/>
                 </p:commandLink>
             </h:panelGrid>

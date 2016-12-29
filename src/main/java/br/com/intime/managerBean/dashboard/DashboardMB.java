@@ -11,6 +11,7 @@ import br.com.intime.repository.NotaRepository;
 import br.com.intime.repository.NotificacoesRepository;
 import br.com.intime.util.Formatacao;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -158,30 +159,29 @@ public class DashboardMB implements Serializable {
     }
 
     public void gerarListaAtivadadesSemana() {
-        Date dataInicial = new Date();
-        Date dataFinal = Formatacao.SomarDiasData(new Date(), 7);
+        LocalDate dataInicial = LocalDate.now();
+        LocalDate dataFinal = LocalDate.now().plusDays(7);
         String sql = "SELECT a FROM Atividadeusuario a where a.usuario.idusuario=" + usuarioLogadoMB.getUsuario().getIdusuario()
-                + " and a.situacao='Concluida' and a.atividade.dataexecucao>='" + Formatacao.ConvercaoDataSql(dataInicial)
-                + "' and a.atividade.dataexecucao<='" + Formatacao.ConvercaoDataSql(dataFinal)
-                + "' ORDER BY a.atividade.dataexecucao";
-        listaAtividadesSemana = atividadeUsuarioRepository.list(sql);
+                + " and a.situacao='Concluida' and a.atividade.dataexecucao>= :dataInicial "
+                + " and a.atividade.dataexecucao<= :dataFinal "
+                + " ORDER BY a.atividade.dataexecucao";
+        listaAtividadesSemana = atividadeUsuarioRepository.list(sql, dataInicial, dataFinal);
     }
 
     public void gerarListaAtivadadesAtraso() {
-        Date data = new Date();
+        LocalDate data = LocalDate.now();
         String sql = "SELECT a FROM Atividadeusuario a where a.usuario.idusuario=" + usuarioLogadoMB.getUsuario().getIdusuario()
-                + " and a.situacao<>'Concluida' and a.atividade.dataexecucao<'" + Formatacao.ConvercaoDataSql(data)
-                + "' ORDER BY a.atividade.dataexecucao";
-        listaAtividadesAtrasadas = atividadeUsuarioRepository.list(sql);
+                + " and a.situacao<>'Concluida' and a.atividade.dataexecucao< :dataInicial "
+                + " ORDER BY a.atividade.dataexecucao";
+        listaAtividadesAtrasadas = atividadeUsuarioRepository.list(sql, data, null);
     }
 
     public void gerarListaAtivadadesHoje() {
-        Date data = new Date();
+        LocalDate data = LocalDate.now();
         String sql = "SELECT a FROM Atividadeusuario a where a.usuario.idusuario=" + usuarioLogadoMB.getUsuario().getIdusuario()
-                + " and a.situacao<>'Concluida' and a.atividade.dataexecucao>='" + Formatacao.ConvercaoDataSql(data)
-                + "' and a.atividade.dataexecucao<='" + Formatacao.ConvercaoDataSql(data)
-                + "' ORDER BY a.atividade.dataexecucao";
-        listaAtividadesHoje = atividadeUsuarioRepository.list(sql);
+                + " and a.situacao<>'Concluida' and a.atividade.dataexecucao= :dataInicial "
+                + " ORDER BY a.atividade.dataexecucao";
+        listaAtividadesHoje = atividadeUsuarioRepository.list(sql, data, null);
     }
 
     public int retornarAtividadesAtrasadas() {

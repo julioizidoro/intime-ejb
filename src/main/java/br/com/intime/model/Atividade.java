@@ -6,7 +6,8 @@
 package br.com.intime.model;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,6 +17,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.Size;
 
 /**
@@ -35,15 +37,17 @@ public class Atividade implements Serializable {
     @Size(max = 100)
     @Column(name = "descricao")
     private String descricao;
-    @Column(name = "datalancamento", nullable = false)
-    private Date datalancamento;
-    @Column(name = "dataexecucao", nullable = false)
-    private Date dataexecucao;
+    @Column(name = "datalancamento")
+    private LocalDate datalancamento;
+    @Column(name = "dataexecucao")
+    private LocalDate dataexecucao;
+    @Column(name = "horaexecucao")
+    private LocalTime horaexecucao;
     @Size(max = 7)
     @Column(name = "prioridade")
     private String prioridade;
-    @Column(name = "metatempo" , nullable = false)
-    private Date metatempo;
+    @Column(name = "metatempo")
+    private LocalTime metatempo;
     @Column(name = "rotina")
     private Boolean rotina;
     @Column(name = "notificacaohorario")
@@ -54,6 +58,10 @@ public class Atividade implements Serializable {
     @JoinColumn(name = "subdepartamento_idsubdepartamento", referencedColumnName = "idsubdepartamento")
     @ManyToOne(optional = false)
     private Subdepartamento subdepartamento;
+    @Transient
+    private String dataMostrar;
+    @Transient 
+    private String horaMostrar;
     
     public Atividade() {
     }
@@ -78,21 +86,31 @@ public class Atividade implements Serializable {
         this.descricao = descricao;
     }
 
-    public Date getDatalancamento() {
+    public LocalDate getDatalancamento() {
         return datalancamento;
     }
 
-    public void setDatalancamento(Date datalancamento) {
+    public void setDatalancamento(LocalDate datalancamento) {
         this.datalancamento = datalancamento;
     }
 
-    public Date getDataexecucao() {
+    public LocalDate getDataexecucao() {
         return dataexecucao;
     }
 
-    public void setDataexecucao(Date dataexecucao) {
+    public void setDataexecucao(LocalDate dataexecucao) {
         this.dataexecucao = dataexecucao;
     }
+
+    public LocalTime getHoraexecucao() {
+        return horaexecucao;
+    }
+
+    public void setHoraexecucao(LocalTime horaexecucao) {
+        this.horaexecucao = horaexecucao;
+    }
+
+    
 
     public String getPrioridade() {
         return prioridade;
@@ -102,13 +120,15 @@ public class Atividade implements Serializable {
         this.prioridade = prioridade;
     }
 
-    public Date getMetatempo() {
+    public LocalTime getMetatempo() {
         return metatempo;
     }
 
-    public void setMetatempo(Date metatempo) {
+    public void setMetatempo(LocalTime metatempo) {
         this.metatempo = metatempo;
     }
+
+    
 
     public Boolean getRotina() {
         return rotina;
@@ -140,6 +160,22 @@ public class Atividade implements Serializable {
 
     public void setSubdepartamento(Subdepartamento subdepartamento) {
         this.subdepartamento = subdepartamento;
+    }
+
+    public String getDataMostrar() {
+        return dataMostrar;
+    }
+
+    public void setDataMostrar(String dataMostrar) {
+        this.dataMostrar = dataMostrar;
+    }
+
+    public String getHoraMostrar() {
+        return horaMostrar;
+    }
+
+    public void setHoraMostrar(String horaMostrar) {
+        this.horaMostrar = horaMostrar;
     }
 
     @Override
