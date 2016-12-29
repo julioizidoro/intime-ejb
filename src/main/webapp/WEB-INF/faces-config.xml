@@ -75,6 +75,22 @@
             <redirect />
         </navigation-case> 
     </navigation-rule>
+    <navigation-rule>
+        <from-view-id>*</from-view-id>
+        <navigation-case>
+            <from-outcome>consRotina</from-outcome> 
+            <to-view-id>/pages/rotina/consRotina.xhtml</to-view-id>
+            <redirect />
+        </navigation-case> 
+    </navigation-rule>
+    <navigation-rule>
+        <from-view-id>*</from-view-id>
+        <navigation-case>
+            <from-outcome>consAgendaRotina</from-outcome> 
+            <to-view-id>/pages/rotina/consAgendaRotina.xhtml</to-view-id>
+            <redirect />
+        </navigation-case> 
+    </navigation-rule>
     <application>
         <action-listener>
             org.primefaces.application.DialogActionListener
