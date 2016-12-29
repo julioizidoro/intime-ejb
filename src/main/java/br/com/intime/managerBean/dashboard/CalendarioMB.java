@@ -21,7 +21,7 @@ import org.primefaces.model.ScheduleModel;
  
 @ManagedBean
 @ViewScoped
-public class ScheduleView implements Serializable {
+public class CalendarioMB implements Serializable {
  
     private ScheduleModel eventModel;
      
@@ -32,10 +32,7 @@ public class ScheduleView implements Serializable {
     @PostConstruct
     public void init() {
         eventModel = new DefaultScheduleModel();
-        eventModel.addEvent(new DefaultScheduleEvent("teste intime", previousDay8Pm(), previousDay11Pm()));
-        eventModel.addEvent(new DefaultScheduleEvent("teste atividade", today1Pm(), today6Pm()));
-        eventModel.addEvent(new DefaultScheduleEvent("desenvolver dashboard", nextDay9Am(), nextDay11Am()));
-        eventModel.addEvent(new DefaultScheduleEvent("teste", theDayAfter3Pm(), fourDaysLater3pm()));
+        eventModel.addEvent(new DefaultScheduleEvent("teste intime", previousDay8Pm(), previousDay11Pm())); 
          
         lazyEventModel = new LazyScheduleModel() {
              

@@ -324,14 +324,14 @@ public class DashboardMB implements Serializable {
     
     public boolean mostrarBotaoPlay(String situacao){
         if(situacao.equalsIgnoreCase("Play")){
-            return false;
-        }else return true;
+            return true;
+        }else return false;
     }
     
     public boolean mostrarBotaoPause(String situacao){
         if(situacao.equalsIgnoreCase("Pause")){
-            return false;
-        }else return true;
+            return true;
+        }else return false;
     }
     
     

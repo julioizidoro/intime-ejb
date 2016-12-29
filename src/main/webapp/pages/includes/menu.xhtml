@@ -16,8 +16,9 @@
                     <p:commandLink id="btnVisualizarNotificacoes" class="dropdown-toggle" action="#{dashboardMB.visualizarNotificacoes()}"> 
                         <i class="fa fa-bell"></i>
                         <span class="badge bg-important"><p:outputLabel value="#{dashboardMB.retornarNumeroNotificacoes()}"/></span>
+                        <p:ajax event="dialogReturn" listener="#{dashboardMB.gerarListaNotificacoes()}" update=":inicial:btnVisualizarNotificacoes"/>
                     </p:commandLink>   
-                </li> 
+                </li>   
             </ul>  
         </div>
         <div align="center"  class="nav logo" >
@@ -88,11 +89,11 @@
                         <span style="margin-left:2%;font-size:15px;">Gerencial</span>
                     </a>
                     <ul class="sub">
-                        <li><p:commandLink value="Dashboard Gerencial" action="#" style="font-size: 13px;"/></li>
-                        <li><p:commandLink value="Rotinas do Departamento" style="font-size: 13px;" action="#"/></li>
-                        <li><p:commandLink value="Atividades da Equipe" style="font-size: 13px;" action="#"/></li>
+                        <li><p:commandLink value="Dashboard Gerencial" action="#" style="font-size: 13px;margin-left: -2px;"/></li>
+                        <li><p:commandLink value="Rotinas do Departamento" style="font-size:12px;margin-left: -2px;" action="#"/></li>
+                        <li><p:commandLink value="Atividades da Equipe" style="font-size: 13px;margin-left: -2px;" action="#"/></li>
                     </ul>   
-                </li>   
+                </li>     
                 <li class="sub-menu">   
                     <a href="javascript:;"  >  
                         <i class="fa fa-print"></i>   

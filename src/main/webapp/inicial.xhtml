@@ -227,6 +227,7 @@
                                                     <p:commandLink action="#{dashboardMB.visualizarNotificacoes()}">
                                                         <i class="fa fa-bell" style="color:#8E9398;font-size: 14px;"/>
                                                         <p:outputLabel value="Notificações" style="margin-left: 1%;"/>
+                                                        <p:ajax event="dialogReturn" listener="#{dashboardMB.gerarListaNotificacoes()}" update=":telaInicial:btnVisualizarNotificacoes"/>
                                                     </p:commandLink> <br/><br/>
                                                     <p:commandLink action="#{menuMB.cliente()}">  
                                                         <i class="fa fa-user" style="color: #8E9398;font-size: 14px;"/>
@@ -249,11 +250,11 @@
                                             <br></br>   
                                             <section class="panel" style="width: 100%;">       
                                                 <div>            
-                                                    <p:schedule id="schedule" value="#{scheduleView.eventModel}" locale="pt">   
-                                                        <p:ajax event="dateSelect" listener="#{scheduleView.onDateSelect}" />
-                                                        <p:ajax event="eventSelect" listener="#{scheduleView.onEventSelect}"  />
-                                                        <p:ajax event="eventMove" listener="#{scheduleView.onEventMove}" update="growl" />
-                                                        <p:ajax event="eventResize" listener="#{scheduleView.onEventResize}" update="growl" /> 
+                                                    <p:schedule id="schedule" value="#{calendarioMB.eventModel}" locale="pt">   
+                                                        <p:ajax event="dateSelect" listener="#{calendarioMB.onDateSelect}" />
+                                                        <p:ajax event="eventSelect" listener="#{calendarioMB.onEventSelect}"  />
+                                                        <p:ajax event="eventMove" listener="#{calendarioMB.onEventMove}" update="growl" />
+                                                        <p:ajax event="eventResize" listener="#{calendarioMB.onEventResize}" update="growl" /> 
                                                     </p:schedule>
                                                 </div>
                                             </section>
@@ -304,20 +305,20 @@
                                                 <p:outputPanel>    
                                                     <h:panelGrid columns="1" style="width:100%;"     
                                                                  class="dataScrollerBranco">   
-                                                        <h:panelGroup > 
-                                                            <h:panelGroup rendered="#{dashboardMB.mostrarBotaoPlay(atividades.situacao)}" > 
-                                                                <p:commandLink id="btnPlay" action="#{dashboardMB.mudarSituacaoAtividade(atividades, 'Play')}" update=":telaInicial:colunaTodoList" style="float: left;margin-top: -0.6%;margin-left:1.5%;">
+                                                        <h:panelGroup> 
+                                                            <h:panelGroup id="painelbtnPlay" rendered="#{dashboardMB.mostrarBotaoPlay(atividades.situacao)}" > 
+                                                                <p:commandLink id="btnPlay" action="#{dashboardMB.mudarSituacaoAtividade(atividades, 'Pause')}" update=":telaInicial:colunaTodoList, painelbtnPlay, painelbtnPause" style="float: left;margin-top: -0.6%;margin-left:1.5%;">
                                                                     <i class="fa fa-play" style="font-size: 14px;color:#B0B5B9;"></i>       
-                                                                </p:commandLink>    
+                                                                </p:commandLink>           
                                                             </h:panelGroup>         
-                                                            <h:panelGroup rendered="#{dashboardMB.mostrarBotaoPause(atividades.situacao)}"> 
-                                                                <p:commandLink id="btnPause" action="#{dashboardMB.mudarSituacaoAtividade(atividades, 'Pause')}" update=":telaInicial:colunaTodoList" style="float: left;margin-top:-0.6%;margin-left:1.5%;">
+                                                            <h:panelGroup id="painelbtnPause" rendered="#{dashboardMB.mostrarBotaoPause(atividades.situacao)}"> 
+                                                                <p:commandLink id="btnPause" action="#{dashboardMB.mudarSituacaoAtividade(atividades, 'Play')}" update=":telaInicial:colunaTodoList, painelbtnPlay, painelbtnPause" style="float: left;margin-top:-0.6%;margin-left:1.5%;">
                                                                     <i class="fa fa-pause" style="font-size: 14px;color:#B0B5B9;"></i>            
-                                                                </p:commandLink>                                  
+                                                                </p:commandLink>                                    
                                                             </h:panelGroup>        
-                                                            <input id="cbxConcluido" type="checkbox" class="list-child" value="#{atividades.concluido}"  style="float: left;margin-top:0.6%;margin-left:1.5%;"> 
-                                                                <p:ajax event="click" listener="#{dashboardMB.mudarSituacaoAtividade(atividades, 'Concluida')}" update=":telaInicial:colunaTodoList, :telaInicial:colunaNumTarefas, :telaInicial:calendarioAtividades"/>
-                                                            </input>
+                                                            <p:selectBooleanCheckbox  id="cbxConcluido" class="list-child" value="#{atividades.concluido}"  style="float: left;margin-top:0.6%;margin-left:1.5%;"> 
+                                                                <p:ajax event="blur" listener="#{dashboardMB.mudarSituacaoAtividade(atividades, 'Concluida')}" update=":telaInicial:colunaTodoList, :telaInicial:colunaNumTarefas, :telaInicial:calendarioAtividades"/>
+                                                            </p:selectBooleanCheckbox>
                                                             <h:outputLabel id="nome" value="#{atividades.atividade.descricao}" class="task-title-sp" style="margin-left: 2%;"/>       
                                                         </h:panelGroup>  
                                                     </h:panelGrid>      

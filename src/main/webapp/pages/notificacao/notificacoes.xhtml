@@ -6,7 +6,8 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
         <link href="../../resources/css/bootstrap.min.css" rel="stylesheet"/>  
         <link href="../../resources/css/style.css" rel="stylesheet"/> 
-    </h:head>
+        <link href="../../resources/css/css.css" rel="stylesheet"/> 
+    </h:head>  
     <h:body style="background:#FFFFFF;" > 
         <h:form id="cadTarefas"  style="font-size: 11px;width:95%;margin-left:3%;" enctype="multipart/form-data"> 
             <title style="background: #cf7000">
@@ -16,10 +17,10 @@
             <p:growl id="growl" showDetail="true" autoUpdate="true"  />
             <p:dataScroller id="tabelaNotificacoes" value="#{notificacaoMB.listaNotificacoes}" var="notificacoes" mode="inline" style="border:none !important;" scrollHeight="250">  
                 <p:outputPanel>    
-                    <h:panelGrid columns="2" columnClasses="tamanho80,tamanho12" class="dataScrollerBranco">
+                    <h:panelGrid columns="2" style="width: 100%;" columnClasses="tamanho80,tamanho12" class="dataScrollerBranco">
                         <p:outputLabel value="#{notificacoes.descricao}"/>
-
-                        <p:commandLink id="btnAdicionar" action="#{notificacaoMB.visualizarNotificacao(notificacoes)}" title="Adicionar" style="float: right;" update="growl">     
+   
+                        <p:commandLink id="btnAdicionar" action="#{notificacaoMB.visualizarNotificacao(notificacoes)}" title="Adicionar" style="float: right;" update=":cadTarefas:growl, :cadTarefas:tabelaNotificacoes">     
                             <i class="fa fa-check" style="color:#008B00;font-size:35px;"/>
                         </p:commandLink> 
                     </h:panelGrid>
