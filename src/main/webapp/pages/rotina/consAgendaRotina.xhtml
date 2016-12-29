@@ -1,0 +1,91 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets" 
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <ui:composition template="/pages/templates/default.xhtml">
+        <ui:define name="corpo">
+            <h:form id="consRotina">   
+                <p:growl id="growl" showDetail="true" sticky="true" />
+                <h:panelGrid columns="2" style="width: 100%;margin-top: -1.5%;">
+                    <h:panelGroup> 
+                        <p:commandLink id="btnHome" action="#{usuarioLogadoMB.paginainicial()}" style="margin-left:0.5%;" class="hoverTextos">
+                            <i class="fa fa-home"/>
+                            <p:outputLabel value="Home" style="margin-left:0.5%;font-weight: inherit;"/>
+                        </p:commandLink>
+                        <p:outputLabel value="/" style="margin-left:0.5%;color:#797979;font-weight: inherit;"/>
+                        <p:outputLabel value="Agenda de Rotina" style="margin-left:0.5%;color:#797979;font-weight: inherit;"/>
+                    </h:panelGroup> 
+                </h:panelGrid> 
+                <br/> 
+                <p:outputLabel value="Agenda de Rotinas" style="margin-left:0.5%;color:#797979;font-weight: inherit;font-size: 22px;"/>
+                <h:panelGrid id="painelBtn" columns="1" style="width: 100%;font-size: 12px;" >    
+                    <h:panelGroup style="text-align: left;">
+                        <p:selectOneMenu id="departamento"  style="width:20%;" value="#{agendaRotinaMB.departamento}" converter="DepartamentoConverter"
+                                         filter="true" filterMatchMode="contains" panelStyle="width:180px" >
+                            <f:selectItem  itemLabel="Selecione" itemValue="0" noSelectionOption="true"/> 
+                            <f:selectItems  value="#{agendaRotinaMB.listaDepartamento}" var="d" itemLabel="#{d.nome}" itemValue="#{d}"/>
+                            <f:attribute name="listaDepartamento" value="#{agendaRotinaMB.listaDepartamento}"/>
+                        </p:selectOneMenu>
+                        <p:selectOneMenu id="subdepartamento"  style="width:20%;margin-left: 2%;" value="#{agendaRotinaMB.subDepartamento}" converter="SubDepartamentoConverter"
+                                         filter="true" filterMatchMode="contains" panelStyle="width:180px" >
+                            <f:selectItem  itemLabel="Selecione" itemValue="0" noSelectionOption="true"/> 
+                            <f:selectItems  value="#{agendaRotinaMB.listaSubDepartamento}" var="sd" itemLabel="#{sd.nome}" itemValue="#{sd}"/>
+                            <f:attribute name="listaSubDepartamento" value="#{agendaRotinaMB.listaSubDepartamento}"/>
+                        </p:selectOneMenu>
+                       
+                        <p:commandLink id="btnSalvar" style="margin-left: 2%;" title="Salvar" action="#{rotinaMB.agendaRotina()}" class="hoverTextos">
+                            <i class="fa fa-search" style="font-size:35px;"/>  
+                        </p:commandLink>  
+                    </h:panelGroup>
+                     
+                </h:panelGrid>
+                <div class="row" >
+                    <div class="col-md-12">
+                        <section class="panel tasks-widget" style="width:100%;">
+                            <div class="panel-body">
+                                <div class="task-content">
+                                    <p:dataTable var="car" value="#" scrollable="true" scrollHeight="150" style="border: none;">
+                                       <p:column headerText="" style="text-align: center;width: 10%;border: none;">
+                                           <h:outputText value="Rotina X" />
+                                        </p:column>
+                                       <p:column headerText="Apelido 1"  sortBy="#" style="width: 25%;border: none;text-align: center;">
+                                           <p:commandLink id="btnApelido1" title="Apelido" action="#" class="hoverTextos">
+                                                <i class="fa fa-check-circle" style="font-size:22px;color:green;"/> 
+                                            </p:commandLink>
+                                        </p:column>
+                                       <p:column headerText="Apelido 2" sortBy="#"  style="text-align: center;border: none;">
+                                            <p:commandLink id="btnApelido2" title="Apelido" action="#{agendaRotinaMB.consultarRotinaAtrasada()}"  class="hoverTextos">
+                                                <i class="fa fa-times-circle" style="font-size:22px;color:red;"/> 
+                                            </p:commandLink>
+                                        </p:column>
+                                       <p:column headerText="Apelido 3" sortBy="#"  style="text-align: center;width: 20%;border: none;">
+                                            <p:commandLink id="btnApelido3" title="Apelido" action="#{agendaRotinaMB.consultarRotinaAtrasada()}"  class="hoverTextos">
+                                                <i class="fa fa-times-circle" style="font-size:22px;color:red;"/> 
+                                            </p:commandLink>
+                                        </p:column>
+                                       <p:column headerText="Apelido 4" sortBy="#"  style="text-align: center;border: none;">
+                                            <p:commandLink id="btnApelido4" title="Apelido" action="#"  class="hoverTextos">
+                                                <i class="fa fa-check-circle" style="font-size:22px;color:green;"/> 
+                                            </p:commandLink>
+                                        </p:column>
+                                       <p:column headerText="Apelido 5" sortBy="#"  style="text-align: center;border: none;">
+                                            <p:commandLink id="btnApelido5" title="Apelido" action="#"  class="hoverTextos">
+                                                <i class="fa fa-check-circle" style="font-size:22px;color:green;"/> 
+                                            </p:commandLink>
+                                        </p:column>
+                                       
+                                    </p:dataTable>
+                                </div> 
+                            </div>
+                        </section>
+                    </div>
+                   
+                </div>  
+               
+            </h:form>  
+        </ui:define>
+    </ui:composition>
+</html>   

@@ -333,9 +333,9 @@ public class CadUsuarioMB implements Serializable{
                     excluirArquivoFTP();
                 }
             }
-            msg = ftp.enviarArquivo(file, 10 + ".png", "/intime/fotos/usuario/");
+            msg = ftp.enviarArquivo(file, usuario.getIdusuario() + ".png", "/intime/fotos/usuario/");
             FacesContext context = FacesContext.getCurrentInstance();
-            usuario.setNomefoto(10+ ".png");
+            usuario.setNomefoto(usuario.getIdusuario() + ".png");
             context.addMessage(null, new FacesMessage(msg, ""));
             return true;
         } catch (IOException ex) {

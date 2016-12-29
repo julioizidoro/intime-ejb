@@ -44,6 +44,14 @@ public class MenuMB implements Serializable {
     public String motivosatraso() {
         return "consMotivoAtraso";
     }
+    
+    public String consRotina() {
+        return "consRotina";
+    }
+    
+    public String agendaRotina() {
+        return "consRotina";
+    }
 
     
     public String adicionarAtividades() {
