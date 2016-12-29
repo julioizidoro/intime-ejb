@@ -304,12 +304,12 @@
                                                     <h:panelGrid columns="1" style="width:100%;"     
                                                                  class="dataScrollerBranco">   
                                                         <h:panelGroup > 
-                                                            <h:panelGroup rendered="#{atividades.play}" > 
+                                                            <h:panelGroup rendered="true" > 
                                                                 <p:commandLink id="btnPlay" action="#{dashboardMB.retornarSituacaoAtividade(atividades, 'Play')}" update=":telaInicial:colunaTodoList" style="float: left;margin-top: -0.6%;margin-left:1.5%;">
                                                                     <i class="fa fa-play" style="font-size: 14px;color:#B0B5B9;"></i>       
-                                                                </p:commandLink>   
-                                                            </h:panelGroup>        
-                                                            <h:panelGroup rendered="#{atividades.pause}"> 
+                                                                </p:commandLink>    
+                                                            </h:panelGroup>      
+                                                            <h:panelGroup rendered="false"> 
                                                                 <p:commandLink id="btnPause" action="#{dashboardMB.retornarSituacaoAtividade(atividades, 'Pause')}" update=":telaInicial:colunaTodoList" style="float: left;margin-top:-0.6%;margin-left:1.5%;">
                                                                     <i class="fa fa-pause" style="font-size: 14px;color:#B0B5B9;"></i>            
                                                                 </p:commandLink>                                  
