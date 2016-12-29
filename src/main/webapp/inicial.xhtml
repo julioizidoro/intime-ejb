@@ -297,27 +297,28 @@
 
                                                 <p:outputPanel> 
                                                     <h:panelGrid columns="1" style="width:100%;"
-                                                        class="dataScrollerBranco">   
+                                                                 class="dataScrollerBranco">   
                                                         <h:panelGroup > 
-                                                            <p:commandLink id="btnPlay" action="#{dashboardMB.retornarSituacaoAtividade(atividades)}" update=":telaInicial:colunaTodoList" style="float: left;margin-top: -0.6%;margin-left:1.5%;" rendered="#{atividadesMB.play}">
+                                                            <p:commandLink id="btnPlay" action="#{dashboardMB.retornarSituacaoAtividade(atividades, 'Play')}" update=":telaInicial:colunaTodoList" style="float: left;margin-top: -0.6%;margin-left:1.5%;" rendered="#{atividadesMB.play}">
                                                                 <i class="fa fa-play" style="font-size: 14px;color:#B0B5B9;"></i>  
-                                                            </p:commandLink>          
-                                                            <p:commandLink id="btnPause" action="#{dashboardMB.retornarSituacaoAtividade(atividades)}" update=":telaInicial:colunaTodoList" style="float: left;margin-top:-0.6%;margin-left:1.5%;" rendered="#{atividadesMB.pause}">
+                                                            </p:commandLink>            
+                                                            <p:commandLink id="btnPause" action="#{dashboardMB.retornarSituacaoAtividade(atividades, 'Pause')}" update=":telaInicial:colunaTodoList" style="float: left;margin-top:-0.6%;margin-left:1.5%;" rendered="#{atividadesMB.pause}">
                                                                 <i class="fa fa-pause" style="font-size: 14px;color:#B0B5B9;"></i>            
                                                             </p:commandLink>                       
                                                             <input id="cbxConcluido" type="checkbox" class="list-child" value="#{dashboardMB.atividadeConcluida}"  style="float: left;margin-top:0.6%;margin-left:1.5%;"> 
-                                                                <p:ajax event="click" listener="#{dashboardMB.retornarSituacaoAtividade(atividades)}"/>
+                                                                <p:ajax event="click" listener="#{dashboardMB.retornarSituacaoAtividade(atividades, 'Concluido')}"/>
                                                             </input>
                                                             <h:outputLabel id="nome" value="#{atividades.atividade.descricao}" class="task-title-sp" style="margin-left: 2%;"/> |    
                                                             <h:outputLabel id="cliente" value="#{atividades.atividade.cliente.nomefantasia}" class="task-title-sp"/>        
-                                                         </h:panelGroup>  
+                                                        </h:panelGroup>  
                                                     </h:panelGrid>  
-                                                     <hr/>  
+                                                    <hr/>  
                                                 </p:outputPanel>  
                                             </p:dataScroller>
                                         </h:panelGroup>
                                     </aside>          
                                     <aside  class="col-lg-4">    
+                                        
                                         <h:panelGroup id="colunaFeed">
                                             <p:dataScroller id="tabelaFeedDia" value="#" var="feed" mode="inline" style="border:none !important;" scrollHeight="460">   
                                                 <f:facet name="header">        
@@ -332,7 +333,7 @@
                                     <aside  class="col-lg-4">  
                                         <div class="fb-page" data-href="https://www.facebook.com/financemateassessoria" data-tabs="timeline" data-small-header="true" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="false"><blockquote cite="https://www.facebook.com/financemateassessoria" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/financemateassessoria">Financemate Assessoria Contábil e Financeira</a></blockquote></div>
                                     </aside>   
-                                </div>    
+                                </div>       
                             </section>
                         </section>  
                     </section>            

@@ -18,7 +18,7 @@
                         <p:outputLabel value="/" style="margin-left:0.5%;color:#797979;font-weight: inherit;"/>
                         <p:outputLabel value="Do It!" style="margin-left:0.5%;color:#797979;font-weight: inherit;"/>
                     </h:panelGroup> 
-                </h:panelGrid> 
+                </h:panelGrid>   
                 <br/> 
                 <p:outputLabel value="Do It!" style="margin-left:0.5%;color:#797979;font-weight: inherit;font-size: 22px;"/>
                 <h:panelGrid id="painelBtn" columns="2" style="width: 100%;" columnClasses="tamanho75,tamanho">   
@@ -56,7 +56,7 @@
                         </p:commandLink>  
                     </h:panelGroup>
                 </h:panelGrid>
-                <div class="row" >
+                <div class="row" >  
                     <div class="col-md-12">
                         <section class="panel tasks-widget" style="width:100%;">
                             <div class="panel-body">
@@ -73,19 +73,19 @@
                                                         <i class="fa fa-pause" style="font-size: 14px;color:#B0B5B9;"></i>   
                                                     </p:commandLink>   
                                                     <div class="task-checkbox" style="margin-left:1%;">
-                                                        <input id="cbxConcluido" type="checkbox" class="list-child" value=""  />
-                                                    </div>   
+                                                        <input id="cbxConcluido" type="checkbox" class="list-child" value=""  onclick="PF('motivoAtraso').show()" update=":formDialogMotivoAtraso:dialog_motivoAtraso"/>
+                                                    </div>      
                                                     <div class="task-title">
-                                                        <span id="nome" class="task-title-sp">#{atividades.atividade.descricao}</span> |  
+                                                        <span id="nome" class="task-title-sp">#{atividades.atividade.descricao}</span> |     
                                                         <span id="cliente" class="task-title-sp">#{atividades.atividade.cliente.nomefantasia}</span> 
                                                         <span id="comentarios" class="task-title-sp" style="font-weight: bold;" >
-                                                            (
+                                                            (   
                                                             <p:commandLink id="btnComentarios" title="Comentários" value="#" action="#{atividadesMB.visualizarComentarios()}"/>
                                                             )
                                                         </span>
                                                         <span id="data" class="task-title-sp" style="font-style: oblique;font-size: 13px;font-weight:400;">
                                                             <p:outputLabel value="#{atividades.atividade.dataMostrar}">
-                                                                
+
                                                             </p:outputLabel>
                                                         </span>
                                                         <span id="horario" class="task-title-sp" style="font-style: oblique;font-size: 13px;font-weight:400;">#{atividades.atividade.horaMostrar}</span>
@@ -100,10 +100,9 @@
                                                             </span>
                                                         </h:panelGroup>
 
-
                                                         <div class="pull-right hidden-phone">
-                                                            <p:commandLink id="btnAlterarData" title="Alterar Data" oncomplete="PF('alterarData').show()" > 
-                                                                <i class="fa fa-calendar" style="font-size:17px;color:#FFD700;"></i> 
+                                                            <p:commandLink id="btnAlterarData" title="Alterar Data" oncomplete="PF('alterarData').show()" update=":formDialogData:dialog_alterarData"> 
+                                                                <i class="fa fa-calendar" style="font-size:17px;color:#FFD700;"></i>   
                                                             </p:commandLink>
                                                             <p:commandLink id="btnEditar" title="Editar Tarefa" action="#{atividadesMB.editarAtividades()}"> 
                                                                 <i class="fa fa-edit" style="font-size:17px;color:#FF6C60;"></i> 
@@ -114,7 +113,7 @@
                                                             </a>
                                                             <ul class="dropdown-menu extended">
                                                                 <div class="log-arrow-up"></div>
-                                                                <li><p:commandLink ><i class=" fa  fa-share-square-o" style="color: #8E9398;font-size: 13px;">
+                                                                <li><p:commandLink oncomplete="PF('encaminharTarefa').show()" update=":formDialogEncaminhar:dialog_encaminhar"><i class=" fa  fa-share-square-o" style="color: #8E9398;font-size: 13px;">
                                                                             <p:outputLabel value="Encaminhar" style="margin-left: 8%;"/>
                                                                         </i></p:commandLink></li> 
                                                                 <li><p:commandLink><i class="fa fa-trash-o" style="color:#8E9398;font-size: 13px;">
@@ -134,25 +133,12 @@
                                         </p:outputPanel>  
                                     </p:dataScroller>
                                 </div> 
-                            </div>
-                        </section>
-                    </div>
-                    <p:dialog id="dialog_alterarData"  header="ALTERAR DATA" widgetVar="alterarData" resizable="false" >
-                        <div align="center">
-                            <p:calendar id="dataTarefa" pattern="dd/MM/yyyy" size="18" style="margin-top: 5px;">
-                                <f:convertDateTime   pattern="dd/MM/yyyy" timeZone="America/Sao_Paulo"/>
-                            </p:calendar>
-                            <div align="right">
-                                <p:commandLink id="btnAdicionar" action="#" title="Adicionar">
-                                    <i class="fa fa-check" style="color:#008B00;font-size:35px;"/>
-                                </p:commandLink>
-                            </div>
-                        </div>
-                    </p:dialog>
-                </div>  
-                <script src="../../resources/js/jquery.js"></script>
+                            </div> 
+                        </section>  
+                    </div>   
+                </div>     
                 <script src="../../resources/js/bootstrap.min.js"></script>   
-                <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+
                 <script class="include" type="text/javascript" src="../../resources/js/jquery.dcjqaccordion.2.7.js"></script>
                 <script src="../../resources/js/jquery.nicescroll.js" type="text/javascript"></script>
                 <script src="../../resources/js/jquery.scrollTo.min.js"></script> 
@@ -161,8 +147,8 @@
 
                 <script src="../../resources/js/tasks.js"></script> 
 
-                <link href="../../resources/css/tasks.css" rel="stylesheet"/>   
-
+                <link href="../../resources/css/tasks.css" rel="stylesheet"/>    
+                <link href="../../resources/js/calendario.js" type="text/javascript"/> 
 
                 <script>
                     jQuery(document).ready(function () {
@@ -181,6 +167,48 @@
                     }
                 </style>
             </h:form>  
+            <h:form id="formDialogData">
+                <p:dialog id="dialog_alterarData"  header="ALTERAR DATA" widgetVar="alterarData" >
+                    <div align="center">
+                        <p:calendar id="dataTarefa" pattern="dd/MM/yyyy" locale="pt" size="18" style="margin-top: 5px;">
+                            <f:convertDateTime   pattern="dd/MM/yyyy" timeZone="America/Sao_Paulo"/>
+                        </p:calendar>
+                        <div align="right">  
+                            <p:commandLink id="btnAdicionar" title="Adicionar">
+                                <i class="fa fa-check" style="color:#008B00;font-size:35px;"/>
+                            </p:commandLink>
+                        </div>
+                    </div>
+                </p:dialog> 
+            </h:form>
+            <h:form id="formDialogEncaminhar">     
+                <p:dialog id="dialog_encaminhar"  header="ENCAMINHAR TAREFA" widgetVar="encaminharTarefa" >
+                    <div align="left">
+                        <p:selectOneMenu id="executor"  value="#"  style="width:165px;">
+                            <f:selectItem  itemLabel="EXECUTOR" itemValue="0"/>    
+                        </p:selectOneMenu>  
+                        <div align="right">  
+                            <p:commandLink id="btnEncaminhaTarefa" title="Adicionar">
+                                <i class="fa fa-check" style="color:#008B00;font-size:35px;"/>
+                            </p:commandLink>
+                        </div>
+                    </div>
+                </p:dialog> 
+            </h:form>
+            <h:form id="formDialogMotivoAtraso">     
+                <p:dialog id="dialog_motivoAtraso"  header="MOTIVO DO ATRASO" widgetVar="motivoAtraso" >
+                    <div align="left">
+                        <p:selectOneMenu id="motivo"  value="#"  style="width:165px;">
+                            <f:selectItem  itemLabel="MOTIVO" itemValue="0"/>    
+                        </p:selectOneMenu>  
+                        <div align="right">  
+                            <p:commandLink id="btnSalvarMotivo" title="Adicionar">
+                                <i class="fa fa-check" style="color:#008B00;font-size:35px;"/>
+                            </p:commandLink>
+                        </div>
+                    </div>
+                </p:dialog> 
+            </h:form>
         </ui:define>
     </ui:composition>
 </html>   

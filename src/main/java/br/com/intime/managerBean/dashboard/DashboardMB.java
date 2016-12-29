@@ -306,7 +306,9 @@ public class DashboardMB implements Serializable {
         gerarListaNotas();
     }
     
-    public void retornarSituacaoAtividade(Atividadeusuario atividadeusuario){
+    public void retornarSituacaoAtividade(Atividadeusuario atividadeusuario, String situacao){
+        atividadeusuario.setSituacao(situacao);
+        atividadeusuario = atividadeUsuarioRepository.update(atividadeusuario);  
         if(atividadeusuario.getSituacao().equalsIgnoreCase("Play")){
             atividadeConcluida=false;
             pause=true;
@@ -319,7 +321,7 @@ public class DashboardMB implements Serializable {
             atividadeConcluida=true;
             pause=false;    
             play=false;  
-        }
+        }   
     }
  
 }
