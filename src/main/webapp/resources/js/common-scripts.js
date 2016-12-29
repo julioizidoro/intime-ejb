@@ -15,8 +15,7 @@ $(function() {
 
 // right slidebar
 
-$(function(){
- $.slidebars();
+$(function(){   
 });
 
 // for mobile check
