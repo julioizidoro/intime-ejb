@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB; 
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
@@ -34,7 +35,7 @@ import org.primefaces.context.RequestContext;
  * @author Kamila
  */
 @Named
-@ViewScoped
+@SessionScoped
 public class DashboardMB implements Serializable {
 
     @Inject
