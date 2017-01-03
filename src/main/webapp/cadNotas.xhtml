@@ -14,13 +14,13 @@
             <p:outputLabel value="Nota" style="font-size: 20px;margin-left:2%;"/>
             <br/>
             <h:inputTextarea class="comment-text-area"       
-                             value="#{dashboardMB.nota.descricao}"   
+                             value="#{notaMB.nota.descricao}"   
                              style="margin-left: 0%;color:#313D30;background:#E3DFC2;border:none;"
                              id="motivoCancelamento" rows="4" />           
-            <br/>
-            <p:commandLink id="btnAdicionar" action="#{dashboardMB.salvarNota()}" title="Adicionar" style="float: right;" update="growl">     
+            <br/> 
+            <p:commandLink id="btnAdicionar" action="#{notaMB.salvarNota()}" title="Adicionar" style="float: right;" update="growl">     
                 <i class="fa fa-check" style="color:#008B00;font-size:35px;"/>
             </p:commandLink> 
         </h:form>
-    </h:body>
+    </h:body>      
 </html>

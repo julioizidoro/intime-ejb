@@ -11,8 +11,7 @@ import br.com.intime.repository.FeedNoticiaRepository;
 import br.com.intime.repository.FtpDadosRepository;
 import br.com.intime.repository.NotaRepository;
 import br.com.intime.repository.NotificacoesRepository;
-import br.com.intime.util.Formatacao;
-import br.com.intime.util.Mensagem;
+import br.com.intime.util.Formatacao; 
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -21,8 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
-import javax.ejb.EJB; 
-import javax.faces.bean.SessionScoped;
+import javax.ejb.EJB;  
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
@@ -35,7 +33,7 @@ import org.primefaces.context.RequestContext;
  * @author Kamila
  */
 @Named
-@SessionScoped
+@ViewScoped
 public class DashboardMB implements Serializable {
 
     @Inject
@@ -46,9 +44,7 @@ public class DashboardMB implements Serializable {
     private List<Notificacao> listaNotificacoes;
     private List<Nota> listaNotas;
     private List<Feednoticia> listaFeedNoticia;
-    private Nota nota;
-    private Ftpdados ftpdados;
-    private Feednoticia feednoticia;
+    private Ftpdados ftpdados; 
     @EJB
     private AtividadeUsuarioRepository atividadeUsuarioRepository;
     @EJB
@@ -138,14 +134,7 @@ public class DashboardMB implements Serializable {
         this.notaRepository = notaRepository;
     }
 
-    public Nota getNota() {
-        return nota;
-    }
-
-    public void setNota(Nota nota) {
-        this.nota = nota;
-    }
-
+    
     public Ftpdados getFtpdados() {
         return ftpdados;
     }
@@ -165,14 +154,7 @@ public class DashboardMB implements Serializable {
     public void setListaFeedNoticia(List<Feednoticia> listaFeedNoticia) {
         this.listaFeedNoticia = listaFeedNoticia;
     }
-
-    public Feednoticia getFeednoticia() {
-        return feednoticia;
-    }
-
-    public void setFeednoticia(Feednoticia feednoticia) {
-        this.feednoticia = feednoticia;
-    }
+ 
 
     public FeedNoticiaRepository getFeedNoticiaRepository() {
         return feedNoticiaRepository;
@@ -281,26 +263,20 @@ public class DashboardMB implements Serializable {
         return "";
     }
 
-    public void adicionarNota() {
-        nota = new Nota();
+    public void adicionarNota() { 
+        FacesContext fc = FacesContext.getCurrentInstance();
+        HttpSession session = (HttpSession) fc.getExternalContext().getSession(false); 
+        session.setAttribute("listaNotas", listaNotas);
         Map<String, Object> options = new HashMap<String, Object>();
         options.put("contentWidth", 350);
         RequestContext.getCurrentInstance().openDialog("cadNotas", options, null);
-    }
+    } 
 
-    public void salvarNota() {
-        if (listaNotas.size() == 6 && nota.getIdnota() == null) {
-            Mensagem.lancarMensagemErro("Atenção!", "Você atingiu o limite maxímo de notas.");
-        } else {
-            nota.setUsuario(usuarioLogadoMB.getUsuario());
-            notaRepository.update(nota);
-            gerarListaNotas();
-            RequestContext.getCurrentInstance().closeDialog(null);
-        }
-    }
-
-    public void editar(Nota nota) {
-        this.nota = nota;
+    public void editar(Nota nota) { 
+        FacesContext fc = FacesContext.getCurrentInstance();
+        HttpSession session = (HttpSession) fc.getExternalContext().getSession(false);
+        session.setAttribute("nota", nota);
+        session.setAttribute("listaNotas", listaNotas);
         Map<String, Object> options = new HashMap<String, Object>();
         options.put("contentWidth", 350);
         RequestContext.getCurrentInstance().openDialog("cadNotas", options, null);
@@ -345,19 +321,9 @@ public class DashboardMB implements Serializable {
         gerarListaFeed();
     }
 
-    public void adicionarFeedNoticia() {
-        feednoticia = new Feednoticia();
+    public void adicionarFeedNoticia() { 
         Map<String, Object> options = new HashMap<String, Object>();
         options.put("contentWidth", 350);
         RequestContext.getCurrentInstance().openDialog("cadFeedNoticia", options, null);
-    }
-
-    public void salvarFeedNoticia() {
-        feednoticia.setUsuario(usuarioLogadoMB.getUsuario());
-        feednoticia.setData(LocalDate.now());
-        feedNoticiaRepository.update(feednoticia);
-        gerarListaFeed();
-        RequestContext.getCurrentInstance().closeDialog(null);
-    }
-
+    } 
 }

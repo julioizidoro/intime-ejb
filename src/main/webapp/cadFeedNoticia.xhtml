@@ -14,13 +14,13 @@
             <p:outputLabel value="Feed do Dia" style="font-size: 20px;margin-left:2%;"/>
             <br/>  
             <h:inputTextarea class="comment-text-area"       
-                             value="#{dashboardMB.feednoticia.descricao}"   
+                             value="#{feedNoticiasMB.feednoticia.descricao}"   
                              style="margin-left: 0%;color:#313D30;background:#E3DFC2;border:none;"
                              id="motivoCancelamento" rows="4" />           
             <br/>
-            <p:commandLink id="btnAdicionar" action="#{dashboardMB.salvarFeedNoticia()}" title="Adicionar" style="float: right;" update="growl">     
+            <p:commandLink id="btnAdicionar" action="#{feedNoticiasMB.salvarFeedNoticia()}" title="Adicionar" style="float: right;" update="growl">     
                 <i class="fa fa-check" style="color:#008B00;font-size:35px;"/>
             </p:commandLink> 
         </h:form>
     </h:body>
-</html>
+</html>   

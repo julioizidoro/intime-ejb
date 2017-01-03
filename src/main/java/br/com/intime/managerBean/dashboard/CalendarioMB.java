@@ -31,8 +31,7 @@ public class CalendarioMB implements Serializable {
  
     @PostConstruct
     public void init() {
-        eventModel = new DefaultScheduleModel();
-        eventModel.addEvent(new DefaultScheduleEvent("(0 / 0)", new Date(), new Date()));  
+        eventModel = new DefaultScheduleModel();    
     }
      
     public Date getRandomDate(Date base) {
