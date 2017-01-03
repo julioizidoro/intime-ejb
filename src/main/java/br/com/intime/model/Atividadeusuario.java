@@ -6,6 +6,7 @@
 package br.com.intime.model;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -44,6 +45,10 @@ public class Atividadeusuario implements Serializable {
     private LocalDate dataconclusao;
     @Column(name = "horaconclusao")
     private LocalTime horaconclusao;
+    @Column(name = "inicio")
+    private BigInteger inicio;
+    @Column(name = "tempoatual")
+    private int tempoatual;
     @Size(max = 5)
     @Column(name = "tempo")
     private String tempo;
@@ -129,6 +134,22 @@ public class Atividadeusuario implements Serializable {
 
     public void setConcluido(boolean concluido) {
         this.concluido = concluido;
+    }
+
+    public BigInteger getInicio() {
+        return inicio;
+    }
+
+    public void setInicio(BigInteger inicio) {
+        this.inicio = inicio;
+    }
+
+    public int getTempoatual() {
+        return tempoatual;
+    }
+
+    public void setTempoatual(int tempoatual) {
+        this.tempoatual = tempoatual;
     }
 
 

@@ -47,7 +47,7 @@
             </h:panelGrid>
             <br/>
             <h:panelGrid columns="2" columnClasses="tamanho30, tamanho30" style="width: 100%;font-size: 12px;">
-                <p:selectOneMenu id="departamento"  style="width:91%;"  value="#{cadAtividadeMB.departamento}" converter="ClienteDepartamentoConverter"
+                <p:selectOneMenu id="departamento"  style="width:91%;"  value="#{cadAtividadeMB.departamento}" converter="DepartamentoConverter"
                                  filter="true" filterMatchMode="contains" panelStyle="width:180px" >
                     <f:selectItem  itemLabel="Departamento" itemValue="0" noSelectionOption="true"/>    
                     <f:selectItems  value="#{cadAtividadeMB.cliente.clientedepartamentoList}" var="departamentoselecionado" itemLabel="#{departamentoselecionado.departamento.nome}" itemValue="#{departamentoselecionado.departamento}"/>
