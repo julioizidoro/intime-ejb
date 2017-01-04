@@ -930,5 +930,25 @@ public class Formatacao {
         LocalTime dateTime = LocalTime.parse(horario+":00", formatter);
         return dateTime;
     }   
+    
+    public static String calcularHorasTotal(int tempo) {
+        String sTempo = "";
+        if (tempo > 0) {
+            int horas = tempo / 60;
+            int minutos = tempo % 60;
+            if (horas > 9) {
+                sTempo = sTempo + String.valueOf(horas);
+            } else {
+                sTempo = sTempo + "0" + String.valueOf(horas);
+            }
+            sTempo = sTempo + ":";
+            if (minutos > 9) {
+                sTempo = sTempo + "" + String.valueOf(minutos);
+            } else {
+                sTempo = sTempo + "0" + String.valueOf(minutos);
+            }
+        }
+        return sTempo;
+    }
 
 }

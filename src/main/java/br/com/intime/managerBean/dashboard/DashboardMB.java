@@ -164,11 +164,11 @@ public class DashboardMB implements Serializable {
     }
 
     public void gerarListaAtivadadesSemana() {
-        LocalDate dataInicial = LocalDate.now();
-        LocalDate dataFinal = LocalDate.now().plusDays(7);
+        LocalDate dataInicial = LocalDate.now().minusDays(7);
+        LocalDate dataFinal = LocalDate.now();
         String sql = "SELECT a FROM Atividadeusuario a where a.usuario.idusuario=" + usuarioLogadoMB.getUsuario().getIdusuario()
-                + " and a.situacao='Concluida' and a.atividade.dataexecucao>= :dataInicial "
-                + " and a.atividade.dataexecucao<= :dataFinal "
+                + " and a.situacao='Concluida' and a.dataconclusao>= :dataInicial "
+                + " and a.dataconclusao<= :dataFinal "  
                 + " ORDER BY a.atividade.dataexecucao";
         listaAtividadesSemana = atividadeUsuarioRepository.list(sql, dataInicial, dataFinal);
     }
@@ -302,7 +302,7 @@ public class DashboardMB implements Serializable {
             int tempoAtual = atividadeusuario.getTempoatual();
             tempo = tempo + tempoAtual;
             atividadeusuario.setTempoatual(tempo);
-            String sHora = calcularHorasTotal(tempo);
+            String sHora = Formatacao.calcularHorasTotal(tempo);
             atividadeusuario.setTempo(sHora);
         } else if (situacao.equalsIgnoreCase("Concluida")) {
             LocalTime hora = LocalTime.of(23, 59, 00);
@@ -314,27 +314,7 @@ public class DashboardMB implements Serializable {
         }
         atividadeUsuarioRepository.update(atividadeusuario);
     }
-    
-    public String calcularHorasTotal(int tempo) {
-        String sTempo = "";
-        if (tempo > 0) {
-            int horas = tempo / 60;
-            int minutos = tempo % 60;
-            if (horas > 9) {
-                sTempo = sTempo + String.valueOf(horas);
-            } else {
-                sTempo = sTempo + "0" + String.valueOf(horas);
-            }
-            sTempo = sTempo + ":";
-            if (minutos > 9) {
-                sTempo = sTempo + "" + String.valueOf(minutos);
-            } else {
-                sTempo = sTempo + "0" + String.valueOf(minutos);
-            }
-        }
-        return sTempo;
-    }
-
+     
     public boolean mostrarBotaoPlay(String situacao) {
         if (situacao.equalsIgnoreCase("Play")) {
             return true;

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package br.com.intime.managerBean.atividades;
 
 import br.com.intime.managerBean.usuario.UsuarioLogadoMB;
@@ -23,8 +18,9 @@ import br.com.intime.util.Mensagem;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.ZoneId; 
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,7 +35,7 @@ import org.primefaces.context.RequestContext;
 
 /**
  *
- * @author Wolverine
+ * @author Kamila
  */
 @Named
 @ViewScoped
@@ -92,9 +88,13 @@ public class CadAtividadeMB implements Serializable {
             clientedepartamento = new Clientedepartamento();
         } else {
             cliente = atividadeusuario.getAtividade().getCliente();
+            nomeCliente = cliente.getNomefantasia();
+            gerarListaDepartamento();
             clientedepartamento = clienteDepartamentoRepository.find("Select c From Clientedepartamento c"
-                    + " where c.cliente.idcliente=" + cliente.getIdcliente() + " c.departamento.iddepartamento="
-                    + atividadeusuario.getAtividade().getSubdepartamento().getDepartamento());
+                    + " where c.cliente.idcliente=" + cliente.getIdcliente() + " and c.departamento.iddepartamento="
+                    + atividadeusuario.getAtividade().getSubdepartamento().getDepartamento().getIddepartamento());
+            gerarListaSubDepartamento();
+            mostrarDataHora();
         }
     }
 
@@ -234,16 +234,16 @@ public class CadAtividadeMB implements Serializable {
         this.atividadeRepository = atividadeRepository;
     }
 
-    public void salvar() {  
-        if (validarDados()) { 
+    public void salvar() {
+        if (validarDados()) {
             atividadeusuario.getAtividade().setDataexecucao(
                     Formatacao.converterDateParaLocalDate(atividadeusuario.getAtividade().getDataexecutar()));
             if (atividadeusuario.getAtividade().getHorario() == null) {
-                LocalTime hora = LocalTime.of(00, 00);
+                LocalTime hora = LocalTime.of(23, 59);
                 atividadeusuario.getAtividade().setHoraexecucao(hora);
-            }else{
+            } else {
                 atividadeusuario.getAtividade().setHoraexecucao(
-                    Formatacao.converterStringParaLocalTime(atividadeusuario.getAtividade().getHorario()));
+                        Formatacao.converterStringParaLocalTime(atividadeusuario.getAtividade().getHorario()));
             }
             atividadeusuario.getAtividade().setCliente(cliente);
             atividadeusuario.setAtividade(atividadeRepository.update(atividadeusuario.getAtividade()));
@@ -283,6 +283,10 @@ public class CadAtividadeMB implements Serializable {
         if (atividadeusuario.getAtividade().getDescricao() == null
                 || atividadeusuario.getAtividade().getDescricao().length() == 0) {
             Mensagem.lancarMensagemErro("Atenção!", "Título não informado.");
+            return false;
+        }
+        if (atividadeusuario.getAtividade().getDataexecutar() == null) {
+            Mensagem.lancarMensagemErro("Atenção!", "Data não informada.");
             return false;
         }
         return true;
@@ -330,7 +334,7 @@ public class CadAtividadeMB implements Serializable {
 
     public String visualizarComentarios() {
         salvar();
-        if(atividadeusuario.getIdatividadeusuario()!=null){
+        if (atividadeusuario.getIdatividadeusuario() != null) {
             Map<String, Object> options = new HashMap<String, Object>();
             options.put("contentWidth", 500);
             FacesContext fc = FacesContext.getCurrentInstance();
@@ -341,7 +345,7 @@ public class CadAtividadeMB implements Serializable {
         return "";
     }
 
-    public String retornarCorBtnHorario() { 
+    public String retornarCorBtnHorario() {
         if (atividadeusuario.getAtividade().getHorario() == null) {
             return "#C6C6C6";
         } else {
@@ -395,5 +399,25 @@ public class CadAtividadeMB implements Serializable {
         } else {
             return "#0040FF";
         }
+    }
+
+    public void mostrarDataHora() {
+        //data
+        Date dataexecutar = Date.from(atividadeusuario.getAtividade().getDataexecucao().atStartOfDay(ZoneId.systemDefault()).toInstant());
+        atividadeusuario.getAtividade().setDataexecutar(dataexecutar);
+        //horario
+        LocalTime hora = atividadeusuario.getAtividade().getHoraexecucao();
+        String horaMostrar = "";
+        int ih = hora.getHour();
+        int im = hora.getMinute();
+        if (ih <= 9) {
+            horaMostrar = "0";
+        }
+        horaMostrar = horaMostrar + String.valueOf(ih) + ":";
+        if (im <= 9) {
+            horaMostrar = horaMostrar + "0";
+        }
+        horaMostrar = horaMostrar + String.valueOf(im);
+        atividadeusuario.getAtividade().setHorario(horaMostrar);
     }
 }

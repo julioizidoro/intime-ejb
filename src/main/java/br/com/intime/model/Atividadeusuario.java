@@ -14,6 +14,7 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -55,7 +56,7 @@ public class Atividadeusuario implements Serializable {
     @JoinColumn(name = "atividade_idatividade", referencedColumnName = "idatividade")
     @ManyToOne(optional = false)
     private Atividade atividade;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "atividadeusuario")
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "atividadeusuario")
     private List<Atividadecomentario> atividadecomentarioList;
     @JoinColumn(name = "usuario_idusuario", referencedColumnName = "idusuario")
     @ManyToOne(optional = false)
