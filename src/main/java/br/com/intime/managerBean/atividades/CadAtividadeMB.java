@@ -12,16 +12,22 @@ import br.com.intime.model.Cliente;
 import br.com.intime.model.Clientedepartamento;
 import br.com.intime.model.Subdepartamento;
 import br.com.intime.model.Usuario;
+import br.com.intime.repository.AtividadeRepository;
 import br.com.intime.repository.AtividadeUsuarioRepository;
 import br.com.intime.repository.ClienteDepartamentoRepository;
 import br.com.intime.repository.ClienteRepository;
 import br.com.intime.repository.SubDepartamentoRepository;
 import br.com.intime.repository.UsuarioRepository;
+import br.com.intime.util.Formatacao;
+import br.com.intime.util.Mensagem;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.context.FacesContext;
@@ -29,6 +35,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
+import org.primefaces.context.RequestContext;
 
 /**
  *
@@ -40,8 +47,6 @@ public class CadAtividadeMB implements Serializable {
 
     @Inject
     private UsuarioLogadoMB usuarioLogadoMB;
-    @EJB
-    private AtividadeUsuarioRepository atividadeUsuarioRepository;
     private Atividadeusuario atividadeusuario;
     private Cliente cliente;
     private Clientedepartamento clientedepartamento;
@@ -60,6 +65,10 @@ public class CadAtividadeMB implements Serializable {
     private SubDepartamentoRepository subDepartamentoRepository;
     @EJB
     private UsuarioRepository usuarioRepository;
+    @EJB
+    private AtividadeUsuarioRepository atividadeUsuarioRepository;
+    @EJB
+    private AtividadeRepository atividadeRepository;
 
     @PostConstruct
     public void init() {
@@ -70,24 +79,23 @@ public class CadAtividadeMB implements Serializable {
         if (atividadeusuario == null) {
             atividadeusuario = new Atividadeusuario();
             atividadeusuario.setAtividade(new Atividade());
-            atividadeusuario.setSituacao("execucao");
+            atividadeusuario.setSituacao("Play");
             atividadeusuario.setUsuario(usuarioLogadoMB.getUsuario());
             atividadeusuario.getAtividade().setDatalancamento(LocalDate.now());
             atividadeusuario.getAtividade().setNotificacaohorario(false);
-            atividadeusuario.getAtividade().setPrioridade("normal");
+            atividadeusuario.getAtividade().setPrioridade("Regular");
             atividadeusuario.getAtividade().setRotina(false);
+            atividadeusuario.setTempo("00:00");
             atividadeusuario.getAtividade().setSubdepartamento(usuarioLogadoMB.getUsuario().getSubdepartamento());
             cliente = new Cliente();
             usuario = usuarioLogadoMB.getUsuario();
             clientedepartamento = new Clientedepartamento();
-            listaClientedepartamentos = new ArrayList<Clientedepartamento>();
-            listaSubdepartamento = new ArrayList<Subdepartamento>();
         } else {
             cliente = atividadeusuario.getAtividade().getCliente();
             clientedepartamento = clienteDepartamentoRepository.find("Select c From Clientedepartamento c"
-                    + " where c.cliente.idcliente=" + cliente.getIdcliente() + " c.departamento.iddepartamento=" 
+                    + " where c.cliente.idcliente=" + cliente.getIdcliente() + " c.departamento.iddepartamento="
                     + atividadeusuario.getAtividade().getSubdepartamento().getDepartamento());
-        } 
+        }
     }
 
     public Atividadeusuario getAtividadeusuario() {
@@ -113,7 +121,6 @@ public class CadAtividadeMB implements Serializable {
     public void setClientedepartamento(Clientedepartamento clientedepartamento) {
         this.clientedepartamento = clientedepartamento;
     }
-  
 
     public UsuarioLogadoMB getUsuarioLogadoMB() {
         return usuarioLogadoMB;
@@ -219,14 +226,66 @@ public class CadAtividadeMB implements Serializable {
         this.usuarioRepository = usuarioRepository;
     }
 
-    public String salvar() {
-        if (atividadeusuario.getAtividade().getHoraexecucao() == null) {
-            LocalTime hora = LocalTime.of(23, 59, 00);
-            atividadeusuario.getAtividade().setHoraexecucao(hora);
-        } 
-        atividadeusuario.getAtividade().setCliente(cliente);
-        atividadeUsuarioRepository.update(atividadeusuario);
-        return "";
+    public AtividadeRepository getAtividadeRepository() {
+        return atividadeRepository;
+    }
+
+    public void setAtividadeRepository(AtividadeRepository atividadeRepository) {
+        this.atividadeRepository = atividadeRepository;
+    }
+
+    public void salvar() {  
+        if (validarDados()) { 
+            atividadeusuario.getAtividade().setDataexecucao(
+                    Formatacao.converterDateParaLocalDate(atividadeusuario.getAtividade().getDataexecutar()));
+            if (atividadeusuario.getAtividade().getHorario() == null) {
+                LocalTime hora = LocalTime.of(00, 00);
+                atividadeusuario.getAtividade().setHoraexecucao(hora);
+            }else{
+                atividadeusuario.getAtividade().setHoraexecucao(
+                    Formatacao.converterStringParaLocalTime(atividadeusuario.getAtividade().getHorario()));
+            }
+            atividadeusuario.getAtividade().setCliente(cliente);
+            atividadeusuario.setAtividade(atividadeRepository.update(atividadeusuario.getAtividade()));
+            atividadeUsuarioRepository.update(atividadeusuario);
+            if (listaUsuarioSelecionado != null && listaUsuarioSelecionado.size() > 0) {
+                for (int i = 0; listaUsuarioSelecionado.size() > i; i++) {
+                    Atividadeusuario atividadeUsuarioSelecionados = new Atividadeusuario();
+                    atividadeUsuarioSelecionados.setAtividade(atividadeusuario.getAtividade());
+                    atividadeUsuarioSelecionados.setUsuario(listaUsuarioSelecionado.get(i));
+                    atividadeUsuarioSelecionados.setTempo("00:00");
+                    atividadeUsuarioRepository.update(atividadeUsuarioSelecionados);
+                }
+            }
+            RequestContext.getCurrentInstance().closeDialog(null);
+        }
+    }
+
+    public boolean validarDados() {
+        if (cliente == null || cliente.getIdcliente() == null) {
+            Mensagem.lancarMensagemErro("Atenção!", "Cliente não selecionado.");
+            return false;
+        }
+        if (clientedepartamento == null || clientedepartamento.getIdclientedepartamento() == null) {
+            Mensagem.lancarMensagemErro("Atenção!", "Departamento não selecionado.");
+            return false;
+        }
+        if (atividadeusuario.getAtividade().getSubdepartamento() == null
+                || atividadeusuario.getAtividade().getSubdepartamento().getIdsubdepartamento() == null) {
+            Mensagem.lancarMensagemErro("Atenção!", "Subdepartamento não selecionado.");
+            return false;
+        }
+        if (atividadeusuario.getUsuario() == null
+                || atividadeusuario.getUsuario().getIdusuario() == null) {
+            Mensagem.lancarMensagemErro("Atenção!", "Usuário não selecionado.");
+            return false;
+        }
+        if (atividadeusuario.getAtividade().getDescricao() == null
+                || atividadeusuario.getAtividade().getDescricao().length() == 0) {
+            Mensagem.lancarMensagemErro("Atenção!", "Título não informado.");
+            return false;
+        }
+        return true;
     }
 
     public void selecionarCliente(Cliente cliente) {
@@ -248,17 +307,93 @@ public class CadAtividadeMB implements Serializable {
     }
 
     public void gerarListaSubDepartamento() {
-        if (clientedepartamento != null && clientedepartamento.getIdclientedepartamento() != null){
+        if (clientedepartamento != null && clientedepartamento.getIdclientedepartamento() != null) {
             listaSubdepartamento = subDepartamentoRepository.list("Select s From Subdepartamento s"
                     + " where s.departamento.iddepartamento=" + clientedepartamento.getDepartamento().getIddepartamento() + " order by s.nome");
         }
     }
-    
-    public void gerarListaUsuario(){
-        listaUsuario = usuarioRepository.list("select u from Usuario u where u.status=true order by u.nome");
-        if(listaUsuario==null){
-            listaUsuario =  new ArrayList<Usuario>();
+
+    public void gerarListaUsuario() {
+        listaUsuario = usuarioRepository.list("select u from Usuario u where u.status=TRUE order by u.nome");
+        if (listaUsuario == null) {
+            listaUsuario = new ArrayList<Usuario>();
         }
     }
 
+    public void gerarNotificacaoHorario() {
+        if (!atividadeusuario.getAtividade().isNotificacaohorario()) {
+            atividadeusuario.getAtividade().setNotificacaohorario(true);
+        } else {
+            atividadeusuario.getAtividade().setNotificacaohorario(false);
+        }
+    }
+
+    public String visualizarComentarios() {
+        salvar();
+        if(atividadeusuario.getIdatividadeusuario()!=null){
+            Map<String, Object> options = new HashMap<String, Object>();
+            options.put("contentWidth", 500);
+            FacesContext fc = FacesContext.getCurrentInstance();
+            HttpSession session = (HttpSession) fc.getExternalContext().getSession(false);
+            session.setAttribute("atividadeusuario", atividadeusuario);
+            RequestContext.getCurrentInstance().openDialog("comentariosAtividades", options, null);
+        }
+        return "";
+    }
+
+    public String retornarCorBtnHorario() { 
+        if (atividadeusuario.getAtividade().getHorario() == null) {
+            return "#C6C6C6";
+        } else {
+            return "#0040FF";
+        }
+    }
+
+    public String retornarCorBtnPrioridade() {
+        if (atividadeusuario.getAtividade().getPrioridade().equalsIgnoreCase("Regular")) {
+            return "#C6C6C6";
+        } else {
+            return "#0040FF";
+        }
+    }
+
+    public String retornarCorBtnUsuario() {
+        if (atividadeusuario.getUsuario() == null) {
+            return "#C6C6C6";
+        } else {
+            return "#0040FF";
+        }
+    }
+
+    public String retornarCorBtnListaUsuarios() {
+        if (listaUsuarioSelecionado == null || listaUsuarioSelecionado.size() == 0) {
+            return "#C6C6C6";
+        } else {
+            return "#0040FF";
+        }
+    }
+
+    public String retornarCorBtnComentario() {
+        if (atividadeusuario.getAtividadecomentarioList() == null) {
+            return "#C6C6C6";
+        } else {
+            return "#0040FF";
+        }
+    }
+
+    public String retornarCorBtnRotina() {
+        if (!atividadeusuario.getAtividade().isRotina()) {
+            return "#C6C6C6";
+        } else {
+            return "#0040FF";
+        }
+    }
+
+    public String retornarCorBtnNotificacao() {
+        if (!atividadeusuario.getAtividade().isNotificacaohorario()) {
+            return "#C6C6C6";
+        } else {
+            return "#0040FF";
+        }
+    }
 }

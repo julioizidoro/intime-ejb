@@ -310,6 +310,7 @@ public class DashboardMB implements Serializable {
             atividadeusuario.setDataconclusao(LocalDate.now());
             atividadeusuario.setConcluido(true);
             gerarListaAtivadadesHoje();
+            gerarListaAtivadadesSemana();
         }
         atividadeUsuarioRepository.update(atividadeusuario);
     }

@@ -16,11 +16,11 @@
             <br/>
             <p:growl id="growl" showDetail="true" autoUpdate="true"  />
             <h:panelGrid columns="1" style="width:100%;font-size: 12px;"> 
-                <p:inputText id="titulo" placeholder="Título" style="width:99%;"/> 
+                <p:inputText id="titulo" value="#{cadAtividadeMB.atividadeusuario.atividade.descricao}" placeholder="Título" style="width:99%;"/> 
             </h:panelGrid>
-            <br/>  
+            <br/>     
             <h:panelGrid columns="2" columnClasses="tamanho20, tamanho30" style="width: 100%;font-size: 12px;">
-                <p:calendar id="dataTarefa" value="#{cadAtividadeMB.atividadeusuario.atividade.dataexecucao}" pattern="dd/MM/yyyy" locale="pt" size="12" style="margin-top: 5px;">
+                <p:calendar id="dataTarefa" value="#{cadAtividadeMB.atividadeusuario.atividade.dataexecutar}" pattern="dd/MM/yyyy" locale="pt" size="12" style="margin-top: 5px;">
                     <f:convertDateTime   pattern="dd/MM/yyyy" timeZone="America/Sao_Paulo"/>
                 </p:calendar>
                 <p:inputText id="buscarCliente" value="#{cadAtividadeMB.nomeCliente}" placeholder="BUSCAR CLIENTE" style="width:99%;"> 
@@ -66,28 +66,28 @@
             </h:panelGrid>
             <br/>         
             <h:panelGrid columns="2" columnClasses="tamanho70, tamanho30rigth" style="width:99%;"> 
-                <h:panelGroup>
+                <h:panelGroup id="painelBotoes">
                     <p:commandLink id="btnHorario" oncomplete="PF('horario').show()" title="Adicionar horário">
-                        <i class="fa fa-clock-o" style="color:#C6C6C6;font-size:27px;"/>
+                        <i class="fa fa-clock-o" style="color:#{cadAtividadeMB.retornarCorBtnHorario()};font-size:27px;"/>
                     </p:commandLink>  
                     <p:commandLink id="btnPrioridade" oncomplete="PF('prioridade').show()" title="Adicionar prioridade">
-                        <i class="fa fa-warning" style="color:#C6C6C6;font-size:25px;"/>
+                        <i class="fa fa-warning" style="color:#{cadAtividadeMB.retornarCorBtnPrioridade()};font-size:25px;"/>
                     </p:commandLink> 
                     <p:commandLink id="btnExecutor" oncomplete="PF('executor').show()" title="Adicionar executor">
-                        <i class="fa fa-user" style="color:#C6C6C6;font-size:28px;"/>
+                        <i class="fa fa-user" style="color:#{cadAtividadeMB.retornarCorBtnUsuario()};font-size:28px;"/>
                     </p:commandLink> 
                     <p:commandLink id="btnUsuarios" oncomplete="PF('variosExecutores').show()" title="Adicionar mais usuários">
-                        <i class="fa fa-user-plus" style="color:#C6C6C6;font-size:28px;"/>
+                        <i class="fa fa-user-plus" style="color:#{cadAtividadeMB.retornarCorBtnListaUsuarios()};font-size:28px;"/>
                     </p:commandLink>  
-                    <p:commandLink id="btnComentarios" action="#{atividadesMB.visualizarComentarios()}" oncomplete="PF('comentarios').show()" title="Comentários">
-                        <i class="fa fa-comments" style="color:#C6C6C6;font-size:28px;"/>
+                    <p:commandLink id="btnComentarios" action="#{cadAtividadeMB.visualizarComentarios()}" title="Comentários">
+                        <i class="fa fa-comments" style="color:#{cadAtividadeMB.retornarCorBtnComentario()};font-size:28px;"/>
                     </p:commandLink>
-                    <p:commandLink id="btnRotina" action="#" title="Rotina">
-                        <i class="fa fa-repeat" style="color:#C6C6C6;font-size:25px;"/>
-                    </p:commandLink>
+                    <p:commandLink id="btnRotina" title="Rotina">
+                        <i class="fa fa-repeat" style="color:#{cadAtividadeMB.retornarCorBtnRotina()};font-size:25px;"/>
+                    </p:commandLink>  
 
-                    <p:commandLink id="btnNotificacao" action="#"  title="Gerar notificação">
-                        <i class="fa fa-bell" style="color:#1C86EE;font-size:25px;"/>
+                    <p:commandLink id="btnNotificacao" action="#{cadAtividadeMB.gerarNotificacaoHorario()}"  title="Gerar notificação sobre horário" update=":cadTarefas:painelBotoes">
+                        <i class="fa fa-bell" style="color:#{cadAtividadeMB.retornarCorBtnNotificacao()};font-size:25px;"/>
                     </p:commandLink>
                 </h:panelGroup>
 
@@ -99,8 +99,10 @@
         <h:form id="formHorario">
             <p:dialog id="dialog_horario"  header="ADICIONAR HORÁRIO" widgetVar="horario" resizable="false" >
                 <div align="center">
-                    <p:inputMask id="horario" value="#{cadAtividadeMB.atividadeusuario.atividade.horaexecucao}" mask="99:99" placeholder="00:00" style="text-align: center;"/>    
-                </div>
+                    <p:inputMask id="horario" value="#{cadAtividadeMB.atividadeusuario.atividade.horario}" mask="99:99" placeholder="00:00" style="text-align: center;">    
+                        <p:ajax event="blur" update=":cadTarefas:painelBotoes"/>
+                    </p:inputMask>
+                </div>     
             </p:dialog>
         </h:form>
         <h:form id="formPrioridade">
@@ -110,6 +112,7 @@
                         <f:selectItem  itemLabel="Regular" itemValue="Regular"/>   
                         <f:selectItem  itemLabel="Importante" itemValue="Importante"/>  
                         <f:selectItem  itemLabel="Urgênte" itemValue="Urgênte"/>  
+                        <p:ajax event="change" update=":cadTarefas:painelBotoes"/>
                     </p:selectOneMenu>  
                 </div>
             </p:dialog>
@@ -120,22 +123,24 @@
                     <p:selectOneMenu id="executor"  value="#{cadAtividadeMB.atividadeusuario.usuario}"  converter="UsuarioConverter"
                                      filter="true" filterMatchMode="contains" panelStyle="width:180px" >
                         <f:selectItem  itemLabel="EXECUTOR" itemValue="0" noSelectionOption="true"/>    
-                        <f:selectItems  value="#{cadAtividadeMB.listaSubdepartamento}" var="usuarioselecionado" itemLabel="#{usuarioselecionado.nome}" itemValue="#{usuarioselecionado}"/>
-                        <f:attribute name="listaUsuarios" value="#{cadAtividadeMB.listaSubdepartamento}"/>
+                        <f:selectItems  value="#{cadAtividadeMB.listaUsuario}" var="usuarioselecionado" itemLabel="#{usuarioselecionado.nome}" itemValue="#{usuarioselecionado}"/>
+                        <f:attribute name="listaUsuarios" value="#{cadAtividadeMB.listaUsuario}"/>
+                        <p:ajax event="change" update=":cadTarefas:painelBotoes"/>
                     </p:selectOneMenu> 
-                </div>
+                </div>  
             </p:dialog>
         </h:form>
         <h:form id="formVariosExecutores">
-            <p:dialog id="dialog_variosexecutores"  header="ADICIONAR EXECUTORES" widgetVar="variosExecutores" resizable="false" >
+            <p:dialog id="dialog_variosexecutores" style="margin-top: -10%;" header="ADICIONAR EXECUTORES" widgetVar="variosExecutores" resizable="false" >
                 <div align="center">   
                     <p:selectCheckboxMenu  id="executores" label="EXECUTORES" value="#{cadAtividadeMB.listaUsuarioSelecionado}"  converter="UsuarioConverter"
-                                     filter="true" filterMatchMode="contains" panelStyle="width:180px" >
+                                           filter="true" filterMatchMode="contains"  >       
                         <f:selectItem  itemLabel="EXECUTOR" itemValue="0" noSelectionOption="true"/>    
-                        <f:selectItems  value="#{cadAtividadeMB.listaSubdepartamento}" var="usuarioselecionado" itemLabel="#{usuarioselecionado.nome}" itemValue="#{usuarioselecionado}"/>
-                        <f:attribute name="listaUsuarios" value="#{cadAtividadeMB.listaSubdepartamento}"/>
+                        <f:selectItems  value="#{cadAtividadeMB.listaUsuario}" var="usuarioselecionado" itemLabel="#{usuarioselecionado.nome}" itemValue="#{usuarioselecionado}"/>
+                        <f:attribute name="listaUsuarios" value="#{cadAtividadeMB.listaUsuario}"/>
+                        <p:ajax event="change" update=":cadTarefas:painelBotoes"/>
                     </p:selectCheckboxMenu> 
-                </div>
+                </div>   
             </p:dialog> 
         </h:form>
     </h:body>

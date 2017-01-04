@@ -8,6 +8,7 @@ package br.com.intime.model;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -43,15 +44,15 @@ public class Atividade implements Serializable {
     private LocalDate dataexecucao;
     @Column(name = "horaexecucao")
     private LocalTime horaexecucao;
-    @Size(max = 7)
+    @Size(max = 15)
     @Column(name = "prioridade")
     private String prioridade;
     @Column(name = "metatempo")
     private LocalTime metatempo;
     @Column(name = "rotina")
-    private Boolean rotina;
+    private boolean rotina;
     @Column(name = "notificacaohorario")
-    private Boolean notificacaohorario;
+    private boolean notificacaohorario;
     @JoinColumn(name = "cliente_idcliente", referencedColumnName = "idcliente")
     @ManyToOne(optional = false)
     private Cliente cliente;
@@ -62,6 +63,10 @@ public class Atividade implements Serializable {
     private String dataMostrar;
     @Transient 
     private String horaMostrar;
+    @Transient 
+    private Date dataexecutar;
+    @Transient 
+    private String horario;
     
     public Atividade() {
     }
@@ -109,9 +114,7 @@ public class Atividade implements Serializable {
     public void setHoraexecucao(LocalTime horaexecucao) {
         this.horaexecucao = horaexecucao;
     }
-
-    
-
+ 
     public String getPrioridade() {
         return prioridade;
     }
@@ -128,23 +131,21 @@ public class Atividade implements Serializable {
         this.metatempo = metatempo;
     }
 
-    
-
-    public Boolean getRotina() {
+    public boolean isRotina() {
         return rotina;
     }
 
-    public void setRotina(Boolean rotina) {
+    public void setRotina(boolean rotina) {
         this.rotina = rotina;
-    }
-
-    public Boolean getNotificacaohorario() {
+    } 
+    
+    public boolean isNotificacaohorario() {
         return notificacaohorario;
     }
 
-    public void setNotificacaohorario(Boolean notificacaohorario) {
+    public void setNotificacaohorario(boolean notificacaohorario) {
         this.notificacaohorario = notificacaohorario;
-    }
+    } 
 
     public Cliente getCliente() {
         return cliente;
@@ -176,6 +177,22 @@ public class Atividade implements Serializable {
 
     public void setHoraMostrar(String horaMostrar) {
         this.horaMostrar = horaMostrar;
+    }
+
+    public Date getDataexecutar() {
+        return dataexecutar;
+    }
+
+    public void setDataexecutar(Date dataexecutar) {
+        this.dataexecutar = dataexecutar;
+    }
+
+    public String getHorario() {
+        return horario;
+    }
+
+    public void setHorario(String horario) {
+        this.horario = horario;
     }
 
     @Override

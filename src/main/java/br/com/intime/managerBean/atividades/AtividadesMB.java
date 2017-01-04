@@ -274,7 +274,7 @@ public class AtividadesMB implements Serializable{
             buscar=" ";
         }
         String sql = "SELECT a FROM Atividadeaguardando a where a.atividadeusuario.usuario.idusuario=" + usuarioLogadoMB.getUsuario().getIdusuario()
-                + " a.dataretotno>= :dataInicial "
+                + " a.dataretorno>= :dataInicial "
                 + " a.atividadeusuario.atividade.descricao like '%" + buscar + "%'"
                 + "' ORDER BY a.dataretorno ";
         List<Atividadeaguardando> lista = atividadeAguardandoRepository.list(sql, LocalDate.now(), null);

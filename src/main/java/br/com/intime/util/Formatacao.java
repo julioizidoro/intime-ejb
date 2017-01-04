@@ -9,6 +9,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.text.*;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -912,7 +915,20 @@ public class Formatacao {
             return 0;
         }
     }
-    
-    
+
+    public static LocalDate converterDateParaLocalDate(Date data) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(data);
+        LocalDate localDate = LocalDate.of(cal.get(Calendar.YEAR),
+                cal.get(Calendar.MONTH) + 1,
+                cal.get(Calendar.DAY_OF_MONTH));
+        return localDate;
+    }
+
+    public static LocalTime converterStringParaLocalTime(String horario) { 
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss"); 
+        LocalTime dateTime = LocalTime.parse(horario+":00", formatter);
+        return dateTime;
+    }   
 
 }
