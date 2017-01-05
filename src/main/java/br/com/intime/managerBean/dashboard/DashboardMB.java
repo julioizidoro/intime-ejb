@@ -251,8 +251,18 @@ public class DashboardMB implements Serializable {
 
     public void gerarListaNotificacoes() {
         LocalTime horarioAtual = LocalTime.now();
-        LocalTime horarioAnterior = LocalTime.of(horarioAtual.getHour(), horarioAtual.getMinute() - 1);
-        LocalTime horario = LocalTime.of(horarioAtual.getHour(), horarioAtual.getMinute() + 1);
+        LocalTime horarioAnterior;
+        LocalTime horario;
+        if(horarioAtual.getMinute()!=00){
+            horarioAnterior = LocalTime.of(horarioAtual.getHour(), horarioAtual.getMinute() - 1); 
+        }else{
+            horarioAnterior = LocalTime.of(horarioAtual.getHour(), horarioAtual.getMinute());
+        }
+        if(horarioAtual.getMinute()!=59){
+            horario = LocalTime.of(horarioAtual.getHour(), horarioAtual.getMinute() + 1); 
+        }else{
+            horario = LocalTime.of(horarioAtual.getHour(), horarioAtual.getMinute());
+        } 
         if (listaAtividadesHoje != null && listaAtividadesHoje.size() > 0) {
             for (int i = 0; i < listaAtividadesHoje.size(); i++) {
                 if (listaAtividadesHoje.get(i).getAtividade().isNotificacaohorario()) {
