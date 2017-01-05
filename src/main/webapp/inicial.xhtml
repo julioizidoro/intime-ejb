@@ -30,13 +30,12 @@
 
     <h:body style="background: #fff;">
         <h:form id="telaInicial">
-            <p:poll interval="180" listener="#{dashboardMB.gerarListas()}" update="colunaTodoList, calendarioAtividades, colunaNumTarefas, colunaFeed"/>
+            <p:poll interval="120" listener="#{dashboardMB.gerarListas()}" update="colunaTodoList, calendarioAtividades, colunaNumTarefas, colunaFeed, btnVisualizarNotificacoes"/>
             <p:growl id="growl" showDetail="true" sticky="true" />  
             <section id="container" >    
                 <header class="header white-bg">        
 
-                    <div align="right" class="nav notify-row" id="top_menu"> 
-
+                    <div align="right" class="nav notify-row" id="top_menu">  
                         <ul class="nav top-menu"> 
                             <li>
                                 <p:commandLink class="dropdown-toggle" title="Adicionar Tarefa" action="#{menuMB.adicionarAtividades()}">

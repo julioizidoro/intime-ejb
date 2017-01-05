@@ -551,7 +551,9 @@ public class AtividadesMB implements Serializable {
 
     public String retornarCorAtividades(Atividadeusuario atividadeusuario) {
         LocalDate data = LocalDate.now();
-        if (atividadeusuario.getAtividade().getDataexecucao().isBefore(data)
+        if (((atividadeusuario.getAtividade().getDataexecucao().equals(data)
+                && atividadeusuario.getAtividade().getHoraexecucao().isBefore(LocalTime.now()))
+                || (atividadeusuario.getAtividade().getDataexecucao().isBefore(data)))
                 && !atividadeusuario.getSituacao().equalsIgnoreCase("Concluida")) {
             return "#B22222;";
         }

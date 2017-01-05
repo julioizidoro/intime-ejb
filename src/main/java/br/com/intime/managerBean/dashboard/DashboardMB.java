@@ -6,6 +6,7 @@ import br.com.intime.model.Feednoticia;
 import br.com.intime.model.Ftpdados;
 import br.com.intime.model.Nota;
 import br.com.intime.model.Notificacao;
+import br.com.intime.repository.AtividadeRepository;
 import br.com.intime.repository.AtividadeUsuarioRepository;
 import br.com.intime.repository.FeedNoticiaRepository;
 import br.com.intime.repository.FtpDadosRepository;
@@ -48,6 +49,8 @@ public class DashboardMB implements Serializable {
     private Ftpdados ftpdados;
     @EJB
     private AtividadeUsuarioRepository atividadeUsuarioRepository;
+    @EJB
+    private AtividadeRepository atividadeRepository;
     @EJB
     private NotificacoesRepository notificacoesRepository;
     @EJB
@@ -163,12 +166,20 @@ public class DashboardMB implements Serializable {
         this.feedNoticiaRepository = feedNoticiaRepository;
     }
 
+    public AtividadeRepository getAtividadeRepository() {
+        return atividadeRepository;
+    }
+
+    public void setAtividadeRepository(AtividadeRepository atividadeRepository) {
+        this.atividadeRepository = atividadeRepository;
+    }
+
     public void gerarListaAtivadadesSemana() {
         LocalDate dataInicial = LocalDate.now().minusDays(7);
         LocalDate dataFinal = LocalDate.now();
         String sql = "SELECT a FROM Atividadeusuario a where a.usuario.idusuario=" + usuarioLogadoMB.getUsuario().getIdusuario()
                 + " and a.situacao='Concluida' and a.dataconclusao>= :dataInicial "
-                + " and a.dataconclusao<= :dataFinal "  
+                + " and a.dataconclusao<= :dataFinal "
                 + " ORDER BY a.atividade.dataexecucao";
         listaAtividadesSemana = atividadeUsuarioRepository.list(sql, dataInicial, dataFinal);
     }
@@ -239,6 +250,51 @@ public class DashboardMB implements Serializable {
     }
 
     public void gerarListaNotificacoes() {
+        LocalTime horarioAtual = LocalTime.now();
+        LocalTime horarioAnterior = LocalTime.of(horarioAtual.getHour(), horarioAtual.getMinute() - 1);
+        LocalTime horario = LocalTime.of(horarioAtual.getHour(), horarioAtual.getMinute() + 1);
+        if (listaAtividadesHoje != null && listaAtividadesHoje.size() > 0) {
+            for (int i = 0; i < listaAtividadesHoje.size(); i++) {
+                if (listaAtividadesHoje.get(i).getAtividade().isNotificacaohorario()) {
+                    if ((listaAtividadesHoje.get(i).getAtividade().getHoraexecucao().equals(horarioAnterior)
+                            || listaAtividadesHoje.get(i).getAtividade().getHoraexecucao().equals(horarioAtual)
+                            || listaAtividadesHoje.get(i).getAtividade().getHoraexecucao().equals(horario))
+                            && listaAtividadesHoje.get(i).getSituacao().equalsIgnoreCase("Play")) {
+                        Notificacao notificacao = new Notificacao();
+                        notificacao.setLido(false);
+                        notificacao.setUsuario(usuarioLogadoMB.getUsuario());
+                        String horaMostrar = "";
+                        int ih = listaAtividadesHoje.get(i).getAtividade().getHoraexecucao().getHour();
+                        int im = listaAtividadesHoje.get(i).getAtividade().getHoraexecucao().getMinute();
+                        if (ih <= 9) {
+                            horaMostrar = "0";
+                        }
+                        horaMostrar = horaMostrar + String.valueOf(ih) + ":";
+                        if (im <= 9) {
+                            horaMostrar = horaMostrar + "0";
+                        }
+                        horaMostrar = horaMostrar + String.valueOf(im);
+                        notificacao.setDescricao("Sua tarefa '" + listaAtividadesHoje.get(i).getAtividade().getDescricao()
+                                + "' deverá ser realizada as " + horaMostrar + " hrs.");
+                        notificacoesRepository.create(notificacao); 
+                        listaAtividadesHoje.get(i).getAtividade().setNotificacaohorario(false);
+                        atividadeRepository.update(listaAtividadesHoje.get(i).getAtividade());
+                    } else if ((listaAtividadesHoje.get(i).getAtividade().getHoraexecucao().isBefore(horarioAnterior)
+                            || listaAtividadesHoje.get(i).getAtividade().getHoraexecucao().isBefore(horarioAtual)
+                            || listaAtividadesHoje.get(i).getAtividade().getHoraexecucao().isBefore(horario))
+                            && listaAtividadesHoje.get(i).getSituacao().equalsIgnoreCase("Play")) {
+                        Notificacao notificacao = new Notificacao();
+                        notificacao.setLido(false);
+                        notificacao.setUsuario(usuarioLogadoMB.getUsuario());
+                        notificacao.setDescricao("Atenção! Sua tarefa '" + listaAtividadesHoje.get(i).getAtividade().getDescricao()
+                                + "' encontrasse atrasada.");
+                        notificacoesRepository.create(notificacao);
+                        listaAtividadesHoje.get(i).getAtividade().setNotificacaohorario(false);
+                        atividadeRepository.update(listaAtividadesHoje.get(i).getAtividade());
+                    }
+                }
+            }
+        }
         String sql = "select n From Notificacao n where n.lido=false and n.usuario.idusuario="
                 + usuarioLogadoMB.getUsuario().getIdusuario() + " order by n.descricao";
         listaNotificacoes = notificacoesRepository.list(sql);
@@ -314,7 +370,7 @@ public class DashboardMB implements Serializable {
         }
         atividadeUsuarioRepository.update(atividadeusuario);
     }
-     
+
     public boolean mostrarBotaoPlay(String situacao) {
         if (situacao.equalsIgnoreCase("Play")) {
             return true;

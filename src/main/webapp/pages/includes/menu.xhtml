@@ -4,22 +4,25 @@
         xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
         xmlns:f="http://xmlns.jcp.org/jsf/core">
     <div id="overlay" class="transparent"></div>
+    <p:poll interval="120" listener="#{dashboardMB.gerarListas()}" update="notificacoes"/>
     <header class="header white-bg">   
         <div align="right" class="nav notify-row" id="top_menu">  
-            <ul class="nav top-menu"> 
-                <li class="dropdown">
-                    <p:commandLink class="dropdown-toggle" title="Adicionar Tarefa" action="#{menuMB.adicionarAtividades()}">
-                        <i class="fa fa-plus"></i> 
-                    </p:commandLink>   
-                </li>  
-                <li id="header_notification_bar" class="dropdown">
-                    <p:commandLink id="btnVisualizarNotificacoes" class="dropdown-toggle" action="#{dashboardMB.visualizarNotificacoes()}"> 
-                        <i class="fa fa-bell"></i>
-                        <span class="badge bg-important"><p:outputLabel value="#{dashboardMB.retornarNumeroNotificacoes()}"/></span>
-                        <p:ajax event="dialogReturn" listener="#{dashboardMB.gerarListaNotificacoes()}" update=":inicial:btnVisualizarNotificacoes"/>
-                    </p:commandLink>   
-                </li>   
-            </ul>  
+            <h:panelGroup id="notificacoes">
+                <ul class="nav top-menu"> 
+                    <li class="dropdown">
+                        <p:commandLink class="dropdown-toggle" title="Adicionar Tarefa" action="#{menuMB.adicionarAtividades()}">
+                            <i class="fa fa-plus"></i> 
+                        </p:commandLink>   
+                    </li>  
+                    <li id="header_notification_bar" class="dropdown">
+                        <p:commandLink id="btnVisualizarNotificacoes" class="dropdown-toggle" action="#{dashboardMB.visualizarNotificacoes()}"> 
+                            <i class="fa fa-bell"></i>
+                            <span class="badge bg-important"><p:outputLabel value="#{dashboardMB.retornarNumeroNotificacoes()}"/></span>
+                            <p:ajax event="dialogReturn" listener="#{dashboardMB.gerarListaNotificacoes()}" update=":inicial:btnVisualizarNotificacoes"/>
+                        </p:commandLink>   
+                    </li>   
+                </ul>  
+            </h:panelGroup>
         </div>
         <div align="center"  class="nav logo" >
             <img src="../../resources/img/logoIntime.png" style="margin-left:12%;margin-top:-1%;" width="150"/>
