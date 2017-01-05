@@ -7,6 +7,7 @@ package br.com.intime.model;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,6 +17,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.Size;
 
 /**
@@ -43,6 +45,8 @@ public class Atividadeaguardando implements Serializable {
     @JoinColumn(name = "atividadeusuario_idatividadeusuario", referencedColumnName = "idatividadeusuario")
     @ManyToOne(optional = false)
     private Atividadeusuario atividadeusuario;
+    @Transient
+    private Date dataretornar;
 
     public Atividadeaguardando() {
     }
@@ -89,6 +93,14 @@ public class Atividadeaguardando implements Serializable {
 
     public void setAtividadeusuario(Atividadeusuario atividadeusuario) {
         this.atividadeusuario = atividadeusuario;
+    }
+
+    public Date getDataretornar() {
+        return dataretornar;
+    }
+
+    public void setDataretornar(Date dataretornar) {
+        this.dataretornar = dataretornar;
     }
 
     @Override

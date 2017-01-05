@@ -17,7 +17,7 @@
             <p:growl id="growl" showDetail="true" autoUpdate="true"  />
             <p:dataScroller id="tabelaNotificacoes" value="#{notificacaoMB.listaNotificacoes}" var="notificacoes" mode="inline" style="border:none !important;" scrollHeight="250">  
                 <p:outputPanel>    
-                    <h:panelGrid columns="2" style="width: 100%;" columnClasses="tamanho80,tamanho12" class="dataScrollerBranco">
+                    <h:panelGrid columns="2" style="width: 100%;font-size:13px;" columnClasses="tamanho80,tamanho12" class="dataScrollerBranco">
                         <p:outputLabel value="#{notificacoes.descricao}"/>
    
                         <p:commandLink id="btnAdicionar" action="#{notificacaoMB.visualizarNotificacao(notificacoes)}" title="Adicionar" style="float: right;" update=":cadTarefas:growl, :cadTarefas:tabelaNotificacoes">     

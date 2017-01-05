@@ -334,6 +334,7 @@ public class AtividadesMB implements Serializable {
         }
         sql = sql + sqlConcluida + sqlData + sqlOrderBy;
         listaAtividade = atividadeUsuarioRepository.list(sql, dataInicial, dataFinal);
+        removerAtivadadesAguardando();
         if ((naoconcluidas.equalsIgnoreCase("true")) && (concluidas.equalsIgnoreCase("false"))) {
             gerarDataHoraMostrarNaoConcluidas();
         } else {
@@ -343,7 +344,7 @@ public class AtividadesMB implements Serializable {
 
     public void gerarListaAtivadadesAguardando() {
         if (buscar == null) {
-            buscar = " ";
+            buscar = "";
         }
         String sql = "SELECT a FROM Atividadeaguardando a where a.atividadeusuario.usuario.idusuario=" + usuarioLogadoMB.getUsuario().getIdusuario()
                 + " and a.dataretorno>= :dataInicial "
@@ -354,6 +355,22 @@ public class AtividadesMB implements Serializable {
             listaAtividade = new ArrayList<Atividadeusuario>();
             for (int i = 0; i < lista.size(); i++) {
                 listaAtividade.add(lista.get(i).getAtividadeusuario());
+            }
+        }
+    }
+    
+    public void removerAtivadadesAguardando() {
+        if (buscar == null) {
+            buscar = "";
+        }
+        String sql = "SELECT a FROM Atividadeaguardando a where a.atividadeusuario.usuario.idusuario=" + usuarioLogadoMB.getUsuario().getIdusuario()
+                + " and a.dataretorno>= :dataInicial "
+                + " and a.atividadeusuario.atividade.descricao like '%" + buscar + "%'"
+                + " ORDER BY a.dataretorno ";
+        List<Atividadeaguardando> lista = atividadeAguardandoRepository.list(sql, LocalDate.now(), null);
+        if (lista != null) { 
+            for (int i = 0; i < lista.size(); i++) {
+                listaAtividade.remove(lista.get(i).getAtividadeusuario());
             }
         }
     }
@@ -415,7 +432,7 @@ public class AtividadesMB implements Serializable {
         }
     }
 
-    public void mudarSituacaoAtividade(Atividadeusuario atividadeusuario, String situacao) { 
+    public void mudarSituacaoAtividade(Atividadeusuario atividadeusuario, String situacao) {
         if (situacao.equalsIgnoreCase("Pause")) {
             Long inicio = new Date().getTime();
             atividadeusuario.setInicio(BigInteger.valueOf(inicio));
@@ -431,7 +448,7 @@ public class AtividadesMB implements Serializable {
             int tempoAtual = atividadeusuario.getTempoatual();
             tempo = tempo + tempoAtual;
             atividadeusuario.setTempoatual(tempo);
-            String sHora = Formatacao.calcularHorasTotal(tempo);  
+            String sHora = Formatacao.calcularHorasTotal(tempo);
             atividadeusuario.setTempo(sHora);
             atividadeusuario.setSituacao(situacao);
         } else if (situacao.equalsIgnoreCase("Concluida")) {
@@ -452,7 +469,7 @@ public class AtividadesMB implements Serializable {
                 session.setAttribute("atividadeusuario", atividadeusuario);
                 RequestContext.getCurrentInstance().openDialog("motivoAtraso", options, null);
             }
-        } 
+        }
         atividadeUsuarioRepository.update(atividadeusuario);
     }
 
@@ -503,13 +520,13 @@ public class AtividadesMB implements Serializable {
         }
     }
 
-    public void salvarEncaminharAtividade() { 
+    public void salvarEncaminharAtividade() {
         atividadeUsuarioRepository.update(atividadeusuario);
         Notificacao notificacao = new Notificacao();
         notificacao.setLido(false);
         notificacao.setUsuario(atividadeusuario.getUsuario());
-        notificacao.setDescricao(usuarioLogadoMB.getUsuario().getNome()+" lhe encaminhou a tarefa '"
-                +atividadeusuario.getAtividade().getDescricao()+"'.");
+        notificacao.setDescricao(usuarioLogadoMB.getUsuario().getNome() + " lhe encaminhou a tarefa '"
+                + atividadeusuario.getAtividade().getDescricao() + "'.");
         notificacoesRepository.update(notificacao);
         gerarListaAtivadades();
         Mensagem.lancarMensagemInfo("Tarefa encaminhada para " + atividadeusuario.getUsuario().getNome() + ".", "");
@@ -570,7 +587,12 @@ public class AtividadesMB implements Serializable {
     }
 
     public void adicionarAtividadeAguardando(Atividadeusuario atividadeusuario) {
-        Atividadeaguardando atividadeaguardando = new Atividadeaguardando();
+        Map<String, Object> options = new HashMap<String, Object>();
+        options.put("contentWidth", 425);
+        FacesContext fc = FacesContext.getCurrentInstance();
+        HttpSession session = (HttpSession) fc.getExternalContext().getSession(false);
+        session.setAttribute("atividadeusuario", atividadeusuario);
+        RequestContext.getCurrentInstance().openDialog("atividadeAguardando", options, null);
     }
 
 }

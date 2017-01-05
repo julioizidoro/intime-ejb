@@ -113,6 +113,7 @@
                                                             </p:commandLink>
                                                             <p:commandLink id="btnEditar" title="Editar Tarefa" action="#{atividadesMB.editarAtividades(atividades)}"> 
                                                                 <i class="fa fa-edit" style="font-size:17px;color:#FF6C60;"></i> 
+                                                                <p:ajax event="dialogReturn" listener="#{atividadesMB.gerarListaAtivadades()}" update="@form"/>
                                                             </p:commandLink> 
                                                             <a id="btnMenu" data-toggle="dropdown" class="dropdown-toggle">
                                                                 <i class="fa fa-bars" style="font-size:17px;color:#1C86EE;"></i> 
@@ -133,7 +134,7 @@
                                                                 <li><p:commandLink action="#{atividadesMB.duplicarAtividade(atividades)}" update="@form"><i class="fa fa-copy" style="color: #8E9398;font-size: 13px;">  
                                                                             <p:outputLabel value="Duplicar" style="margin-left: 8%;"/>
                                                                         </i></p:commandLink></li> 
-                                                                <li><p:commandLink><i class="fa fa-clock-o" style="color: #8E9398;font-size: 13px;">  
+                                                                <li><p:commandLink action="#{atividadesMB.adicionarAtividadeAguardando(atividades)}"><i class="fa fa-clock-o" style="color: #8E9398;font-size: 13px;">  
                                                                             <p:outputLabel value="Aguardando" style="margin-left: 8%;"/>
                                                                             <p:ajax event="dialogReturn" listener="#{atividadesMB.gerarListaAtivadades()}" update="@form"/>
                                                                         </i></p:commandLink></li> 
