@@ -50,6 +50,7 @@ public class AtividadeAguardandoMB implements Serializable {
         FacesContext fc = FacesContext.getCurrentInstance();
         HttpSession session = (HttpSession) fc.getExternalContext().getSession(false);
         atividadeusuario = (Atividadeusuario) session.getAttribute("atividadeusuario");
+        session.removeAttribute("atividadeusuario");
         atividadeaguardando = new Atividadeaguardando();
         gerarListaMotivo();
     }

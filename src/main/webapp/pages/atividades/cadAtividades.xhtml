@@ -85,7 +85,9 @@
                     <p:commandLink id="btnRotina" title="Rotina">
                         <i class="fa fa-repeat" style="color:#{cadAtividadeMB.retornarCorBtnRotina()};font-size:25px;"/>
                     </p:commandLink>  
-
+                    <p:commandLink id="btnMeta" oncomplete="PF('meta').show()" title="Adicionar meta">
+                        <i class="fa fa-flag-checkered" style="color:#{cadAtividadeMB.retornarCorBtnMeta()};font-size:27px;"/>
+                    </p:commandLink>      
                     <p:commandLink id="btnNotificacao" action="#{cadAtividadeMB.gerarNotificacaoHorario()}"  title="Gerar notificação sobre horário" update=":cadTarefas:painelBotoes">
                         <i class="fa fa-bell" style="color:#{cadAtividadeMB.retornarCorBtnNotificacao()};font-size:25px;"/>
                     </p:commandLink>
@@ -142,6 +144,15 @@
                     </p:selectCheckboxMenu> 
                 </div>   
             </p:dialog> 
+        </h:form>
+        <h:form id="formMeta">
+            <p:dialog id="dialog_meta"  header="ADICIONAR META" widgetVar="meta" resizable="false" >
+                <div align="center">
+                    <p:inputMask id="horario" value="#{cadAtividadeMB.atividadeusuario.atividade.meta}" mask="99:99" placeholder="00:00" style="text-align: center;">    
+                        <p:ajax event="blur" update=":cadTarefas:painelBotoes"/>
+                    </p:inputMask>
+                </div>     
+            </p:dialog>
         </h:form>
     </h:body>
 </html>

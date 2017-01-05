@@ -67,7 +67,7 @@ public class CadAtividadeMB implements Serializable {
     private AtividadeUsuarioRepository atividadeUsuarioRepository;
     @EJB
     private AtividadeRepository atividadeRepository;
-     @EJB
+    @EJB
     private NotificacoesRepository notificacoesRepository;
 
     @PostConstruct
@@ -75,6 +75,7 @@ public class CadAtividadeMB implements Serializable {
         FacesContext fc = FacesContext.getCurrentInstance();
         HttpSession session = (HttpSession) fc.getExternalContext().getSession(false);
         atividadeusuario = (Atividadeusuario) session.getAttribute("atividadeusuario");
+        session.removeAttribute("atividadeusuario");
         gerarListaUsuario();
         if (atividadeusuario == null) {
             atividadeusuario = new Atividadeusuario();
@@ -257,6 +258,11 @@ public class CadAtividadeMB implements Serializable {
                 atividadeusuario.getAtividade().setHoraexecucao(
                         Formatacao.converterStringParaLocalTime(atividadeusuario.getAtividade().getHorario()));
             }
+            if (atividadeusuario.getAtividade().getMeta() != null
+                    && atividadeusuario.getAtividade().getMeta().length() > 0) {
+                atividadeusuario.getAtividade().setMetatempo(
+                        Formatacao.converterStringParaLocalTime(atividadeusuario.getAtividade().getMeta()));
+            }
             atividadeusuario.getAtividade().setCliente(cliente);
             atividadeusuario.setAtividade(atividadeRepository.update(atividadeusuario.getAtividade()));
             atividadeUsuarioRepository.update(atividadeusuario);
@@ -352,7 +358,23 @@ public class CadAtividadeMB implements Serializable {
     }
 
     public String visualizarComentarios() {
-        salvar();
+        atividadeusuario.getAtividade().setDataexecucao(
+                Formatacao.converterDateParaLocalDate(atividadeusuario.getAtividade().getDataexecutar()));
+        if (atividadeusuario.getAtividade().getHorario() == null) {
+            LocalTime hora = LocalTime.of(23, 59);
+            atividadeusuario.getAtividade().setHoraexecucao(hora);
+        } else {
+            atividadeusuario.getAtividade().setHoraexecucao(
+                    Formatacao.converterStringParaLocalTime(atividadeusuario.getAtividade().getHorario()));
+        }
+        if (atividadeusuario.getAtividade().getMeta() != null
+                && atividadeusuario.getAtividade().getMeta().length() > 0) {
+            atividadeusuario.getAtividade().setMetatempo(
+                    Formatacao.converterStringParaLocalTime(atividadeusuario.getAtividade().getMeta()));
+        }
+        atividadeusuario.getAtividade().setCliente(cliente);
+        atividadeusuario.setAtividade(atividadeRepository.update(atividadeusuario.getAtividade()));
+        atividadeusuario = atividadeUsuarioRepository.update(atividadeusuario);
         if (atividadeusuario.getIdatividadeusuario() != null) {
             Map<String, Object> options = new HashMap<String, Object>();
             options.put("contentWidth", 500);
@@ -365,7 +387,17 @@ public class CadAtividadeMB implements Serializable {
     }
 
     public String retornarCorBtnHorario() {
-        if (atividadeusuario.getAtividade().getHorario() == null) {
+        if (atividadeusuario.getAtividade().getHorario() == null
+                || atividadeusuario.getAtividade().getHorario().length() == 0) {
+            return "#C6C6C6";
+        } else {
+            return "#0040FF";
+        }
+    }
+
+    public String retornarCorBtnMeta() {
+        if (atividadeusuario.getAtividade().getMeta() == null
+                || atividadeusuario.getAtividade().getMeta().length() == 0) {
             return "#C6C6C6";
         } else {
             return "#0040FF";
@@ -397,7 +429,8 @@ public class CadAtividadeMB implements Serializable {
     }
 
     public String retornarCorBtnComentario() {
-        if (atividadeusuario.getAtividadecomentarioList() == null) {
+        if (atividadeusuario.getAtividadecomentarioList() == null
+                || atividadeusuario.getAtividadecomentarioList().size()==0) {
             return "#C6C6C6";
         } else {
             return "#0040FF";
@@ -424,7 +457,7 @@ public class CadAtividadeMB implements Serializable {
         //data
         Date dataexecutar = Date.from(atividadeusuario.getAtividade().getDataexecucao().atStartOfDay(ZoneId.systemDefault()).toInstant());
         atividadeusuario.getAtividade().setDataexecutar(dataexecutar);
-        //horario
+        //horario 
         LocalTime hora = atividadeusuario.getAtividade().getHoraexecucao();
         String horaMostrar = "";
         int ih = hora.getHour();
@@ -438,5 +471,21 @@ public class CadAtividadeMB implements Serializable {
         }
         horaMostrar = horaMostrar + String.valueOf(im);
         atividadeusuario.getAtividade().setHorario(horaMostrar);
+        //META
+        if (atividadeusuario.getAtividade().getMetatempo() != null) {
+            LocalTime meta = atividadeusuario.getAtividade().getMetatempo();
+            String metaMostrar = "";
+            ih = meta.getHour();
+            im = meta.getMinute();
+            if (ih <= 9) {
+                metaMostrar = "0";
+            }
+            metaMostrar = metaMostrar + String.valueOf(ih) + ":";
+            if (im <= 9) {
+                metaMostrar = metaMostrar + "0";
+            }
+            metaMostrar = metaMostrar + String.valueOf(im);
+            atividadeusuario.getAtividade().setMeta(metaMostrar);
+        }
     }
 }

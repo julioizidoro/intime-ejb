@@ -67,6 +67,8 @@ public class Atividade implements Serializable {
     private Date dataexecutar;
     @Transient 
     private String horario;
+    @Transient 
+    private String meta;
     
     public Atividade() {
     }
@@ -193,6 +195,14 @@ public class Atividade implements Serializable {
 
     public void setHorario(String horario) {
         this.horario = horario;
+    }
+
+    public String getMeta() {
+        return meta;
+    }
+
+    public void setMeta(String meta) {
+        this.meta = meta;
     }
 
     @Override

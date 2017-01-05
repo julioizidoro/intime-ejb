@@ -39,6 +39,7 @@ public class AtividadeComentariosMB implements Serializable {
         FacesContext fc = FacesContext.getCurrentInstance();
         HttpSession session = (HttpSession) fc.getExternalContext().getSession(false);
         atividadeusuario = (Atividadeusuario) session.getAttribute("atividadeusuario");
+        session.removeAttribute("atividadeusuario");
         atividadecomentario = new Atividadecomentario();
     }
 
@@ -71,6 +72,9 @@ public class AtividadeComentariosMB implements Serializable {
             atividadecomentario.setData(LocalDate.now());
             atividadecomentario.setAtividadeusuario(atividadeusuario);
             atvidadeComentarioRepository.update(atividadecomentario); 
+            if(atividadeusuario.getAtividadecomentarioList()==null){
+                atividadeusuario.setAtividadecomentarioList(new ArrayList<Atividadecomentario>());
+            }
             atividadeusuario.getAtividadecomentarioList().add(atividadecomentario);
             Mensagem.lancarMensagemInfo("Comentário salvo!", "");
             atividadecomentario = new Atividadecomentario();
