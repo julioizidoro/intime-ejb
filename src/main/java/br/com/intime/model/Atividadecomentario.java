@@ -16,6 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.Size;
 
 /**
  *
@@ -33,6 +34,9 @@ public class Atividadecomentario implements Serializable {
     private Integer idatividadecomentario;
     @Column(name = "data")
     private LocalDate data;
+    @Size(max = 16777215)
+    @Column(name = "comentario")
+    private String comentario;
     @JoinColumn(name = "atividadeusuario_idatividadeusuario", referencedColumnName = "idatividadeusuario")
     @ManyToOne(optional = false)
     private Atividadeusuario atividadeusuario;
@@ -67,6 +71,14 @@ public class Atividadecomentario implements Serializable {
 
     public void setAtividadeusuario(Atividadeusuario atividadeusuario) {
         this.atividadeusuario = atividadeusuario;
+    }
+
+    public String getComentario() {
+        return comentario;
+    }
+
+    public void setComentario(String comentario) {
+        this.comentario = comentario;
     }
 
     @Override
