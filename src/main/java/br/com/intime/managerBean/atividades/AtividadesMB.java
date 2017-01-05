@@ -4,10 +4,12 @@ import br.com.intime.managerBean.usuario.UsuarioLogadoMB;
 import br.com.intime.model.Atividade;
 import br.com.intime.model.Atividadeaguardando;
 import br.com.intime.model.Atividadeusuario;
+import br.com.intime.model.Notificacao;
 import br.com.intime.model.Usuario;
 import br.com.intime.repository.AtividadeAguardandoRepository;
 import br.com.intime.repository.AtividadeRepository;
 import br.com.intime.repository.AtividadeUsuarioRepository;
+import br.com.intime.repository.NotificacoesRepository;
 import br.com.intime.repository.UsuarioRepository;
 import br.com.intime.util.Formatacao;
 import br.com.intime.util.Mensagem;
@@ -48,6 +50,8 @@ public class AtividadesMB implements Serializable {
     private AtividadeAguardandoRepository atividadeAguardandoRepository;
     @EJB
     private UsuarioRepository usuarioRepository;
+    @EJB
+    private NotificacoesRepository notificacoesRepository;
     //btn visualizar concluidas
     private String concluidas = "false";
     private String naoconcluidas = "true";
@@ -169,6 +173,14 @@ public class AtividadesMB implements Serializable {
 
     public void setAtividadeAguardandoRepository(AtividadeAguardandoRepository atividadeAguardandoRepository) {
         this.atividadeAguardandoRepository = atividadeAguardandoRepository;
+    }
+
+    public NotificacoesRepository getNotificacoesRepository() {
+        return notificacoesRepository;
+    }
+
+    public void setNotificacoesRepository(NotificacoesRepository notificacoesRepository) {
+        this.notificacoesRepository = notificacoesRepository;
     }
 
     public LocalDate getDataInicial() {
@@ -491,8 +503,14 @@ public class AtividadesMB implements Serializable {
         }
     }
 
-    public void salvarEncaminharAtividade() {
+    public void salvarEncaminharAtividade() { 
         atividadeUsuarioRepository.update(atividadeusuario);
+        Notificacao notificacao = new Notificacao();
+        notificacao.setLido(false);
+        notificacao.setUsuario(atividadeusuario.getUsuario());
+        notificacao.setDescricao(usuarioLogadoMB.getUsuario().getNome()+" lhe encaminhou a tarefa '"
+                +atividadeusuario.getAtividade().getDescricao()+"'.");
+        notificacoesRepository.update(notificacao);
         gerarListaAtivadades();
         Mensagem.lancarMensagemInfo("Tarefa encaminhada para " + atividadeusuario.getUsuario().getNome() + ".", "");
     }

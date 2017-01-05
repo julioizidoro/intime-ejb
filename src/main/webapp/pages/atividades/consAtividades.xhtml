@@ -84,7 +84,9 @@
                                                         <h:panelGroup rendered="#{atividadesMB.mostrarComentarios(atividades)}">
                                                             <span id="comentarios" class="task-title-sp" style="font-weight: bold;" >
                                                                 (   
-                                                                <p:commandLink id="btnComentarios" title="Comentários" value="#{atividadesMB.retornarNumComentarios(atividades)}" action="#{atividadesMB.visualizarComentarios(atividades)}"/>
+                                                                <p:commandLink id="btnComentarios" title="Comentários" value="#{atividadesMB.retornarNumComentarios(atividades)}" action="#{atividadesMB.visualizarComentarios(atividades)}">
+                                                                    <p:ajax event="dialogReturn" listener="#{atividadesMB.gerarListaAtivadades()}" update="@form"/>
+                                                                </p:commandLink>
                                                                 )      
                                                             </span>
                                                         </h:panelGroup>
@@ -126,13 +128,14 @@
                                                                         </i></p:commandLink></li> 
                                                                 <li><p:commandLink action="#{atividadesMB.visualizarComentarios(atividades)}"><i class="fa fa-comments" style="color: #8E9398;font-size: 13px;">
                                                                             <p:outputLabel value="Comentários" style="margin-left: 8%;"/>
+                                                                            <p:ajax event="dialogReturn" listener="#{atividadesMB.gerarListaAtivadades()}" update="@form"/>
                                                                         </i></p:commandLink></li>    
                                                                 <li><p:commandLink action="#{atividadesMB.duplicarAtividade(atividades)}" update="@form"><i class="fa fa-copy" style="color: #8E9398;font-size: 13px;">  
                                                                             <p:outputLabel value="Duplicar" style="margin-left: 8%;"/>
                                                                         </i></p:commandLink></li> 
                                                                 <li><p:commandLink><i class="fa fa-clock-o" style="color: #8E9398;font-size: 13px;">  
                                                                             <p:outputLabel value="Aguardando" style="margin-left: 8%;"/>
-                                                                            <p:ajax event="dialogReturn" listener="#{atividadesMB.mudarCoresBotoes('hoje')}" update="@form"/>
+                                                                            <p:ajax event="dialogReturn" listener="#{atividadesMB.gerarListaAtivadades()}" update="@form"/>
                                                                         </i></p:commandLink></li> 
                                                             </ul>
                                                         </div>

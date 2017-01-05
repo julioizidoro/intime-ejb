@@ -5,12 +5,14 @@ import br.com.intime.model.Atividade;
 import br.com.intime.model.Atividadeusuario;
 import br.com.intime.model.Cliente;
 import br.com.intime.model.Clientedepartamento;
+import br.com.intime.model.Notificacao;
 import br.com.intime.model.Subdepartamento;
 import br.com.intime.model.Usuario;
 import br.com.intime.repository.AtividadeRepository;
 import br.com.intime.repository.AtividadeUsuarioRepository;
 import br.com.intime.repository.ClienteDepartamentoRepository;
 import br.com.intime.repository.ClienteRepository;
+import br.com.intime.repository.NotificacoesRepository;
 import br.com.intime.repository.SubDepartamentoRepository;
 import br.com.intime.repository.UsuarioRepository;
 import br.com.intime.util.Formatacao;
@@ -18,7 +20,7 @@ import br.com.intime.util.Mensagem;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.ZoneId; 
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -65,6 +67,8 @@ public class CadAtividadeMB implements Serializable {
     private AtividadeUsuarioRepository atividadeUsuarioRepository;
     @EJB
     private AtividadeRepository atividadeRepository;
+     @EJB
+    private NotificacoesRepository notificacoesRepository;
 
     @PostConstruct
     public void init() {
@@ -234,6 +238,14 @@ public class CadAtividadeMB implements Serializable {
         this.atividadeRepository = atividadeRepository;
     }
 
+    public NotificacoesRepository getNotificacoesRepository() {
+        return notificacoesRepository;
+    }
+
+    public void setNotificacoesRepository(NotificacoesRepository notificacoesRepository) {
+        this.notificacoesRepository = notificacoesRepository;
+    }
+
     public void salvar() {
         if (validarDados()) {
             atividadeusuario.getAtividade().setDataexecucao(
@@ -249,12 +261,19 @@ public class CadAtividadeMB implements Serializable {
             atividadeusuario.setAtividade(atividadeRepository.update(atividadeusuario.getAtividade()));
             atividadeUsuarioRepository.update(atividadeusuario);
             if (listaUsuarioSelecionado != null && listaUsuarioSelecionado.size() > 0) {
+                Notificacao notificacao;
                 for (int i = 0; listaUsuarioSelecionado.size() > i; i++) {
                     Atividadeusuario atividadeUsuarioSelecionados = new Atividadeusuario();
                     atividadeUsuarioSelecionados.setAtividade(atividadeusuario.getAtividade());
                     atividadeUsuarioSelecionados.setUsuario(listaUsuarioSelecionado.get(i));
                     atividadeUsuarioSelecionados.setTempo("00:00");
                     atividadeUsuarioRepository.update(atividadeUsuarioSelecionados);
+                    notificacao = new Notificacao();
+                    notificacao.setLido(false);
+                    notificacao.setUsuario(atividadeusuario.getUsuario());
+                    notificacao.setDescricao(usuarioLogadoMB.getUsuario().getNome() + " lhe encaminhou a tarefa '"
+                            + atividadeusuario.getAtividade().getDescricao() + "'.");
+                    notificacoesRepository.update(notificacao);
                 }
             }
             RequestContext.getCurrentInstance().closeDialog(null);
