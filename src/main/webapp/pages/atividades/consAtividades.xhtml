@@ -75,7 +75,8 @@
                                                     <div class="task-checkbox" style="margin-left:1%;">  
                                                         <p:commandLink action="#{atividadesMB.mudarSituacaoAtividade(atividades, 'Concluida')}" update="@form"> 
                                                             <p:selectBooleanCheckbox id="cbxConcluido" class="list-child" value="#{atividades.concluido}"  style="float: left;margin-top:0.6%;margin-left:1.5%;"/> 
-                                                        </p:commandLink> 
+                                                            <p:ajax event="dialogReturn" listener="#{atividadesMB.gerarListaAtivadades()}" update="@form"/>
+                                                        </p:commandLink>   
                                                     </div>            
                                                     <div class="task-title"> 
                                                         <span id="nome" class="task-title-sp">#{atividades.atividade.descricao}</span> |     

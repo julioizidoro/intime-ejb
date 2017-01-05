@@ -44,6 +44,7 @@ public class AtividadeAtrasoMB implements Serializable {
         FacesContext fc = FacesContext.getCurrentInstance();
         HttpSession session = (HttpSession) fc.getExternalContext().getSession(false);
         atividadeusuario = (Atividadeusuario) session.getAttribute("atividadeusuario");
+        atividadeatraso = new Atividadeatraso();
         gerarListaMotivo();
     }
 
@@ -106,11 +107,13 @@ public class AtividadeAtrasoMB implements Serializable {
     public void salvar() {
         if (motivoatraso != null && motivoatraso.getIdmotivoatraso() != null) {
             atividadeatraso.setMotivoatraso(motivoatraso);
+            atividadeatraso.setAtividadeusuario(atividadeusuario);
             atvidadeAtrasoRepository.update(atividadeatraso);
             LocalTime hora = LocalTime.of(23, 59, 00);
             atividadeusuario.setHoraconclusao(hora);
             atividadeusuario.setDataconclusao(LocalDate.now());
             atividadeusuario.setConcluido(true);
+            atividadeusuario.setSituacao("Concluida");
             atividadeUsuarioRepository.update(atividadeusuario);
             Mensagem.lancarMensagemInfo("Tarefa concluída!", "");
             RequestContext.getCurrentInstance().closeDialog(null);

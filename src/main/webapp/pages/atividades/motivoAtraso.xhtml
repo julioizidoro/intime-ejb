@@ -14,8 +14,6 @@
             </title>
             <br/>
             <div align="left">
-                <p:inputTextarea value="#{atividadeAtrasoMB.a}" style="width:100%" rows="3"></p:inputTextarea>
-                <br/><br/>
                 <p:selectOneMenu id="motivo"  style="width:170px;"  value="#{atividadeAtrasoMB.motivoatraso}" converter="MotivoAtrasoConverter"
                                  filter="true" filterMatchMode="contains" panelStyle="width:180px" >
                     <f:selectItem  itemLabel="Motivo" itemValue="0" noSelectionOption="true"/>    
@@ -23,6 +21,9 @@
                     <f:attribute name="listaMotivoAtraso" value="#{atividadeAtrasoMB.listaMotivoAtraso}"/>
                     <p:ajax event="change"/>  
                 </p:selectOneMenu>
+                <br/><br/>
+                <p:inputTextarea value="#{atividadeAtrasoMB.atividadeatraso.descricao}" style="width:100%" rows="3"></p:inputTextarea>
+                 
                 <div align="right">  
                     <p:commandLink id="btnSalvarMotivo" action="#{atividadeAtrasoMB.salvar()}" title="Adicionar">
                         <i class="fa fa-check" style="color:#008B00;font-size:35px;"/>

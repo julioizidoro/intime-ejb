@@ -403,11 +403,11 @@ public class AtividadesMB implements Serializable {
         }
     }
 
-    public void mudarSituacaoAtividade(Atividadeusuario atividadeusuario, String situacao) {
-        atividadeusuario.setSituacao(situacao);
+    public void mudarSituacaoAtividade(Atividadeusuario atividadeusuario, String situacao) { 
         if (situacao.equalsIgnoreCase("Pause")) {
             Long inicio = new Date().getTime();
             atividadeusuario.setInicio(BigInteger.valueOf(inicio));
+            atividadeusuario.setSituacao(situacao);
         } else if (situacao.equalsIgnoreCase("Play")) {
             Long termino = new Date().getTime();
             BigInteger valorInicio = atividadeusuario.getInicio();
@@ -419,15 +419,18 @@ public class AtividadesMB implements Serializable {
             int tempoAtual = atividadeusuario.getTempoatual();
             tempo = tempo + tempoAtual;
             atividadeusuario.setTempoatual(tempo);
-            String sHora = Formatacao.calcularHorasTotal(tempo);
+            String sHora = Formatacao.calcularHorasTotal(tempo);  
             atividadeusuario.setTempo(sHora);
+            atividadeusuario.setSituacao(situacao);
         } else if (situacao.equalsIgnoreCase("Concluida")) {
-            if (atividadeusuario.getDataconclusao() == LocalDate.now()
-                    || atividadeusuario.getDataconclusao().isAfter(LocalDate.now())) {
+            LocalDate data = LocalDate.now();
+            if (atividadeusuario.getAtividade().getDataexecucao().equals(data)
+                    || atividadeusuario.getAtividade().getDataexecucao().isAfter(data)) {
                 LocalTime hora = LocalTime.of(23, 59, 00);
                 atividadeusuario.setHoraconclusao(hora);
                 atividadeusuario.setDataconclusao(LocalDate.now());
                 atividadeusuario.setConcluido(true);
+                atividadeusuario.setSituacao(situacao);
                 Mensagem.lancarMensagemInfo("Tarefa concluída!", "");
             } else {
                 Map<String, Object> options = new HashMap<String, Object>();
@@ -437,7 +440,7 @@ public class AtividadesMB implements Serializable {
                 session.setAttribute("atividadeusuario", atividadeusuario);
                 RequestContext.getCurrentInstance().openDialog("motivoAtraso", options, null);
             }
-        }
+        } 
         atividadeUsuarioRepository.update(atividadeusuario);
     }
 
