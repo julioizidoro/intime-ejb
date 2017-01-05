@@ -25,11 +25,11 @@ public class DepartamentoConverter implements Converter {
                 }
             }
         } else {
-            Departamento empresa = new Departamento();
-            return empresa;
+            Departamento departamento = new Departamento();
+            return departamento;
         }
-        Departamento empresa = new Departamento();
-        return empresa;
+        Departamento departamento = new Departamento();
+        return departamento;
     }
 
     public String getAsString(FacesContext arg0, UIComponent arg1, Object arg2) {

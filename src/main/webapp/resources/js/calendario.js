@@ -2,7 +2,7 @@ PrimeFaces.locales['pt'] = {
                     closeText: 'Fechar',  
                     prevText: 'Anterior',  
                     nextText: 'Proximo',  
-                    currentText: 'Começo',  
+                    currentText: 'HOJE',  
                     monthNames: ['Janeiro', 'Fevereiro', 'Marco', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],  
                     monthNamesShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],  
                     dayNames: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'],  
@@ -19,8 +19,8 @@ PrimeFaces.locales['pt'] = {
                     minuteText: 'Minuto',  
                     secondText: 'Segundo',  
                     ampm: false,  
-                    month: 'Mês',  
-                    week: 'Semana',  
-                    day: 'Dia',  
+                    month: 'MÊS',  
+                    week: 'SEMANA',  
+                    day: 'DIA',  
                     allDayText: 'Todo o Dia'  
                 };  

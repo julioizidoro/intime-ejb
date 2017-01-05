@@ -30,10 +30,9 @@
 
 .tasks-widget .task-list > li {
   position:relative;
-  padding: 5px 5px;
-  border-bottom:1px dashed #eaeaea;
+  padding: 5px 5px; 
 }
-
+ 
 .tasks-widget .task-list  li.last-line {
   border-bottom:none;
 }
@@ -59,8 +58,7 @@
 }
 
 .tasks-widget .task-list  li .task-title .task-title-sp  {
-  margin-right:5px;
-  color: #2A3542;   
+  margin-right:5px;      
 }
 
 .tasks-widget .task-list  li.task-done .task-title-sp  {

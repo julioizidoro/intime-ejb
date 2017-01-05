@@ -1,0 +1,40 @@
+.fc .fc-button-group > :first-child {
+    margin-left: 0;
+    background: transparent;
+    border: none;
+    color: #005552;
+    font-size: 18px;
+}
+
+
+.fc .fc-button-group > * {
+    float: left;
+    margin: 0 0 0 -1px;
+    background: transparent;
+    border: none;   
+    color: #005552;
+    font-size: 18px;
+}
+
+.fc .fc-toolbar > * > * {
+    float: left;
+    margin-left: .75em;
+    background: transparent;
+    border: none;
+    color: #005552;   
+}
+
+.fc-toolbar .fc-center {
+    display: inline-block;
+    font-size: 30px;     
+}   
+
+.fc-view-container *, .fc-view-container *::before, .fc-view-container *::after {
+    -webkit-box-sizing: content-box;
+    -moz-box-sizing: content-box;
+    box-sizing: content-box;
+    background: transparent;
+    color: #313D30;
+    border-color: #c8c8c8;
+}  
+ 

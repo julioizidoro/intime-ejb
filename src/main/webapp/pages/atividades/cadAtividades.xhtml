@@ -6,7 +6,8 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
         <link href="../../resources/css/bootstrap.min.css" rel="stylesheet"/>  
         <link href="../../resources/css/style.css" rel="stylesheet"/> 
-    </h:head>
+        <script src="../../resources/js/calendario.js" /> 
+    </h:head>     
     <h:body style="background:#FFFFFF;" > 
         <h:form id="cadTarefas"  style="font-size: 11px;width:95%;margin-left:3%;" enctype="multipart/form-data"> 
             <title style="background: #cf7000">
@@ -15,27 +16,29 @@
             <br/>
             <p:growl id="growl" showDetail="true" autoUpdate="true"  />
             <h:panelGrid columns="1" style="width:100%;font-size: 12px;"> 
-                <p:inputText id="titulo" placeholder="Título" style="width:99%;"/> 
+                <p:inputText id="titulo" value="#{cadAtividadeMB.atividadeusuario.atividade.descricao}" placeholder="Título" style="width:99%;"/> 
             </h:panelGrid>
-            <br/>  
+            <br/>     
             <h:panelGrid columns="2" columnClasses="tamanho20, tamanho30" style="width: 100%;font-size: 12px;">
-                <p:inputMask id="data" placeholder="DD/MM/AAAA" mask="99/99/9999" value="#{cadAtividadeMB.atividadeusuario.atividade.dataexecucao}" style="width:70%;"/>
-                <p:inputText id="buscarCliente" placeholder="BUSCAR CLIENTE" style="width:99%;"> 
-                    <p:ajax event="keyup"  update="tabelaCliente" />
+                <p:calendar id="dataTarefa" value="#{cadAtividadeMB.atividadeusuario.atividade.dataexecutar}" pattern="dd/MM/yyyy" locale="pt" size="12" style="margin-top: 5px;">
+                    <f:convertDateTime   pattern="dd/MM/yyyy" timeZone="America/Sao_Paulo"/>
+                </p:calendar>
+                <p:inputText id="buscarCliente" value="#{cadAtividadeMB.nomeCliente}" placeholder="BUSCAR CLIENTE" style="width:99%;"> 
+                    <p:ajax event="keyup" listener="#{cadAtividadeMB.gerarListaCliente()}" update="tabelaCliente" />
                 </p:inputText>
-  
+
                 <p:overlayPanel id="painelAdicionar" for="buscarCliente"
                                 hideEffect="fade" style="width:340px;background:#fff;">
                     <p:dataScroller id="tabelaCliente" var="cliente"
-                                    value="#" chunkSize="10" mode="inline"
+                                    value="#{cadAtividadeMB.listaCliente}" chunkSize="10" mode="inline"
                                     scrollHeight="110">
                         <p:outputPanel>   
                             <h:panelGrid columns="3" style="width:100%;"
                                          columnClasses="tamanhoavisos2, tamanho8, tamanho6">
-                                <h:outputLabel value="#"
+                                <h:outputLabel value="#{cliente.nomefantasia}"
                                                style="margin-left:1.5%;font-size: 13px;color:#4C4C4C;font-weight: 500;" /> 
                                 <p:commandLink id="btnSelecionarCliente"
-                                               action="#"
+                                               action="#{cadAtividadeMB.selecionarCliente(cliente)}"
                                                style="float:right;" title="Selecionar Cliente" update="@form">
                                     <i class="fa fa-check" style="color:#008B00;font-size:16px;"/>   
                                 </p:commandLink>
@@ -47,44 +50,44 @@
             </h:panelGrid>
             <br/>
             <h:panelGrid columns="2" columnClasses="tamanho30, tamanho30" style="width: 100%;font-size: 12px;">
-                <p:selectOneMenu id="departamento"  style="width:91%;"  value="#{cadAtividadeMB.departamento}" converter="ClienteDepartamentoConverter"
+                <p:selectOneMenu id="departamento"  style="width:91%;"  value="#{cadAtividadeMB.clientedepartamento}" converter="ClienteDepartamentoConverter"
                                  filter="true" filterMatchMode="contains" panelStyle="width:180px" >
                     <f:selectItem  itemLabel="Departamento" itemValue="0" noSelectionOption="true"/>    
-                    <f:selectItems  value="#{cadAtividadeMB.cliente.clientedepartamentoList}" var="departamentoselecionado" itemLabel="#{departamentoselecionado.departamento.nome}" itemValue="#{departamentoselecionado.departamento}"/>
-                    <f:attribute name="listaClienteDepartamento" value="#{cadAtividadeMB.cliente.clientedepartamentoList}"/>
-                    <p:ajax event="change" update="subdepartamento"/>
+                    <f:selectItems  value="#{cadAtividadeMB.listaClientedepartamentos}" var="departamentoselecionado" itemLabel="#{departamentoselecionado.departamento.nome}" itemValue="#{departamentoselecionado}"/>
+                    <f:attribute name="listaClienteDepartamento" value="#{cadAtividadeMB.listaClientedepartamentos}"/>
+                    <p:ajax event="change" listener="#{cadAtividadeMB.gerarListaSubDepartamento()}" update="@form"/>  
                 </p:selectOneMenu>
                 <p:selectOneMenu id="subdepartamento"  style="width:95%;"  value="#{cadAtividadeMB.atividadeusuario.atividade.subdepartamento}" converter="SubDepartamentoConverter"
                                  filter="true" filterMatchMode="contains" panelStyle="width:180px" >
                     <f:selectItem  itemLabel="Sub-Departamento" itemValue="0" noSelectionOption="true"/>    
-                    <f:selectItems  value="#{cadAtividadeMB.departamento.subdepartamentoList}" var="subdepartamentoselecionado" itemLabel="#{subdepartamentoselecionado.nome}" itemValue="#{subdepartamentoselecionado}"/>
-                    <f:attribute name="listaSubDepartamento" value="#{cadAtividadeMB.departamento.subdepartamentoList}"/>
+                    <f:selectItems  value="#{cadAtividadeMB.listaSubdepartamento}" var="subdepartamentoselecionado" itemLabel="#{subdepartamentoselecionado.nome}" itemValue="#{subdepartamentoselecionado}"/>
+                    <f:attribute name="listaSubDepartamento" value="#{cadAtividadeMB.listaSubdepartamento}"/>
                 </p:selectOneMenu>
             </h:panelGrid>
             <br/>         
             <h:panelGrid columns="2" columnClasses="tamanho70, tamanho30rigth" style="width:99%;"> 
-                <h:panelGroup>
+                <h:panelGroup id="painelBotoes">
                     <p:commandLink id="btnHorario" oncomplete="PF('horario').show()" title="Adicionar horário">
-                        <i class="fa fa-clock-o" style="color:#C6C6C6;font-size:27px;"/>
+                        <i class="fa fa-clock-o" style="color:#{cadAtividadeMB.retornarCorBtnHorario()};font-size:27px;"/>
                     </p:commandLink>  
                     <p:commandLink id="btnPrioridade" oncomplete="PF('prioridade').show()" title="Adicionar prioridade">
-                        <i class="fa fa-warning" style="color:#C6C6C6;font-size:25px;"/>
+                        <i class="fa fa-warning" style="color:#{cadAtividadeMB.retornarCorBtnPrioridade()};font-size:25px;"/>
                     </p:commandLink> 
                     <p:commandLink id="btnExecutor" oncomplete="PF('executor').show()" title="Adicionar executor">
-                        <i class="fa fa-user" style="color:#C6C6C6;font-size:28px;"/>
+                        <i class="fa fa-user" style="color:#{cadAtividadeMB.retornarCorBtnUsuario()};font-size:28px;"/>
                     </p:commandLink> 
                     <p:commandLink id="btnUsuarios" oncomplete="PF('variosExecutores').show()" title="Adicionar mais usuários">
-                        <i class="fa fa-user-plus" style="color:#C6C6C6;font-size:28px;"/>
+                        <i class="fa fa-user-plus" style="color:#{cadAtividadeMB.retornarCorBtnListaUsuarios()};font-size:28px;"/>
                     </p:commandLink>  
-                    <p:commandLink id="btnComentarios" action="#{atividadesMB.visualizarComentarios()}" oncomplete="PF('comentarios').show()" title="Comentários">
-                        <i class="fa fa-comments" style="color:#C6C6C6;font-size:28px;"/>
+                    <p:commandLink id="btnComentarios" action="#{cadAtividadeMB.visualizarComentarios()}" title="Comentários">
+                        <i class="fa fa-comments" style="color:#{cadAtividadeMB.retornarCorBtnComentario()};font-size:28px;"/>
                     </p:commandLink>
-                    <p:commandLink id="btnRotina" action="#" title="Rotina">
-                        <i class="fa fa-repeat" style="color:#C6C6C6;font-size:25px;"/>
-                    </p:commandLink>
+                    <p:commandLink id="btnRotina" title="Rotina">
+                        <i class="fa fa-repeat" style="color:#{cadAtividadeMB.retornarCorBtnRotina()};font-size:25px;"/>
+                    </p:commandLink>  
 
-                    <p:commandLink id="btnNotificacao" action="#"  title="Gerar notificação">
-                        <i class="fa fa-bell" style="color:#1C86EE;font-size:25px;"/>
+                    <p:commandLink id="btnNotificacao" action="#{cadAtividadeMB.gerarNotificacaoHorario()}"  title="Gerar notificação sobre horário" update=":cadTarefas:painelBotoes">
+                        <i class="fa fa-bell" style="color:#{cadAtividadeMB.retornarCorBtnNotificacao()};font-size:25px;"/>
                     </p:commandLink>
                 </h:panelGroup>
 
@@ -96,17 +99,20 @@
         <h:form id="formHorario">
             <p:dialog id="dialog_horario"  header="ADICIONAR HORÁRIO" widgetVar="horario" resizable="false" >
                 <div align="center">
-                    <p:inputMask id="horario" mask="99:99" placeholder="00:00" style="text-align: center;"/>    
-                </div>
+                    <p:inputMask id="horario" value="#{cadAtividadeMB.atividadeusuario.atividade.horario}" mask="99:99" placeholder="00:00" style="text-align: center;">    
+                        <p:ajax event="blur" update=":cadTarefas:painelBotoes"/>
+                    </p:inputMask>
+                </div>     
             </p:dialog>
         </h:form>
         <h:form id="formPrioridade">
             <p:dialog id="dialog_prioridade"  header="ADICIONAR PRIORIDADE" widgetVar="prioridade" resizable="false" >
                 <div align="center">
-                    <p:selectOneMenu id="prioridade"  value="#"  >
+                    <p:selectOneMenu id="prioridade"  value="#{cadAtividadeMB.atividadeusuario.atividade.prioridade}"  >
                         <f:selectItem  itemLabel="Regular" itemValue="Regular"/>   
                         <f:selectItem  itemLabel="Importante" itemValue="Importante"/>  
                         <f:selectItem  itemLabel="Urgênte" itemValue="Urgênte"/>  
+                        <p:ajax event="change" update=":cadTarefas:painelBotoes"/>
                     </p:selectOneMenu>  
                 </div>
             </p:dialog>
@@ -114,19 +120,27 @@
         <h:form id="formExecutor">
             <p:dialog id="dialog_executor"  header="ADICIONAR EXECUTOR" widgetVar="executor" resizable="false" >
                 <div align="center">
-                    <p:selectOneMenu id="executor"  value="#"  >
-                        <f:selectItem  itemLabel="EXECUTOR" itemValue="0"/>    
-                    </p:selectOneMenu>  
-                </div>
+                    <p:selectOneMenu id="executor"  value="#{cadAtividadeMB.atividadeusuario.usuario}"  converter="UsuarioConverter"
+                                     filter="true" filterMatchMode="contains" panelStyle="width:180px" >
+                        <f:selectItem  itemLabel="EXECUTOR" itemValue="0" noSelectionOption="true"/>    
+                        <f:selectItems  value="#{cadAtividadeMB.listaUsuario}" var="usuarioselecionado" itemLabel="#{usuarioselecionado.nome}" itemValue="#{usuarioselecionado}"/>
+                        <f:attribute name="listaUsuarios" value="#{cadAtividadeMB.listaUsuario}"/>
+                        <p:ajax event="change" update=":cadTarefas:painelBotoes"/>
+                    </p:selectOneMenu> 
+                </div>  
             </p:dialog>
         </h:form>
         <h:form id="formVariosExecutores">
-            <p:dialog id="dialog_variosexecutores"  header="ADICIONAR EXECUTORES" widgetVar="variosExecutores" resizable="false" >
-                <div align="center">
-                    <p:selectOneMenu id="executores"  value="#"  >
-                        <f:selectItem  itemLabel="EXECUTORES" itemValue="0"/>    
-                    </p:selectOneMenu>  
-                </div>
+            <p:dialog id="dialog_variosexecutores" style="margin-top: -10%;" header="ADICIONAR EXECUTORES" widgetVar="variosExecutores" resizable="false" >
+                <div align="center">   
+                    <p:selectCheckboxMenu  id="executores" label="EXECUTORES" value="#{cadAtividadeMB.listaUsuarioSelecionado}"  converter="UsuarioConverter"
+                                           filter="true" filterMatchMode="contains"  >       
+                        <f:selectItem  itemLabel="EXECUTOR" itemValue="0" noSelectionOption="true"/>    
+                        <f:selectItems  value="#{cadAtividadeMB.listaUsuario}" var="usuarioselecionado" itemLabel="#{usuarioselecionado.nome}" itemValue="#{usuarioselecionado}"/>
+                        <f:attribute name="listaUsuarios" value="#{cadAtividadeMB.listaUsuario}"/>
+                        <p:ajax event="change" update=":cadTarefas:painelBotoes"/>
+                    </p:selectCheckboxMenu> 
+                </div>   
             </p:dialog> 
         </h:form>
     </h:body>

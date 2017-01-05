@@ -18,7 +18,7 @@ public class ClienteDepartamentoConverter implements Converter {
     public Object getAsObject(FacesContext arg0, UIComponent arg1, String arg2) {
 
         List<Clientedepartamento> listaClienteDepartamento = (List<Clientedepartamento>) arg1.getAttributes().get("listaClienteDepartamento");
-        if (listaClienteDepartamento != null) {
+        if (listaClienteDepartamento != null && listaClienteDepartamento.size()>0) {
             for (Clientedepartamento clienteDepartamento : listaClienteDepartamento) {
                 if (clienteDepartamento.getDepartamento().getNome().equalsIgnoreCase(arg2)) {
                     return clienteDepartamento;
@@ -34,10 +34,12 @@ public class ClienteDepartamentoConverter implements Converter {
 
     public String getAsString(FacesContext arg0, UIComponent arg1, Object arg2) {
         if (arg2.toString().equalsIgnoreCase("0")) {
-            return "Selecione";
+            return "Departamento";
         } else {
             Clientedepartamento clientedepartamento = (Clientedepartamento) arg2;
-            return clientedepartamento.getDepartamento().getNome();
+            if(clientedepartamento.getIdclientedepartamento()!=null){
+                return clientedepartamento.getDepartamento().getNome();
+            }else return "";
         }
     }
 

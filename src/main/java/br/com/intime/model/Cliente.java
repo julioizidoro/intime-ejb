@@ -65,9 +65,7 @@ public class Cliente implements Serializable {
     private String nomefoto;
     @JoinColumn(name = "empresa_idempresa", referencedColumnName = "idempresa")
     @ManyToOne(optional = false)
-    private Empresa empresa;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "cliente")
-    private List<Clientedepartamento> clientedepartamentoList;
+    private Empresa empresa; 
 
     public Cliente() {
     }
@@ -197,14 +195,6 @@ public class Cliente implements Serializable {
     @Override
     public String toString() {
         return "br.com.intime.model.Cliente[ idcliente=" + idcliente + " ]";
-    }
-
-    public List<Clientedepartamento> getClientedepartamentoList() {
-        return clientedepartamentoList;
-    }
-
-    public void setClientedepartamentoList(List<Clientedepartamento> clientedepartamentoList) {
-        this.clientedepartamentoList = clientedepartamentoList;
-    }    
+    } 
 
 }

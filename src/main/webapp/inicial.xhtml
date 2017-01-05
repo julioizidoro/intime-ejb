@@ -24,6 +24,7 @@
         <link href="resources/css/style-responsive.css" rel="stylesheet" />
         <link href="resources/css/bootstrap-fullcalendar.css" rel="stylesheet" /> 
         <link href="resources/css/css.css" rel="stylesheet"/>    
+        <link href="resources/css/calendario.css" rel="stylesheet"/>    
    
     </h:head>   
 
@@ -39,7 +40,8 @@
                         <ul class="nav top-menu"> 
                             <li>
                                 <p:commandLink class="dropdown-toggle" title="Adicionar Tarefa" action="#{menuMB.adicionarAtividades()}">
-                                    <i class="fa fa-plus"></i>      
+                                    <i class="fa fa-plus"></i>  
+                                    <p:ajax event="dialogReturn" listener="#{dashboardMB.gerarListas()}" update=":telaInicial:colunaTodoList, :telaInicial:colunaNumTarefas, :telaInicial:calendarioAtividades"/>
                                 </p:commandLink> 
                             </li>   
                             <li id="header_notification_bar" class="dropdown">
@@ -213,6 +215,7 @@
                                             <div style="width:99%;padding:5px;text-align: right;"> 
                                                 <p:commandLink id="btnNovaTarefa" action="#{menuMB.adicionarAtividades()}" title="Adicionar Tarefa" style="padding:5px;">
                                                     <i class="fa fa-plus" style="font-size:21px;color:#313D30;"/>   
+                                                    <p:ajax event="dialogReturn" listener="#{dashboardMB.gerarListas()}" update=":telaInicial:colunaTodoList, :telaInicial:colunaNumTarefas, :telaInicial:calendarioAtividades"/>
                                                 </p:commandLink>     
                                                 <p:commandLink id="btnMenuRigth" title="Menu" class="dropdown-toggle">
                                                     <i class="fa fa-reorder" style="font-size:21px;color:#313D30;"/>   
@@ -246,15 +249,12 @@
                                 <!-- page start-->
                                 <div id="calendarioNotas" class="row">  
                                     <h:panelGroup id="calendarioAtividades">
-                                        <aside class="col-lg-9">
-                                            <br></br>   
+                                        <aside class="col-lg-9">   
                                             <section class="panel" style="width: 100%;">       
                                                 <div>            
                                                     <p:schedule id="schedule" value="#{calendarioMB.eventModel}" locale="pt">   
                                                         <p:ajax event="dateSelect" listener="#{calendarioMB.onDateSelect}" />
-                                                        <p:ajax event="eventSelect" listener="#{calendarioMB.onEventSelect}"  />
-                                                        <p:ajax event="eventMove" listener="#{calendarioMB.onEventMove}" update="growl" />
-                                                        <p:ajax event="eventResize" listener="#{calendarioMB.onEventResize}" update="growl" /> 
+                                                        <p:ajax event="eventSelect" listener="#{calendarioMB.onEventSelect}"  /> 
                                                     </p:schedule>
                                                 </div>
                                             </section>
@@ -268,7 +268,7 @@
                                                         <h1 style="font-size:26px;color:#2E3828;margin-top: 2px;margin-left:6px;">NOTAS</h1> 
                                                         <p:commandLink id="btnAddNotas" action="#{dashboardMB.adicionarNota()}" title="ADICIONAR NOTA" style="float:right;margin-right: 5px;">
                                                             <i class="fa fa-plus-circle" style="font-size:28px;color:#C9A469;"/> 
-                                                            <p:ajax event="dialogReturn" update="listaNotas"/>  
+                                                            <p:ajax event="dialogReturn" listener="#{dashboardMB.gerarListaNotas()}" update="listaNotas"/>  
                                                         </p:commandLink>                 
                                                     </h:panelGrid>                 
                                                 </div>         
@@ -314,13 +314,13 @@
                                                             <h:panelGroup id="painelbtnPause" rendered="#{dashboardMB.mostrarBotaoPause(atividades.situacao)}"> 
                                                                 <p:commandLink id="btnPause" action="#{dashboardMB.mudarSituacaoAtividade(atividades, 'Play')}" update=":telaInicial:colunaTodoList, painelbtnPlay, painelbtnPause" style="float: left;margin-top:-0.6%;margin-left:1.5%;">
                                                                     <i class="fa fa-pause" style="font-size: 14px;color:#B0B5B9;"></i>            
-                                                                </p:commandLink>                                    
+                                                                </p:commandLink>                                      
                                                             </h:panelGroup>        
-                                                            <p:selectBooleanCheckbox  id="cbxConcluido" class="list-child" value="#{atividades.concluido}"  style="float: left;margin-top:0.6%;margin-left:1.5%;"> 
-                                                                <p:ajax event="blur" listener="#{dashboardMB.mudarSituacaoAtividade(atividades, 'Concluida')}" update=":telaInicial:colunaTodoList, :telaInicial:colunaNumTarefas, :telaInicial:calendarioAtividades"/>
-                                                            </p:selectBooleanCheckbox>
+                                                            <p:commandLink action="#{dashboardMB.mudarSituacaoAtividade(atividades, 'Concluida')}" update=":telaInicial:colunaTodoList, :telaInicial:colunaNumTarefas, :telaInicial:calendarioAtividades">
+                                                                <p:selectBooleanCheckbox id="cbxConcluido" class="list-child" value="#{atividades.concluido}"  style="float: left;margin-top:0.6%;margin-left:1.5%;"/> 
+                                                            </p:commandLink>   
                                                             <h:outputLabel id="nome" value="#{atividades.atividade.descricao}" class="task-title-sp" style="margin-left: 2%;"/>       
-                                                        </h:panelGroup>  
+                                                        </h:panelGroup>    
                                                     </h:panelGrid>      
                                                     <hr/>  
                                                 </p:outputPanel>  
@@ -366,10 +366,10 @@
 
             <script src="resources/js/calendario.js"></script>
             <script class="include" type="text/javascript" src="resources/js/jquery.dcjqaccordion.2.7.js"></script>
-            <script src="resources/js/jquery.scrollTo.min.js"></script>
-            <script src="resources/js/common-scripts.js"></script>     
+            <script src="resources/js/jquery.scrollTo.min.js"></script> 
             <script src="resources/js/jquery.nicescroll.js" type="text/javascript"></script>  
-            <link href="resources/css/tasks.css" rel="stylesheet"/>        
+            <link href="resources/css/tasks.css" rel="stylesheet"/>   
+            <script src="resources/js/common-scripts.js"></script>  
             <script>
                 window.fbAsyncInit = function () {
                     FB.init({
@@ -389,7 +389,7 @@
                     js.id = id;
                     js.src = "//connect.facebook.net/en_US/sdk.js";
                     fjs.parentNode.insertBefore(js, fjs);
-                }(document, 'script', 'facebook-jssdk'));
+                }(document, 'script', 'facebook-jssdk')); 
             </script> 
         </h:form>   
     </h:body>

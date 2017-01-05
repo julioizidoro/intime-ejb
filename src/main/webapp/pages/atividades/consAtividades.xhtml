@@ -63,48 +63,52 @@
                                 <div class="task-content">
                                     <p:dataScroller id="tabelaAtividades" value="#{atividadesMB.listaAtividade}" var="atividades" mode="inline" scrollHeight="500">
                                         <p:outputPanel>
-                                            <ul id="sortable" class="task-list">
-                                                <li class="list">
+                                            <ul id="sortable" class="task-list">  
+                                                <li class="list" style="color:#{atividadesMB.retornarCorAtividades(atividades)}">
                                                     <i class="fa fa-ellipsis-v" style="font-size: 14px;float: left;margin-top:0.3%;"></i>
-                                                    <p:commandLink id="btnPlay" action="#{atividadesMB.modificarStatusTarefa()}" update="@form" style="float: left;margin-top: -0.2%;margin-left:1%;" rendered="#{atividadesMB.play}">
+                                                    <p:commandLink id="btnPlay" action="#{atividadesMB.mudarSituacaoAtividade(atividades, 'Pause')}" update="@form" style="float: left;margin-top: -0.2%;margin-left:1%;" rendered="#{atividadesMB.mostrarBotaoPlay(atividades.situacao)}">
                                                         <i class="fa fa-play" style="font-size: 14px;color:#B0B5B9;"></i>
                                                     </p:commandLink>   
-                                                    <p:commandLink id="btnPause" action="#{atividadesMB.modificarStatusTarefa()}" update="@form" style="float: left;margin-top: -0.2%;margin-left:1%;" rendered="#{atividadesMB.pause}">
+                                                    <p:commandLink id="btnPause" action="#{atividadesMB.mudarSituacaoAtividade(atividades, 'Play')}" update="@form" style="float: left;margin-top: -0.2%;margin-left:1%;" rendered="#{atividadesMB.mostrarBotaoPause(atividades.situacao)}">
                                                         <i class="fa fa-pause" style="font-size: 14px;color:#B0B5B9;"></i>   
                                                     </p:commandLink>   
-                                                    <div class="task-checkbox" style="margin-left:1%;">
-                                                        <input id="cbxConcluido" type="checkbox" class="list-child" value=""  onclick="PF('motivoAtraso').show()" update=":formDialogMotivoAtraso:dialog_motivoAtraso"/>
-                                                    </div>      
-                                                    <div class="task-title">
+                                                    <div class="task-checkbox" style="margin-left:1%;">  
+                                                        <p:commandLink action="#{atividadesMB.mudarSituacaoAtividade(atividades, 'Concluida')}" update="@form"> 
+                                                            <p:selectBooleanCheckbox id="cbxConcluido" class="list-child" value="#{atividades.concluido}"  style="float: left;margin-top:0.6%;margin-left:1.5%;"/> 
+                                                        </p:commandLink> 
+                                                    </div>            
+                                                    <div class="task-title"> 
                                                         <span id="nome" class="task-title-sp">#{atividades.atividade.descricao}</span> |     
-                                                        <span id="cliente" class="task-title-sp">#{atividades.atividade.cliente.nomefantasia}</span> 
-                                                        <span id="comentarios" class="task-title-sp" style="font-weight: bold;" >
-                                                            (   
-                                                            <p:commandLink id="btnComentarios" title="Comentários" value="#" action="#{atividadesMB.visualizarComentarios()}"/>
-                                                            )
-                                                        </span>
+                                                        <span id="cliente" class="task-title-sp">#{atividades.atividade.cliente.apelido}</span> 
+                                                        <h:panelGroup rendered="#{atividadesMB.mostrarComentarios(atividades)}">
+                                                            <span id="comentarios" class="task-title-sp" style="font-weight: bold;" >
+                                                                (   
+                                                                <p:commandLink id="btnComentarios" title="Comentários" value="#{atividadesMB.retornarNumComentarios(atividades)}" action="#{atividadesMB.visualizarComentarios(atividades)}"/>
+                                                                )      
+                                                            </span>
+                                                        </h:panelGroup>
                                                         <span id="data" class="task-title-sp" style="font-style: oblique;font-size: 13px;font-weight:400;">
                                                             <p:outputLabel value="#{atividades.atividade.dataMostrar}">
 
                                                             </p:outputLabel>
                                                         </span>
                                                         <span id="horario" class="task-title-sp" style="font-style: oblique;font-size: 13px;font-weight:400;">#{atividades.atividade.horaMostrar}</span>
-                                                        <h:panelGroup id="importante" rendered="false">
-                                                            <span class="task-title-sp">
-                                                                <i class="fa fa-exclamation-triangle" style="font-size: 14px;color:#FF0000;cursor: default;"></i> 
-                                                            </span>
-                                                        </h:panelGroup>
-                                                        <h:panelGroup id="urgente" rendered="true">
-                                                            <span class="task-title-sp">
+                                                        <h:panelGroup id="importante" rendered="#{atividadesMB.mostrarTrianguloImportante(atividades.atividade.prioridade)}">
+                                                            <span class="task-title-sp" title="Importante">
                                                                 <i class="fa fa-exclamation-triangle" style="font-size: 14px;color:#FFD700;cursor: default;"></i> 
                                                             </span>
-                                                        </h:panelGroup>
+                                                        </h:panelGroup>        
+                                                        <h:panelGroup id="urgente" rendered="#{atividadesMB.mostrarTrianguloUrgente(atividades.atividade.prioridade)}">
+                                                            <span class="task-title-sp" title="Urgênte">
+                                                                <i class="fa fa-exclamation-triangle" style="font-size: 14px;color:#FF0000;cursor: default;"></i> 
+                                                            </span>
+                                                        </h:panelGroup>  
 
                                                         <div class="pull-right hidden-phone">
-                                                            <p:commandLink id="btnAlterarData" title="Alterar Data" oncomplete="PF('alterarData').show()" update=":formDialogData:dialog_alterarData"> 
+                                                            <p:commandLink id="btnAlterarData" title="Alterar Data" actionListener="#{atividadesMB.selecionarAtividade(atividades)}" oncomplete="PF('alterarData').show()" update=":formDialogData:dialog_alterarData"> 
                                                                 <i class="fa fa-calendar" style="font-size:17px;color:#FFD700;"></i>   
                                                             </p:commandLink>
-                                                            <p:commandLink id="btnEditar" title="Editar Tarefa" action="#{atividadesMB.editarAtividades()}"> 
+                                                            <p:commandLink id="btnEditar" title="Editar Tarefa" action="#{atividadesMB.editarAtividades(atividades)}"> 
                                                                 <i class="fa fa-edit" style="font-size:17px;color:#FF6C60;"></i> 
                                                             </p:commandLink> 
                                                             <a id="btnMenu" data-toggle="dropdown" class="dropdown-toggle">
@@ -113,17 +117,21 @@
                                                             </a>
                                                             <ul class="dropdown-menu extended">
                                                                 <div class="log-arrow-up"></div>
-                                                                <li><p:commandLink oncomplete="PF('encaminharTarefa').show()" update=":formDialogEncaminhar:dialog_encaminhar"><i class=" fa  fa-share-square-o" style="color: #8E9398;font-size: 13px;">
-                                                                            <p:outputLabel value="Encaminhar" style="margin-left: 8%;"/>
+                                                                <li><p:commandLink actionListener="#{atividadesMB.selecionarAtividade(atividades)}"  oncomplete="PF('encaminharTarefa').show()" update=":formDialogEncaminhar:dialog_encaminhar"><i class=" fa  fa-share-square-o" style="color: #8E9398;font-size: 13px;">
+                                                                            <p:outputLabel value="Encaminhar" style="margin-left: 8%;"/>  
                                                                         </i></p:commandLink></li> 
-                                                                <li><p:commandLink><i class="fa fa-trash-o" style="color:#8E9398;font-size: 13px;">
+                                                                <li><p:commandLink action="#{atividadesMB.excluir(atividades)}" update="@form"><i class="fa fa-trash-o" style="color:#8E9398;font-size: 13px;">
                                                                             <p:outputLabel value="Excluir" style="margin-left: 8%;"/>
                                                                         </i></p:commandLink></li> 
-                                                                <li><p:commandLink action="#{atividadesMB.visualizarComentarios()}"><i class="fa fa-comments" style="color: #8E9398;font-size: 13px;">
+                                                                <li><p:commandLink action="#{atividadesMB.visualizarComentarios(atividades)}"><i class="fa fa-comments" style="color: #8E9398;font-size: 13px;">
                                                                             <p:outputLabel value="Comentários" style="margin-left: 8%;"/>
                                                                         </i></p:commandLink></li>    
-                                                                <li><p:commandLink><i class="fa fa-copy" style="color: #8E9398;font-size: 13px;">  
+                                                                <li><p:commandLink action="#{atividadesMB.duplicarAtividade(atividades)}" update="@form"><i class="fa fa-copy" style="color: #8E9398;font-size: 13px;">  
                                                                             <p:outputLabel value="Duplicar" style="margin-left: 8%;"/>
+                                                                        </i></p:commandLink></li> 
+                                                                <li><p:commandLink><i class="fa fa-clock-o" style="color: #8E9398;font-size: 13px;">  
+                                                                            <p:outputLabel value="Aguardando" style="margin-left: 8%;"/>
+                                                                            <p:ajax event="dialogReturn" listener="#{atividadesMB.mudarCoresBotoes('hoje')}" update="@form"/>
                                                                         </i></p:commandLink></li> 
                                                             </ul>
                                                         </div>
@@ -170,12 +178,12 @@
             <h:form id="formDialogData">
                 <p:dialog id="dialog_alterarData"  header="ALTERAR DATA" widgetVar="alterarData" >
                     <div align="center">
-                        <p:calendar id="dataTarefa" pattern="dd/MM/yyyy" locale="pt" size="18" style="margin-top: 5px;">
+                        <p:calendar id="dataTarefa" pattern="dd/MM/yyyy" value="#{atividadesMB.atividadeusuario.atividade.dataexecutar}" locale="pt" size="18" style="margin-top: 5px;">
                             <f:convertDateTime   pattern="dd/MM/yyyy" timeZone="America/Sao_Paulo"/>
                         </p:calendar>
                         <div align="right">  
-                            <p:commandLink id="btnAdicionar" title="Adicionar">
-                                <i class="fa fa-check" style="color:#008B00;font-size:35px;"/>
+                            <p:commandLink id="btnAdicionar" action="#{atividadesMB.salvarAlteracaoData()}" title="Adicionar" update="@form, consAtividades">
+                                <i class="fa fa-check" style="color:#008B00;font-size:35px;"/>  
                             </p:commandLink>
                         </div>
                     </div>
@@ -184,31 +192,21 @@
             <h:form id="formDialogEncaminhar">     
                 <p:dialog id="dialog_encaminhar"  header="ENCAMINHAR TAREFA" widgetVar="encaminharTarefa" >
                     <div align="left">
-                        <p:selectOneMenu id="executor"  value="#"  style="width:165px;">
-                            <f:selectItem  itemLabel="EXECUTOR" itemValue="0"/>    
-                        </p:selectOneMenu>  
-                        <div align="right">  
-                            <p:commandLink id="btnEncaminhaTarefa" title="Adicionar">
+                        <p:selectOneMenu id="executor"  value="#{atividadesMB.atividadeusuario.usuario}"  converter="UsuarioConverter"
+                                         filter="true" filterMatchMode="contains" panelStyle="width:180px" style="width: 165px;">
+                            <f:selectItem  itemLabel="EXECUTOR" itemValue="0" noSelectionOption="true"/>    
+                            <f:selectItems  value="#{atividadesMB.listaUsuario}" var="usuarioselecionado" itemLabel="#{usuarioselecionado.nome}" itemValue="#{usuarioselecionado}"/>
+                            <f:attribute name="listaUsuarios" value="#{atividadesMB.listaUsuario}"/>
+                            <p:ajax event="change"/>
+                        </p:selectOneMenu>   
+                        <div align="right">   
+                            <p:commandLink id="btnEncaminhaTarefa" action="#{atividadesMB.salvarEncaminharAtividade()}" title="Adicionar" update="@form, consAtividades">
                                 <i class="fa fa-check" style="color:#008B00;font-size:35px;"/>
                             </p:commandLink>
                         </div>
                     </div>
                 </p:dialog> 
-            </h:form>
-            <h:form id="formDialogMotivoAtraso">     
-                <p:dialog id="dialog_motivoAtraso"  header="MOTIVO DO ATRASO" widgetVar="motivoAtraso" >
-                    <div align="left">
-                        <p:selectOneMenu id="motivo"  value="#"  style="width:165px;">
-                            <f:selectItem  itemLabel="MOTIVO" itemValue="0"/>    
-                        </p:selectOneMenu>  
-                        <div align="right">  
-                            <p:commandLink id="btnSalvarMotivo" title="Adicionar">
-                                <i class="fa fa-check" style="color:#008B00;font-size:35px;"/>
-                            </p:commandLink>
-                        </div>
-                    </div>
-                </p:dialog> 
-            </h:form>
+            </h:form> 
         </ui:define>
     </ui:composition>
 </html>   

@@ -6,6 +6,7 @@
 package br.com.intime.model;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -13,6 +14,7 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -44,13 +46,17 @@ public class Atividadeusuario implements Serializable {
     private LocalDate dataconclusao;
     @Column(name = "horaconclusao")
     private LocalTime horaconclusao;
+    @Column(name = "inicio")
+    private BigInteger inicio;
+    @Column(name = "tempoatual")
+    private int tempoatual;
     @Size(max = 5)
     @Column(name = "tempo")
     private String tempo;
     @JoinColumn(name = "atividade_idatividade", referencedColumnName = "idatividade")
     @ManyToOne(optional = false)
     private Atividade atividade;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "atividadeusuario")
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "atividadeusuario")
     private List<Atividadecomentario> atividadecomentarioList;
     @JoinColumn(name = "usuario_idusuario", referencedColumnName = "idusuario")
     @ManyToOne(optional = false)
@@ -129,6 +135,22 @@ public class Atividadeusuario implements Serializable {
 
     public void setConcluido(boolean concluido) {
         this.concluido = concluido;
+    }
+
+    public BigInteger getInicio() {
+        return inicio;
+    }
+
+    public void setInicio(BigInteger inicio) {
+        this.inicio = inicio;
+    }
+
+    public int getTempoatual() {
+        return tempoatual;
+    }
+
+    public void setTempoatual(int tempoatual) {
+        this.tempoatual = tempoatual;
     }
 
 
