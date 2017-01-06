@@ -28,12 +28,14 @@
                 <p:inputText id="responsavel" value="#{cadClienteMB.cliente.responsavel}" style="width: 95%;"/>
             </h:panelGrid>
             <br/>
-            <h:panelGrid columns="3" columnClasses="tamanho20, tamanho20, tamanho20" style="width: 100%;font-size: 12px;">
+            <h:panelGrid columns="4" columnClasses="tamanho20, tamanho20, tamanho20, tamanho20" style="width: 100%;font-size: 12px;">
+                <p:outputLabel for="apelido" value="Apelido"/>
                 <p:outputLabel for="cnpj" value="CNPJ"/>
                 <p:outputLabel for="telefone" value="Telefone"/>
                 <p:outputLabel for="status" value="Status"/>
-
-                <p:inputText id="cnpj" value="#{cadClienteMB.cliente.cnpj}" style="width: 95%;"/>
+                
+                <p:inputText id="apelido" value="#{cadClienteMB.cliente.apelido}" style="width: 95%;"/>
+                <p:inputMask id="cnpj" value="#{cadClienteMB.cliente.cnpj}" mask="99.999.999/9999-99" style="width: 95%;"/>
                 <p:inputText id="telefone" value="#{cadClienteMB.cliente.fone}" style="width: 95%;"/>
                 <p:selectOneMenu id="status" value="#{cadClienteMB.status}"  style="width:90%;">
                     <f:selectItem itemLabel="Ativo" itemValue="Ativo" />   

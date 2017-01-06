@@ -54,7 +54,7 @@ public class Cliente implements Serializable {
     @Size(max = 20)
     @Column(name = "fone")
     private String fone;
-    @Size(max = 6)
+    @Size(max = 15)
     @Column(name = "apelido")
     private String apelido;
     @Size(max = 100)
