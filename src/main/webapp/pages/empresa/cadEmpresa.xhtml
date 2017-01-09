@@ -85,13 +85,15 @@
                 <p:inputText  value="#{cadEmpresaMB.empresa.complemento}" style="width: 95%;"/> 
             </h:panelGrid>
             <br/>
-            <h:panelGrid columns="2" columnClasses="tamanho20,tamanho20" style="width:100%;font-size: 12px;"> 
-                <p:outputLabel  value="Cnpj"/>
-                <p:outputLabel  value="Cep"/>
+            <h:panelGrid columns="3" columnClasses="tamanho30,tamanho20,tamanho50" style="width:100%;font-size: 12px;"> 
+                <p:outputLabel  value="CNPJ"/>
+                <p:outputLabel  value="CEP"/>  
+                <p:outputLabel  value="Facebook"/>
 
-                <p:inputMask  mask="99.999.999/9999-99" value="#{cadEmpresaMB.empresa.cnpj}" size="15" style="width: 60%;"/>
-                <p:inputMask  mask="99999-999" value="#{cadEmpresaMB.empresa.cep}" style="width: 50%;"/>
-            </h:panelGrid>
+                <p:inputMask  mask="99.999.999/9999-99" value="#{cadEmpresaMB.empresa.cnpj}" size="15" style="width:95%;"/>
+                <p:inputMask  mask="99999-999" value="#{cadEmpresaMB.empresa.cep}" style="width:95%;"/>
+                <p:inputText  value="#{cadEmpresaMB.empresa.facebook}" style="width: 95%;"/> 
+            </h:panelGrid>  
             <br/>
             <h:panelGroup>
                 <p:selectBooleanCheckbox id="idHabilitarCliente"

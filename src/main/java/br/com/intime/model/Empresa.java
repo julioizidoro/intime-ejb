@@ -14,8 +14,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -75,6 +73,9 @@ public class Empresa implements Serializable {
     @Size(max = 2)
     @Column(name = "estado")
     private String estado;
+    @Size(max = 200)
+    @Column(name = "facebook")
+    private String facebook;
     @Column(name = "utilizacliente")
     private Boolean utilizacliente;
     @Column(name = "utilizadepartamento")
@@ -211,15 +212,20 @@ public class Empresa implements Serializable {
         this.utilizasubdepartamento = utilizasubdepartamento;
     }
 
-
-    
-
     public Ftpdados getFtpdados() {
         return ftpdados;
     }
 
     public void setFtpdados(Ftpdados ftpdados) {
         this.ftpdados = ftpdados;
+    }
+
+    public String getFacebook() {
+        return facebook;
+    }
+
+    public void setFacebook(String facebook) {
+        this.facebook = facebook;
     }
 
     @Override
