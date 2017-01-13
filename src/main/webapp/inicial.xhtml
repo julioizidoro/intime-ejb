@@ -25,7 +25,7 @@
         <link href="resources/css/bootstrap-fullcalendar.css" rel="stylesheet" /> 
         <link href="resources/css/css.css" rel="stylesheet"/>    
         <link href="resources/css/calendario.css" rel="stylesheet"/>    
-   
+
     </h:head>   
 
     <h:body style="background: #fff;">
@@ -252,9 +252,41 @@
                                             <section class="panel" style="width: 100%;">       
                                                 <div>            
                                                     <p:schedule id="schedule" value="#{calendarioMB.eventModel}" locale="pt">   
-                                                        <p:ajax event="dateSelect" listener="#{calendarioMB.onDateSelect}" />
-                                                        <p:ajax event="eventSelect" listener="#{calendarioMB.onEventSelect}"  /> 
-                                                    </p:schedule>
+                                                        <p:ajax event="dateSelect" listener="#{calendarioMB.onDateSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
+                                                        <p:ajax event="eventSelect" listener="#{calendarioMB.onEventSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
+                                                    </p:schedule>   
+                                                    <p:dialog id="eventDetails" widgetVar="eventDialog" header="ATIVIDADES" width="40%">   
+                                                        <h:panelGroup>
+                                                            <p:dataScroller id="tabelaAtividadesCalendario" value="#{calendarioMB.listaAtividade}" var="atividadeCalendario" mode="inline" style="border:none !important;" scrollHeight="235">  
+                                                                <p:outputPanel>      
+                                                                    <h:panelGrid columns="1" style="width:100%;"        
+                                                                                 class="dataScrollerBranco">   
+                                                                        <h:panelGroup id="listaAtividadeCalendario"> 
+                                                                            <h:panelGroup id="painelbtnPlay" rendered="#{dashboardMB.mostrarBotaoPlay(atividadeCalendario.situacao)}" > 
+                                                                                <p:commandLink id="btnPlay" action="#{dashboardMB.mudarSituacaoAtividade(atividadeCalendario, 'Pause')}" update=":telaInicial:colunaTodoList, listaAtividadeCalendario" style="float: left;margin-top: -0.6%;margin-left:1.5%;">
+                                                                                    <i class="fa fa-play" style="font-size: 14px;color:#B0B5B9;"></i>       
+                                                                                </p:commandLink>           
+                                                                            </h:panelGroup>         
+                                                                            <h:panelGroup id="painelbtnPause" rendered="#{dashboardMB.mostrarBotaoPause(atividadeCalendario.situacao)}"> 
+                                                                                <p:commandLink id="btnPause" action="#{dashboardMB.mudarSituacaoAtividade(atividadeCalendario, 'Play')}" update=":telaInicial:colunaTodoList, listaAtividadeCalendario" style="float: left;margin-top:-0.6%;margin-left:1.5%;">
+                                                                                    <i class="fa fa-pause" style="font-size: 14px;color:#B0B5B9;"></i>            
+                                                                                </p:commandLink>                                      
+                                                                            </h:panelGroup>        
+                                                                            <p:commandLink action="#{dashboardMB.mudarSituacaoAtividade(atividadeCalendario, 'Concluida')}" update=":telaInicial:colunaTodoList, :telaInicial:colunaNumTarefas, :telaInicial:calendarioAtividades">
+                                                                                <p:selectBooleanCheckbox id="cbxConcluido" class="list-child" value="#{atividadeCalendario.concluido}"  style="float: left;margin-top:0.6%;margin-left:1.5%;"/> 
+                                                                            </p:commandLink>   
+                                                                            <h:outputLabel id="nome" value="#{atividadeCalendario.atividade.descricao}" class="task-title-sp" style="margin-left: 2%;"/>       
+                                                                        </h:panelGroup>    
+                                                                    </h:panelGrid>      
+                                                                    <hr/>  
+                                                                </p:outputPanel>  
+                                                            </p:dataScroller>
+                                                        </h:panelGroup>       
+                                                        <br/>
+                                                        <div align="center">    
+                                                            <p:commandButton id="btnCancelar" oncomplete="eventDialog.hide();"  class="btn-danger" value="Fechar" update=":telaInicial:colunaTodoList, :telaInicial:colunaNumTarefas, :telaInicial:calendarioAtividades"/>
+                                                        </div> 
+                                                    </p:dialog>  
                                                 </div>
                                             </section>
                                         </aside>
@@ -388,7 +420,7 @@
                     js.id = id;
                     js.src = "//connect.facebook.net/en_US/sdk.js";
                     fjs.parentNode.insertBefore(js, fjs);
-                }(document, 'script', 'facebook-jssdk')); 
+                }(document, 'script', 'facebook-jssdk'));
             </script> 
         </h:form>   
     </h:body>

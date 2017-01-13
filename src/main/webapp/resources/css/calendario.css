@@ -12,8 +12,13 @@
     margin: 0 0 0 -1px;
     background: transparent;
     border: none;   
-    color: #005552;
+    color: transparent;
     font-size: 18px;
+} 
+
+.fc-day-grid-event .fc-time {
+    font-weight: bold;
+    color: transparent;
 }
 
 .fc .fc-toolbar > * > * {
@@ -34,7 +39,8 @@
     -moz-box-sizing: content-box;
     box-sizing: content-box;
     background: transparent;
-    color: #313D30;
+    color: #005552;
     border-color: #c8c8c8;
-}  
+    font-size: 15px;
+}
  
