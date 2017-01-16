@@ -20,7 +20,7 @@ PrimeFaces.locales['pt'] = {
                     secondText: 'Segundo',  
                     ampm: false,  
                     month: 'MÊS',  
-                    week: 'SEMANA',  
-                    day: 'DIA',  
+                    week: 'S',  
+                    day: 'D',  
                     allDayText: 'Todo o Dia'  
                 };  
