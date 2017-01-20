@@ -21,19 +21,17 @@ import org.primefaces.context.RequestContext;
 
 @Named
 @ViewScoped
-public class listarSubDepartamentosMB implements Serializable{
-    
+public class listarSubDepartamentosMB implements Serializable {
+
     private Subdepartamento subdepartamento;
     @EJB
     private SubDepartamentoRepository subDepartamentoRepository;
     private List<Subdepartamento> listaSubDepartamento;
     private Departamento departamento;
     private String nomeSubDepartamento;
-    
-    
-    
-    @PostConstruct 
-    public void init(){
+
+    @PostConstruct
+    public void init() {
         FacesContext fc = FacesContext.getCurrentInstance();
         HttpSession session = (HttpSession) fc.getExternalContext().getSession(false);
         departamento = (Departamento) session.getAttribute("departamento");
@@ -75,11 +73,16 @@ public class listarSubDepartamentosMB implements Serializable{
     public void setNomeSubDepartamento(String nomeSubDepartamento) {
         this.nomeSubDepartamento = nomeSubDepartamento;
     }
-    
-    
-    
-    
-    public void adicionarSubDepartamento(){
+
+    public SubDepartamentoRepository getSubDepartamentoRepository() {
+        return subDepartamentoRepository;
+    }
+
+    public void setSubDepartamentoRepository(SubDepartamentoRepository subDepartamentoRepository) {
+        this.subDepartamentoRepository = subDepartamentoRepository;
+    }
+
+    public void adicionarSubDepartamento() {
         if (nomeSubDepartamento.length() > 0) {
             Subdepartamento subdepartamento = new Subdepartamento();
             subdepartamento.setDepartamento(departamento);
@@ -88,24 +91,22 @@ public class listarSubDepartamentosMB implements Serializable{
             subDepartamentoRepository.update(subdepartamento);
             listaSubDepartamento.add(subdepartamento);
             nomeSubDepartamento = "";
-        }else{
+        } else {
             Mensagem.lancarMensagemInfo("Informe um nome para este sub-departamento", "");
         }
     }
-    
-    
-    public void excluirSubDepartamento(Subdepartamento subdepartamento){
+
+    public void excluirSubDepartamento(Subdepartamento subdepartamento) {
         if (subdepartamento != null) {
-            departamento.getSubdepartamentoList().remove(subdepartamento.getIdsubdepartamento());
             int id = subdepartamento.getIdsubdepartamento();
+            departamento.getSubdepartamentoList().remove(subdepartamento.getIdsubdepartamento());
             subDepartamentoRepository.remove(id);
             listaSubDepartamento.remove(subdepartamento);
         }
     }
-    
-    
-    public void salvarSubDepartamento(){
-         RequestContext.getCurrentInstance().closeDialog("");
+
+    public void salvarSubDepartamento() {
+        RequestContext.getCurrentInstance().closeDialog("");
     }
-    
+
 }
