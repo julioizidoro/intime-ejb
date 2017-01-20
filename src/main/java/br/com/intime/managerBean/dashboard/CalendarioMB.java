@@ -128,17 +128,19 @@ public class CalendarioMB implements Serializable {
         String sql = "SELECT a FROM Atividadeusuario a where a.usuario.idusuario=" + usuarioLogadoMB.getUsuario().getIdusuario()
             + " and a.atividade.dataexecucao>= :dataInicial and a.atividade.dataexecucao<= :dataFinal order by a.atividade.dataexecucao";
         List<Atividadeusuario> listaAtividades = atividadeUsuarioRepository.list(sql, dataInicial, dataFinal);
-        GerarListaAtividadeCalendarioBean gerar = new GerarListaAtividadeCalendarioBean(listaAtividades);
-        if(gerar.getLista()!=null){ 
-            for (int i = 0; i < gerar.getLista().size(); i++) {
-                Instant instant = gerar.getLista().get(i).getData()
-                        .atStartOfDay().atZone(ZoneId.systemDefault()).toInstant();
-                Date dataAtividade = Date.from(instant);
-                eventModel.addEvent(new DefaultScheduleEvent("("+gerar.getLista().get(i).getTotalconcluidas()+" / "
-                        +gerar.getLista().get(i).getTotalAtividade()+")",
-                        dataAtividade,dataAtividade));
-            }
-        }  
+        if(listaAtividades!=null && listaAtividades.size()>0){
+            GerarListaAtividadeCalendarioBean gerar = new GerarListaAtividadeCalendarioBean(listaAtividades);
+            if(gerar.getLista()!=null){ 
+                for (int i = 0; i < gerar.getLista().size(); i++) {
+                    Instant instant = gerar.getLista().get(i).getData()
+                            .atStartOfDay().atZone(ZoneId.systemDefault()).toInstant();
+                    Date dataAtividade = Date.from(instant);
+                    eventModel.addEvent(new DefaultScheduleEvent("("+gerar.getLista().get(i).getTotalconcluidas()+" / "
+                            +gerar.getLista().get(i).getTotalAtividade()+")",
+                            dataAtividade,dataAtividade));
+                }
+            }  
+        }
     }
     
 }

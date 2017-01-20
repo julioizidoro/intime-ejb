@@ -39,9 +39,9 @@
                 <br/>
                 <div class="row" style="margin-left:0.5%;width:97%;">    
                     <ui:repeat id="listaCliente" var="motivo" value="#{motivoAtrasoMB.listaMotivoAtraso}" >
-
-                        <div class="col-lg-3">  
-                            <div class="divConsultas" style="width:98%;margin:5px;height:140px;">  
+ 
+                       <div class="col-lg-3">  
+                            <div class="divConsultas" style="width:98%;margin:5px;height:55px;">  
                                 <h:panelGrid columns="2" style="width:98%;margin-top:5%;margin-left: 2%;"> 
                                     <h:panelGrid columns="1" style="color: #797979;">   
                                         <p:commandLink value="#{motivo.descricao}" action="#{motivoAtrasoMB.editar(motivo)}" title="Editar"

@@ -35,7 +35,7 @@
             <h:panelGrid columns="3" columnClasses="tamanho50, tamanho20, tamanho20" style="width: 100%;font-size: 12px;">
                 <p:outputLabel for="idempresa" value="Empresa"/>
                 <p:outputLabel for="idLogin" value="Login"/>
-                <p:outputLabel for="idSenha" value="Senha"/>
+                <p:outputLabel/>
 
                 
                 <p:selectOneMenu id="idempresa"  style="width:95%;" value="#{cadUsuarioMB.empresa}" converter="EmpresaConverter"
@@ -44,8 +44,8 @@
                     <f:selectItems  value="#{cadUsuarioMB.listaEmpresa}" var="em" itemLabel="#{em.nomefantasia}" itemValue="#{em}"/>
                     <f:attribute name="listaEmpresa" value="#{cadUsuarioMB.listaEmpresa}"/>
                 </p:selectOneMenu>
-                <p:inputText id="idLogin" value="#{cadUsuarioMB.usuario.login}" style="width: 95%;"/>
-                <p:inputText id="idSenha" value="#{cadUsuarioMB.usuario.senha}" style="width: 95%;"/>
+                <p:inputText id="idLogin" value="#{cadUsuarioMB.usuario.login}" style="width: 95%;"/> 
+                 <p:outputLabel/>  
             </h:panelGrid>
             <br/>
             <h:panelGrid columns="3" columnClasses="tamanho20, tamanho20, tamanho50" style="width:100%;font-size: 12px;">  

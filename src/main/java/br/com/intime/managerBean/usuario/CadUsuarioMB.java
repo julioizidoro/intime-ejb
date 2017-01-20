@@ -278,10 +278,11 @@ public class CadUsuarioMB implements Serializable{
     }
     
     public void salvar(){
-        List<Usuario> listaUsuario = usuarioRepository.list("Select u from Usuario u where u.login='" + usuario.getLogin() + "'");
+        List<Usuario> listaUsuario = usuarioRepository.list("Select u from Usuario u where u.login='" + usuario.getLogin() + "' and u.status=true");
         if (listaUsuario == null || listaUsuario.isEmpty()) {
+            String senha = "senha";
             try {
-                usuario.setSenha(Criptografia.encript(usuario.getSenha()));
+                usuario.setSenha(Criptografia.encript(senha));
             } catch (NoSuchAlgorithmException ex) {
                 Logger.getLogger(CadUsuarioMB.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -298,7 +299,7 @@ public class CadUsuarioMB implements Serializable{
             usuario = usuarioRepository.update(usuario);
             RequestContext.getCurrentInstance().closeDialog(usuario);
         } else {
-            String msg = "este login ja tem uma conta existente!!";
+            Mensagem.lancarMensagemErro("Atenção", "Este login possuí uma conta ativa!");
         }
     }
     

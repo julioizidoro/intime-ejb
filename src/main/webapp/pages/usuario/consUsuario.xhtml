@@ -40,8 +40,8 @@
                 <div class="row" style="margin-left:0.5%;width:97%;">    
                     <ui:repeat id="listaCliente" var="usuario" value="#{usuarioMB.listaUsuario}" >
                         <div class="col-lg-3">  
-                            <div class="divConsultas" style="width:98%;margin:5px;height:140px;">  
-                                <h:panelGrid columns="2" style="width:98%;margin-top:5%;margin-left: 2%;">  
+                            <div class="divConsultas" style="width:99%;margin:5px;height:140px;">  
+                                <h:panelGrid columns="2" style="width:99%;margin-top:5%;margin-left: 2%;">  
                                     <img src="http://#{usuarioMB.ftpdados.hostupload}:82/ftproot/intime/fotos/usuario/#{usuario.nomefoto}"  class="imagemcliente" />  
                                     <h:panelGrid columns="1" style="color: #797979;">   
                                         <p:commandLink value="#{usuario.nome}" action="#{usuarioMB.editar(usuario)}" title="Editar"
