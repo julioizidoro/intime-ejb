@@ -252,11 +252,9 @@
                                             <section class="panel" style="width: 100%;">       
                                                 <div>            
                                                     <p:schedule id="schedule" value="#{calendarioMB.eventModel}" locale="pt" 
-                                                                rightHeaderTemplate="mes">     
+                                                                leftHeaderTemplate="mes"  rightHeaderTemplate="mes">     
                                                         <p:ajax event="dateSelect" listener="#{calendarioMB.onDateSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
                                                         <p:ajax event="eventSelect" listener="#{calendarioMB.onEventSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
-                                                        <p:ajax event="eventResize" listener="#{calendarioMB.onEventResize}" update="messages" />
- 
                                                     </p:schedule>   
                                                     <p:dialog id="eventDetails" widgetVar="eventDialog" header="ATIVIDADES" width="40%">   
                                                         <h:panelGroup>

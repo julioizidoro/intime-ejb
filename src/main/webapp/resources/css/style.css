@@ -2833,9 +2833,16 @@ ul.amounts li {
 }
 
 .fc-view {
-    margin-top: -50px;
+    margin-top: -5px;
     overflow: hidden;
     width: 100%;
+}
+
+.fc-toolbar {
+    text-align: center;
+    margin-bottom: 1em;
+    background: #2A3542;
+    border-radius:6px;
 }
 
 .fc-state-default, .fc-state-default .fc-button-inner {

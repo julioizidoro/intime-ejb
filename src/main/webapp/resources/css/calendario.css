@@ -21,17 +21,16 @@
     color: transparent;
 }
 
-.fc .fc-toolbar > * > * {
-    float: left;
-    margin-left: .75em;
+.fc .fc-toolbar > * > * { 
     background: transparent;
     border: none;
-    color: #005552;   
+    color: #ffffff;   
+    font-size:24px;    
 }
 
 .fc-toolbar .fc-center {
     display: inline-block;
-    font-size: 30px;     
+    font-size:24px;       
 }   
 
 .fc-view-container *, .fc-view-container *::before, .fc-view-container *::after {

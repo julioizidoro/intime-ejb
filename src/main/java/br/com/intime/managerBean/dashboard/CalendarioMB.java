@@ -41,7 +41,7 @@ public class CalendarioMB implements Serializable {
     @PostConstruct
     public void init() {
         eventModel = new DefaultScheduleModel();    
-        gerarListaAtividades();
+        gerarListaAtividades(LocalDate.now());
         listaAtividade = new ArrayList<Atividadeusuario>();
     }
 
@@ -79,8 +79,7 @@ public class CalendarioMB implements Serializable {
      
     public Date getInitialDate() {
         Calendar calendar = Calendar.getInstance();
-        calendar.set(calendar.get(Calendar.YEAR), Calendar.FEBRUARY, calendar.get(Calendar.DATE), 0, 0, 0);
-         
+        calendar.set(calendar.get(Calendar.YEAR), Calendar.FEBRUARY, calendar.get(Calendar.DATE), 0, 0, 0);  
         return calendar.getTime();
     }
      
@@ -123,8 +122,7 @@ public class CalendarioMB implements Serializable {
         event = new DefaultScheduleEvent("", (Date) selectEvent.getObject(), (Date) selectEvent.getObject());
     }  
     
-    public void gerarListaAtividades(){
-        LocalDate data = LocalDate.now();
+    public void gerarListaAtividades(LocalDate data){ 
         LocalDate dataInicial = LocalDate.of(data.getYear(), data.getMonth(), 1);
         LocalDate dataFinal = dataInicial.plusDays(30);
         String sql = "SELECT a FROM Atividadeusuario a where a.usuario.idusuario=" + usuarioLogadoMB.getUsuario().getIdusuario()
@@ -142,4 +140,5 @@ public class CalendarioMB implements Serializable {
             }
         }  
     }
+    
 }
