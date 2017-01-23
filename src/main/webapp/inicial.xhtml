@@ -174,7 +174,7 @@
                                     </section>
                                 </div>
                                 <div class="col-lg-3 col-sm-6">
-                                    <section class="panel" style="background: #006D4D;">
+                                    <section class="panel" style="background: #006D4D;margin-left:8%;">
                                         <div class="symbol terques" style="background: #006D4D;">
                                             <i class="fa fa-calendar" style=""></i> 
                                         </div>  
@@ -187,7 +187,7 @@
                                     </section>
                                 </div>   
                                 <div class="col-lg-3 col-sm-6">
-                                    <section class="panel" style="background: #005552;">
+                                    <section class="panel" style="background: #005552;float: right;">
                                         <div class="symbol terques" style="background: #005552;">
                                             <i class="fa fa-check-circle-o" style=""></i> 
                                         </div>
@@ -255,7 +255,7 @@
                                                                 leftHeaderTemplate="mes"  rightHeaderTemplate="mes">     
                                                         <p:ajax event="dateSelect" listener="#{calendarioMB.onDateSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
                                                         <p:ajax event="eventSelect" listener="#{calendarioMB.onEventSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
-                                                    </p:schedule>   
+                                                    </p:schedule>     
                                                     <p:dialog id="eventDetails" widgetVar="eventDialog" header="ATIVIDADES" width="40%">   
                                                         <h:panelGroup>
                                                             <p:dataScroller id="tabelaAtividadesCalendario" value="#{calendarioMB.listaAtividade}" var="atividadeCalendario" mode="inline" style="border:none !important;" scrollHeight="235">  
@@ -272,8 +272,8 @@
                                                                                 <p:commandLink id="btnPause" action="#{dashboardMB.mudarSituacaoAtividade(atividadeCalendario, 'Play')}" update=":telaInicial:colunaTodoList, listaAtividadeCalendario" style="float: left;margin-top:-0.6%;margin-left:1.5%;">
                                                                                     <i class="fa fa-pause" style="font-size: 14px;color:#B0B5B9;"></i>            
                                                                                 </p:commandLink>                                      
-                                                                            </h:panelGroup>        
-                                                                            <p:commandLink action="#{dashboardMB.mudarSituacaoAtividade(atividadeCalendario, 'Concluida')}" update=":telaInicial:colunaTodoList, :telaInicial:colunaNumTarefas, :telaInicial:calendarioAtividades">
+                                                                            </h:panelGroup>          
+                                                                            <p:commandLink actionListener="#{dashboardMB.mudarSituacaoAtividade(atividadeCalendario, 'Concluida')}" update="@all">  
                                                                                 <p:selectBooleanCheckbox id="cbxConcluido" class="list-child" value="#{atividadeCalendario.concluido}"  style="float: left;margin-top:0.6%;margin-left:1.5%;"/> 
                                                                             </p:commandLink>   
                                                                             <h:outputLabel id="nome" value="#{atividadeCalendario.atividade.descricao}" class="task-title-sp" style="margin-left: 2%;"/>       
@@ -285,10 +285,10 @@
                                                         </h:panelGroup>       
                                                         <br/>
                                                         <div align="center">    
-                                                            <p:commandButton id="btnCancelar" oncomplete="eventDialog.hide();"  class="btn-danger" value="Fechar" update=":telaInicial:colunaTodoList, :telaInicial:colunaNumTarefas, :telaInicial:calendarioAtividades"/>
+                                                            <p:commandButton id="btnCancelar" onclick="eventDialog.hide();"  class="btn-danger" value="Fechar"/>
                                                         </div> 
-                                                    </p:dialog>  
-                                                </div>
+                                                    </p:dialog>                 
+                                                </div>  
                                             </section>
                                         </aside>
                                     </h:panelGroup>

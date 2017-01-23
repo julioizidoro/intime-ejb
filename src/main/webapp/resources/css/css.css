@@ -86,3 +86,9 @@ body{
 .tamanho30{
     width:30%;
 }
+  
+.fc-event.fc-draggable {
+    cursor: pointer;
+    background: transparent;
+    border: transparent;
+} 
