@@ -35,10 +35,8 @@ public class listarSubDepartamentosMB implements Serializable {
         FacesContext fc = FacesContext.getCurrentInstance();
         HttpSession session = (HttpSession) fc.getExternalContext().getSession(false);
         departamento = (Departamento) session.getAttribute("departamento");
-        if (departamento != null) {
-            if (departamento.getSubdepartamentoList() != null) {
-                listaSubDepartamento = departamento.getSubdepartamentoList();
-            }
+        if (departamento != null && departamento.getIddepartamento() != null) {
+            gerarLista();
         }
     }
 
@@ -89,24 +87,29 @@ public class listarSubDepartamentosMB implements Serializable {
             subdepartamento.setNome(nomeSubDepartamento);
             subdepartamento.setStatus(true);
             subDepartamentoRepository.update(subdepartamento);
-            listaSubDepartamento.add(subdepartamento);
-            nomeSubDepartamento = "";
+            gerarLista();
+            Mensagem.lancarMensagemInfo("Salvo com sucesso.", "");
         } else {
             Mensagem.lancarMensagemInfo("Informe um nome para este sub-departamento", "");
         }
     }
 
     public void excluirSubDepartamento(Subdepartamento subdepartamento) {
-        if (subdepartamento != null) {
-            int id = subdepartamento.getIdsubdepartamento();
-            departamento.getSubdepartamentoList().remove(subdepartamento.getIdsubdepartamento());
-            subDepartamentoRepository.remove(id);
-            listaSubDepartamento.remove(subdepartamento);
+        if (subdepartamento != null) { 
+            subdepartamento.setStatus(false);
+            subDepartamentoRepository.update(subdepartamento);
+            Mensagem.lancarMensagemInfo("Desativado com sucesso.", "");
+            gerarLista();
         }
     }
 
-    public void salvarSubDepartamento() {
+    public void fechar() {
         RequestContext.getCurrentInstance().closeDialog("");
     }
 
+    public void gerarLista() {
+        String sql = "Select s From Subdepartamento s where s.departamento.iddepartamento="
+                + departamento.getIddepartamento() + " and s.status=true order by s.nome";
+        listaSubDepartamento = subDepartamentoRepository.list(sql);
+    }
 }

@@ -16,87 +16,86 @@
                             <p:outputLabel value="Home" style="margin-left:0.5%;font-weight: inherit;"/>
                         </p:commandLink>
                         <p:outputLabel value="/" style="margin-left:0.5%;color:#797979;font-weight: inherit;"/>
-                        <p:outputLabel value="Cadastro de Rotina" style="margin-left:0.5%;color:#797979;font-weight: inherit;"/>
-                    </h:panelGroup> 
-                </h:panelGrid> 
-                <br/> 
-                <p:outputLabel value="Cadastro de Rotinas" style="margin-left:0.5%;color:#797979;font-weight: inherit;font-size: 22px;"/>
-                <h:panelGrid id="painelBtn" columns="2" style="width: 100%;" >    
-                    <h:panelGrid columns="2" style="text-align: left;">
-                        <p:selectOneMenu id="departamento"  style="width:200px;" value="#{rotinaMB.departamento}" converter="DepartamentoConverter"
-                                         filter="true" filterMatchMode="contains" panelStyle="width:180px" >
-                            <f:selectItem  itemLabel="Selecione" itemValue="0" noSelectionOption="true"/> 
-                            <f:selectItems  value="#{rotinaMB.listaDepartamento}" var="d" itemLabel="#{d.nome}" itemValue="#{d}"/>
-                            <f:attribute name="listaDepartamento" value="#{rotinaMB.listaDepartamento}"/>
-                            <p:ajax event="change" listener="#{rotinaMB.listarSubDepartamento()}" update="subdepartamento, painelBtn"/>
-                        </p:selectOneMenu>
-                        <p:selectOneMenu id="subdepartamento"  style="width:200px;margin-left: 2%;" value="#{rotinaMB.subdepartamento}" converter="SubDepartamentoConverter"
-                                         filter="true" filterMatchMode="contains" panelStyle="width:180px" >
-                            <f:selectItem  itemLabel="Selecione" itemValue="0" noSelectionOption="true"/> 
-                            <f:selectItems  value="#{rotinaMB.listaSubDepartamento}" var="sd" itemLabel="#{sd.nome}" itemValue="#{sd}"/>
-                            <f:attribute name="listaSubDepartamento" value="#{rotinaMB.listaSubDepartamento}"/>
-                        </p:selectOneMenu>
-                    </h:panelGrid>
-                    <h:panelGrid columns="7" style="text-align: left;">
-                            <span style="margin-left: 2%;">   
-                                <p:inputText id="inputbuscar" class="form-control search-consultas" placeholder="Buscar" value="#">
-                                </p:inputText>
-                                <h:commandButton id="btnPesquisar" style="background: transparent;border: none;" />  
-                            </span>
-                            <p:commandLink id="btnSalvar" title="Salvar" action="#{rotinaMB.agendaRotina()}" class="hoverTextos">
-                                <i class="fa fa-check" style="font-size:35px;"/>  
-                            </p:commandLink>  
-                             <p:commandLink id="btnCancelar" title="Limpar" action="#" class="hoverTextos">
-                                <i class="fa fa-times" style="font-size:35px;"/> 
-                            </p:commandLink>  
-                    </h:panelGrid>
-                     
+                        <p:outputLabel value="Cadastro Rotinas" style="margin-left:0.5%;color:#797979;font-weight: inherit;"/>
+                    </h:panelGroup>   
+                </h:panelGrid>    
+                <br/>       
+                <p:outputLabel value="Cadastro de Rotinas" style="margin-left:1.5%;color:#797979;font-weight: inherit;font-size: 22px;"/>
+                <h:panelGrid id="painelBtn" columns="4" columnClasses="tamanho20,tamanho20,tamanho20,tamanho30" style="width:98%;margin-left:1.5%;" >    
+                    <p:selectOneMenu id="departamento"  style="width:200px;" value="#{rotinaMB.departamento}" converter="DepartamentoConverter"
+                                     filter="true" filterMatchMode="contains" panelStyle="width:180px" >         
+                        <f:selectItem  itemLabel="Departamento" itemValue="0" noSelectionOption="true"/>         
+                        <f:selectItems  value="#{rotinaMB.listaDepartamento}" var="d" itemLabel="#{d.nome}" itemValue="#{d}"/>
+                        <f:attribute name="listaDepartamento" value="#{rotinaMB.listaDepartamento}"/>
+                        <p:ajax event="change" listener="#{rotinaMB.listarSubDepartamento()}" update="subdepartamento, painelBtn"/>
+                    </p:selectOneMenu>
+                    <p:selectOneMenu id="subdepartamento"  style="width:200px;margin-left: 2%;" value="#{rotinaMB.subdepartamento}" converter="SubDepartamentoConverter"
+                                     filter="true" filterMatchMode="contains" panelStyle="width:180px" >
+                        <f:selectItem  itemLabel="Sub-departamento" itemValue="0" noSelectionOption="true"/> 
+                        <f:selectItems  value="#{rotinaMB.listaSubDepartamento}" var="sd" itemLabel="#{sd.nome}" itemValue="#{sd}"/>
+                        <f:attribute name="listaSubDepartamento" value="#{rotinaMB.listaSubDepartamento}"/>
+                    </p:selectOneMenu> 
+                    <h:panelGroup>  
+                        <span>   
+                            <p:inputText id="inputbuscar" class="form-control search-consultas" placeholder="Buscar">
+                            </p:inputText>
+                            <h:commandButton id="btnPesquisar" style="background: transparent;border: none;" />  
+                        </span>
+                    </h:panelGroup>       
+                    <h:panelGroup>  
+                        <p:commandLink id="btnSalvar" title="Salvar" action="#{rotinaMB.agendaRotina()}" class="hoverTextos">
+                            <i class="fa fa-check" style="font-size:35px;color: #C9A471;"/>  
+                        </p:commandLink>  
+                        <p:commandLink id="btnCancelar" title="Limpar" action="#" class="hoverTextos">
+                            <i class="fa fa-times" style="font-size:35px;color: #293949;"/> 
+                        </p:commandLink>  
+                    </h:panelGroup>
                 </h:panelGrid>
                 <div class="row" >
                     <div class="col-md-12">
                         <section class="panel tasks-widget" style="width:100%;">
                             <div class="panel-body">
                                 <div class="task-content">
-                                   <p:dataTable var="car" value="#" scrollable="true" scrollHeight="150"> 
-                                       <p:column headerText="" style="text-align: center;width: 10%;border: none;">
-                                           <p:commandLink id="btnadicionar" title="Adicionar" action="#{rotinaMB.cadastrarRotina()}" class="hoverTextos">
-                                                <i class="fa fa-plus" style="font-size:22px;"/>  
+                                    <p:dataTable var="car" value="#" scrollable="true" scrollHeight="150"> 
+                                        <p:column headerText="" style="text-align: center;width: 10%;border: none;">
+                                            <p:commandLink id="btnadicionar" title="Adicionar" action="#{rotinaMB.cadastrarRotina()}" class="hoverTextos">
+                                                <i class="fa fa-plus" style="font-size:19px;color: #293949;"/>  
                                             </p:commandLink>  
-                                           <p:commandLink id="btnEditar" title="Editar" action="#{rotinaMB.editarRotina()}" class="hoverTextos">
-                                                <i class="fa fa-pencil-square-o" style="font-size:22px;"/> 
+                                            <p:commandLink id="btnEditar" title="Editar" action="#{rotinaMB.editarRotina()}" class="hoverTextos">
+                                                <i class="fa fa-pencil-square-o" style="font-size:19px;color:#4F4F4F;"/> 
                                             </p:commandLink> 
-                                           <p:commandLink id="btnExcluir"  title="Excluir" action="#{rotinaMB.excluirRotina()}" class="hoverTextos">
-                                                <i class="fa fa-trash" style="font-size:22px;"/> 
-                                            </p:commandLink> 
-                                        </p:column>
-                                       <p:column headerText="Cliente"  sortBy="#" style="width: 25%;border: none;">
+                                            <p:commandLink id="btnExcluir"  title="Excluir" action="#{rotinaMB.excluirRotina()}" class="hoverTextos">
+                                                <i class="fa fa-trash" style="font-size:19px;color: #C9A471;"/> 
+                                            </p:commandLink>    
+                                        </p:column>   
+                                        <p:column headerText="CLIENTE"  style="width: 25%;border: none;text-align: left;">
                                             <h:outputText value="Anderson Luiz" />
                                         </p:column>
-                                       <p:column headerText="Frequência" sortBy="#"  style="text-align: center;border: none;">
+                                        <p:column headerText="FREQUÊNCIA"  style="text-align: center;border: none;text-align: left;">
                                             <h:outputText value="Semanal" />
-                                        </p:column>
-                                       <p:column headerText="Responsável" sortBy="#"  style="text-align: center;width: 20%;border: none;">
+                                        </p:column>   
+                                        <p:column headerText="RESPONSÁVEL" style="text-align: center;width: 20%;border: none;text-align: left;">
                                             <h:outputText value="Carlos Souza" />
                                         </p:column>
-                                       <p:column headerText="Início" sortBy="#"  style="text-align: center;border: none;">
-                                            <h:outputText value="28/12/2016" />
-                                        </p:column>
-                                       <p:column headerText="Fim" sortBy="#"  style="text-align: center;border: none;">
-                                            <h:outputText value="31/12/2016" />
-                                        </p:column>
-                                       <p:column headerText="Prioridade" sortBy="#"  style="width: 10%;text-align: center;border: none;">
+                                        <p:column headerText="INÍCIO" style="text-align: center;border: none;">
+                                            <h:outputText style="font-style: oblique;font-weight:400;" value="28/12/2016" />
+                                        </p:column>      
+                                        <p:column headerText="FIM"  style="text-align: center;border: none;">
+                                            <h:outputText style="font-style: oblique;font-weight:400;" value="31/12/2016" />
+                                        </p:column>     
+                                        <p:column headerText="PRIORIDADE"  style="width: 10%;text-align: center;border: none;">
                                             <p:commandLink id="btnPrioridade" title="Prioridade" action="#" class="hoverTextos">
-                                                <i class="fa fa-exclamation-triangle" style="font-size:22px;"/> 
-                                            </p:commandLink> 
+                                                <i class="fa fa-exclamation-triangle" style="font-size:22px;color: red;"/> 
+                                            </p:commandLink>    
                                         </p:column>
                                     </p:dataTable>
                                 </div> 
                             </div>
                         </section>
                     </div>
-                   
+
                 </div>  
-               
+
             </h:form>  
         </ui:define>
     </ui:composition>
