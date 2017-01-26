@@ -65,6 +65,7 @@ public class Atividadeusuario implements Serializable {
     private boolean concluido;
 
     public Atividadeusuario() {
+        setSituacao("Pause");
     }
 
     public Atividadeusuario(Integer idatividadeusuario) {
