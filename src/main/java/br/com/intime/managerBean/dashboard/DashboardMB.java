@@ -244,9 +244,11 @@ public class DashboardMB implements Serializable {
     }
 
     public void gerarListaFeed() {
+        LocalDate data = LocalDate.now();
+        data = data.minusDays(5);
         String sql = "select f From Feednoticia f where f.data>= :dataInicial"
                 + " and f.data<= :dataFinal order by f.idfeednoticia DESC";
-        listaFeedNoticia = feedNoticiaRepository.list(sql, LocalDate.now(), LocalDate.now());
+        listaFeedNoticia = feedNoticiaRepository.list(sql, data, LocalDate.now());
     }
 
     public void gerarListaNotificacoes() {
@@ -410,5 +412,21 @@ public class DashboardMB implements Serializable {
         Map<String, Object> options = new HashMap<String, Object>();
         options.put("contentWidth", 350);
         RequestContext.getCurrentInstance().openDialog("cadFeedNoticia", options, null);
+    }
+    
+    
+    public String retornarCorAtividades(Atividadeusuario atividadeusuario) {
+        LocalDate data = LocalDate.now();
+        if (((atividadeusuario.getAtividade().getDataexecucao().equals(data)
+                && atividadeusuario.getAtividade().getHoraexecucao().isBefore(LocalTime.now()))
+                || (atividadeusuario.getAtividade().getDataexecucao().isBefore(data)))
+                && !atividadeusuario.getSituacao().equalsIgnoreCase("Concluida")) {
+            return "#B22222;";
+        }
+        if (atividadeusuario.getSituacao().equalsIgnoreCase("Concluida")) {
+            return "#9C9C9C;text-decoration: line-through !important;";
+        } else {
+            return "#4F4F4F;";
+        }
     }
 }
