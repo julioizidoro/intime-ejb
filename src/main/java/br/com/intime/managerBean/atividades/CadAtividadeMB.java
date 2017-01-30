@@ -265,13 +265,13 @@ public class CadAtividadeMB implements Serializable {
                         Formatacao.converterStringParaLocalTime(atividadeusuario.getAtividade().getMeta()));
             }
             atividadeusuario.getAtividade().setCliente(cliente);
-            if(atividadeusuario.getAtividade().getIdatividade()==null){
-             atividadeusuario.getAtividade().setUsuario(usuarioLogadoMB.getUsuario());
+            if (atividadeusuario.getAtividade().getIdatividade() == null) {
+                atividadeusuario.getAtividade().setUsuario(usuarioLogadoMB.getUsuario());
             }
             atividadeusuario.setAtividade(atividadeRepository.update(atividadeusuario.getAtividade()));
             atividadeUsuarioRepository.update(atividadeusuario);
+            Notificacao notificacao;
             if (listaUsuarioSelecionado != null && listaUsuarioSelecionado.size() > 0) {
-                Notificacao notificacao;
                 for (int i = 0; listaUsuarioSelecionado.size() > i; i++) {
                     Atividadeusuario atividadeUsuarioSelecionados = new Atividadeusuario();
                     atividadeUsuarioSelecionados.setAtividade(atividadeusuario.getAtividade());
@@ -285,6 +285,14 @@ public class CadAtividadeMB implements Serializable {
                             + atividadeusuario.getAtividade().getDescricao() + "'.");
                     notificacoesRepository.update(notificacao);
                 }
+            }
+            if (atividadeusuario.getUsuario() != usuarioLogadoMB.getUsuario()) {
+                notificacao = new Notificacao();
+                notificacao.setLido(false);
+                notificacao.setUsuario(usuario);
+                notificacao.setDescricao(usuarioLogadoMB.getUsuario().getNome() + " lhe encaminhou a tarefa '"
+                        + atividadeusuario.getAtividade().getDescricao() + "'.");
+                notificacoesRepository.update(notificacao);
             }
             RequestContext.getCurrentInstance().closeDialog(null);
         }
@@ -375,9 +383,9 @@ public class CadAtividadeMB implements Serializable {
                 && atividadeusuario.getAtividade().getMeta().length() > 0) {
             atividadeusuario.getAtividade().setMetatempo(
                     Formatacao.converterStringParaLocalTime(atividadeusuario.getAtividade().getMeta()));
-        } 
+        }
         atividadeusuario.getAtividade().setCliente(cliente);
-        if(atividadeusuario.getAtividade().getIdatividade()==null){
+        if (atividadeusuario.getAtividade().getIdatividade() == null) {
             atividadeusuario.getAtividade().setUsuario(usuarioLogadoMB.getUsuario());
         }
         atividadeusuario.setAtividade(atividadeRepository.update(atividadeusuario.getAtividade()));
@@ -437,7 +445,7 @@ public class CadAtividadeMB implements Serializable {
 
     public String retornarCorBtnComentario() {
         if (atividadeusuario.getAtividadecomentarioList() == null
-                || atividadeusuario.getAtividadecomentarioList().size()==0) {
+                || atividadeusuario.getAtividadecomentarioList().size() == 0) {
             return "#C6C6C6";
         } else {
             return "#0040FF";
@@ -495,20 +503,20 @@ public class CadAtividadeMB implements Serializable {
             atividadeusuario.getAtividade().setMeta(metaMostrar);
         }
     }
-    
-    public void gerarDadosDefaut(){
+
+    public void gerarDadosDefaut() {
         cliente = clienteRepository.find(1);
         nomeCliente = cliente.getNomefantasia();
         atividadeusuario.getAtividade().setDataexecutar(new Date());
         gerarListaDepartamento();
-        if (listaClientedepartamentos!=null){
+        if (listaClientedepartamentos != null) {
             int idDepartamento = usuarioLogadoMB.getUsuario().getSubdepartamento().getDepartamento().getIddepartamento();
-            for (int i=0;i<listaClientedepartamentos.size();i++){
-                if (idDepartamento == listaClientedepartamentos.get(i).getDepartamento().getIddepartamento()){
+            for (int i = 0; i < listaClientedepartamentos.size(); i++) {
+                if (idDepartamento == listaClientedepartamentos.get(i).getDepartamento().getIddepartamento()) {
                     clientedepartamento = listaClientedepartamentos.get(i);
                     gerarListaSubDepartamento();
                     atividadeusuario.getAtividade().setSubdepartamento(usuarioLogadoMB.getUsuario().getSubdepartamento());
-                    i=10000;
+                    i = 10000;
                 }
             }
         }
