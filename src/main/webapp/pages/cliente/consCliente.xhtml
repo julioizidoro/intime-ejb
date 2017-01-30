@@ -2,7 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:p="http://primefaces.org/ui"
+      xmlns:p="http://primefaces.org/ui"   
       xmlns:ui="http://java.sun.com/jsf/facelets" >
     <ui:composition template="/pages/templates/default.xhtml">
         <ui:define name="corpo">
@@ -28,7 +28,7 @@
                             <h:commandButton id="btnPesquisar" style="background: transparent;border: none;" actionListener="#{clienteMB.pesquisar()}" />  
                         </h:panelGroup>  
                         <h:panelGroup style="text-align: right;"> 
-                            <p:commandLink id="btnadicionar" title="Adicionar" action="#{clienteMB.novoCliente()}" class="hoverTextos">
+                            <p:commandLink id="btnadicionar" title="Adicionar" action="#{clienteMB.novoCliente()}" update="growl" class="hoverTextos">
                                 <i class="fa fa-3x fa-plus" />
                                 <p:ajax event="dialogReturn" listener="#{clienteMB.gerarListaCliente()}" update="@form"/>
                             </p:commandLink>  
@@ -39,7 +39,7 @@
                 <br/>
                 <div class="row" style="margin-left:0.5%;width:97%;">    
                     <ui:repeat id="listaCliente" var="cliente" value="#{clienteMB.listaCliente}" >
-
+    
                         <div class="col-lg-3">  
                             <div class="divConsultas" style="width:98%;margin:5px;height:140px;">  
                                 <h:panelGrid columns="2" style="width:98%;margin-top:5%;margin-left: 2%;">  
@@ -48,7 +48,7 @@
                                     </h:panelGroup>
                                     <h:panelGrid columns="1" style="color: #797979;">   
                                         <p:commandLink value="#{cliente.nomefantasia}" action="#{clienteMB.editar(cliente)}" title="Editar"
-                                                       class="hoverTextos"  style="font-size:15px;margin: 1px 7px;font-weight:bold;" >
+                                                       class="hoverTextos"  style="font-size:15px;margin: 1px 7px;font-weight:bold;" update=":consCliente:growl">
                                             <p:ajax event="dialogReturn" listener="#{clienteMB.gerarListaCliente()}" update="@form"/>
                                         </p:commandLink>
                                         <p:outputLabel

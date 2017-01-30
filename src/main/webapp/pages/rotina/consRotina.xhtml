@@ -58,13 +58,13 @@
                                 <div class="task-content">
                                     <p:dataTable var="car" value="#" scrollable="true" scrollHeight="150"> 
                                         <p:column headerText="" style="text-align: center;width: 10%;border: none;">
-                                            <p:commandLink id="btnadicionar" title="Adicionar" action="#{rotinaMB.cadastrarRotina()}" class="hoverTextos">
+                                            <p:commandLink id="btnadicionar" title="Adicionar" action="#{rotinaMB.cadastrarRotina()}" update=":consRotina:growl" class="hoverTextos">
                                                 <i class="fa fa-plus" style="font-size:19px;color: #293949;"/>  
                                             </p:commandLink>  
-                                            <p:commandLink id="btnEditar" title="Editar" action="#{rotinaMB.editarRotina()}" class="hoverTextos">
+                                            <p:commandLink id="btnEditar" title="Editar" action="#{rotinaMB.editarRotina()}" update=":consRotina:growl" class="hoverTextos">
                                                 <i class="fa fa-pencil-square-o" style="font-size:19px;color:#4F4F4F;"/> 
                                             </p:commandLink> 
-                                            <p:commandLink id="btnExcluir"  title="Excluir" action="#{rotinaMB.excluirRotina()}" class="hoverTextos">
+                                            <p:commandLink id="btnExcluir"  title="Excluir" action="#{rotinaMB.excluirRotina()}"  update=":consRotina:growl" class="hoverTextos">
                                                 <i class="fa fa-trash" style="font-size:19px;color: #C9A471;"/> 
                                             </p:commandLink>    
                                         </p:column>   

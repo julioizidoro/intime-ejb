@@ -6,7 +6,7 @@
       xmlns:ui="http://java.sun.com/jsf/facelets" >
     <ui:composition template="/pages/templates/default.xhtml">
         <ui:define name="corpo">
-            <h:form id="consCliente"> 
+            <h:form id="consUsuario"> 
                 <p:growl id="growl" showDetail="true" sticky="true" />
                 <h:panelGrid columns="2" style="width: 100%;margin-top: -1.5%;">
                     <h:panelGroup> 
@@ -28,7 +28,7 @@
                             <h:commandButton id="btnPesquisar" style="background: transparent;border: none;" actionListener="#{usuarioMB.pesquisar()}" />  
                         </h:panelGroup>  
                         <h:panelGroup style="text-align: right;"> 
-                            <p:commandLink id="btnadicionar" title="Adicionar" action="#{usuarioMB.novoUsuario()}" class="hoverTextos">
+                            <p:commandLink id="btnadicionar" title="Adicionar" action="#{usuarioMB.novoUsuario()}" class="hoverTextos" update="growl">
                                 <i class="fa fa-3x fa-plus" />
                                 <p:ajax event="dialogReturn" listener="#{usuarioMB.gerarListaUsuarios()}" update="@form"/>
                             </p:commandLink>  
@@ -44,9 +44,9 @@
                                 <h:panelGrid columns="2" style="width:99%;margin-top:5%;margin-left: 2%;">  
                                     <img src="http://#{usuarioMB.ftpdados.hostupload}:82/ftproot/intime/fotos/usuario/#{usuario.nomefoto}"  class="imagemcliente" />  
                                     <h:panelGrid columns="1" style="color: #797979;">   
-                                        <p:commandLink value="#{usuario.nome}" action="#{usuarioMB.editar(usuario)}" title="Editar"
+                                        <p:commandLink value="#{usuario.nome}" action="#{usuarioMB.editar(usuario)}" title="Editar" update=":consUsuario:growl"
                                                        class="hoverTextos"  style="font-size:15px;margin: 1px 7px;font-weight:bold;" >
-                                            <p:ajax event="dialogReturn" listener="#{clienteMB.gerarListaCliente()}" update="@form"/>
+                                            <p:ajax event="dialogReturn" listener="#{clienteMB.gerarListaCliente()}" update="@form"/>  
                                         </p:commandLink>
                                         <p:outputLabel
                                             value="#{usuario.cargo}"

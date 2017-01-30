@@ -10,6 +10,7 @@ import br.com.intime.model.Ftpdados;
 import br.com.intime.model.Usuario;
 import br.com.intime.repository.FtpDadosRepository;
 import br.com.intime.repository.UsuarioRepository;
+import br.com.intime.util.Mensagem;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,6 +20,7 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 import org.primefaces.context.RequestContext;
@@ -31,6 +33,8 @@ public class UsuarioMB implements Serializable{
     
     private Usuario usuario;
     private List<Usuario> listaUsuario;
+    @Inject
+    private UsuarioLogadoMB usuarioLogadoMB;
     @EJB
     private UsuarioRepository usuarioRepository;
     private String nome;
@@ -92,40 +96,49 @@ public class UsuarioMB implements Serializable{
     public void setFtpRepository(FtpDadosRepository ftpRepository) {
         this.ftpRepository = ftpRepository;
     }
-    
-    
-    
-    
+
+    public UsuarioLogadoMB getUsuarioLogadoMB() {
+        return usuarioLogadoMB;
+    }
+
+    public void setUsuarioLogadoMB(UsuarioLogadoMB usuarioLogadoMB) {
+        this.usuarioLogadoMB = usuarioLogadoMB;
+    }
+     
     public void gerarListaUsuarios(){
         listaUsuario = usuarioRepository.list("Select u From Usuario u");
         if (listaUsuario == null || listaUsuario.isEmpty()) {
             listaUsuario = new ArrayList<>();
         }
-    }
-    
+    } 
     
     public void pesquisar(){
         listaUsuario = usuarioRepository.list("Select u From Usuario u Where u.nome like '% " + nome + "%'");
         if (listaUsuario == null || listaUsuario.isEmpty()) {
             listaUsuario = new ArrayList<>();
         }
-    }
+    } 
     
-    
-     public String novoUsuario() {
-        Map<String, Object> options = new HashMap<String, Object>();
-        options.put("contentWidth", 620);
-        RequestContext.getCurrentInstance().openDialog("cadUsuario", options, null);
+    public String novoUsuario() {
+        if(usuarioLogadoMB.getUsuario().getCadastrusuario()==3
+           || usuarioLogadoMB.getUsuario().getCadastrusuario()==4){
+            Map<String, Object> options = new HashMap<String, Object>();
+            options.put("contentWidth", 620);
+            RequestContext.getCurrentInstance().openDialog("cadUsuario", options, null);
+        }else Mensagem.lancarMensagemWarn("Acesso Negado!", "");
         return "";
     }
 
     public String editar(Usuario usuario) {
-        Map<String, Object> options = new HashMap<String, Object>();
-        options.put("contentWidth", 620);
-        FacesContext fc = FacesContext.getCurrentInstance();
-        HttpSession session = (HttpSession) fc.getExternalContext().getSession(false);
-        session.setAttribute("usuario", usuario);
-        RequestContext.getCurrentInstance().openDialog("cadUsuario", options, null);
+        if(usuarioLogadoMB.getUsuario().getCadastrusuario()==3
+           || usuarioLogadoMB.getUsuario().getCadastrusuario()==4){
+            Map<String, Object> options = new HashMap<String, Object>();
+            options.put("contentWidth", 620);
+            FacesContext fc = FacesContext.getCurrentInstance();
+            HttpSession session = (HttpSession) fc.getExternalContext().getSession(false);
+            session.setAttribute("usuario", usuario);
+            RequestContext.getCurrentInstance().openDialog("cadUsuario", options, null);
+        }else Mensagem.lancarMensagemWarn("Acesso Negado!", "");
         return "";
     }
 }
