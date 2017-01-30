@@ -91,6 +91,7 @@ public class CadAtividadeMB implements Serializable {
             cliente = new Cliente();
             usuario = usuarioLogadoMB.getUsuario();
             clientedepartamento = new Clientedepartamento();
+            gerarDadosDefaut();
         } else {
             cliente = atividadeusuario.getAtividade().getCliente();
             nomeCliente = cliente.getNomefantasia();
@@ -276,7 +277,7 @@ public class CadAtividadeMB implements Serializable {
                     atividadeUsuarioRepository.update(atividadeUsuarioSelecionados);
                     notificacao = new Notificacao();
                     notificacao.setLido(false);
-                    notificacao.setUsuario(atividadeusuario.getUsuario());
+                    notificacao.setUsuario(listaUsuarioSelecionado.get(i));
                     notificacao.setDescricao(usuarioLogadoMB.getUsuario().getNome() + " lhe encaminhou a tarefa '"
                             + atividadeusuario.getAtividade().getDescricao() + "'.");
                     notificacoesRepository.update(notificacao);
@@ -486,6 +487,24 @@ public class CadAtividadeMB implements Serializable {
             }
             metaMostrar = metaMostrar + String.valueOf(im);
             atividadeusuario.getAtividade().setMeta(metaMostrar);
+        }
+    }
+    
+    public void gerarDadosDefaut(){
+        cliente = clienteRepository.find(1);
+        nomeCliente = cliente.getNomefantasia();
+        atividadeusuario.getAtividade().setDataexecutar(new Date());
+        gerarListaDepartamento();
+        if (listaClientedepartamentos!=null){
+            int idDepartamento = usuarioLogadoMB.getUsuario().getSubdepartamento().getDepartamento().getIddepartamento();
+            for (int i=0;i<listaClientedepartamentos.size();i++){
+                if (idDepartamento == listaClientedepartamentos.get(i).getDepartamento().getIddepartamento()){
+                    clientedepartamento = listaClientedepartamentos.get(i);
+                    gerarListaSubDepartamento();
+                    atividadeusuario.getAtividade().setSubdepartamento(usuarioLogadoMB.getUsuario().getSubdepartamento());
+                    i=10000;
+                }
+            }
         }
     }
 }

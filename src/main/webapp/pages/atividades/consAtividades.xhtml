@@ -52,7 +52,7 @@
                     <h:panelGroup style="text-align: right;">    
                         <p:commandLink id="btnadicionar" title="Adicionar" action="#{atividadesMB.adicionarAtividades()}" class="hoverTextos">
                             <i class="fa fa-plus" style="font-size:35px;"/>
-                            <p:ajax event="dialogReturn"  update="@form"/>   
+                            <p:ajax event="dialogReturn" listener="#{atividadesMB.gerarListaAtivadades()}" update="@form"/>   
                         </p:commandLink>  
                     </h:panelGroup>
                 </h:panelGrid>
@@ -104,11 +104,11 @@
                                                                 </span>
                                                             </h:panelGroup>        
                                                             <h:panelGroup id="urgente" rendered="#{atividadesMB.mostrarTrianguloUrgente(atividades.atividade.prioridade)}">
-                                                                <span class="task-title-sp" title="Urgênte">
+                                                                <span class="task-title-sp" title="Urgente">
                                                                     <i class="fa fa-exclamation-triangle" style="font-size: 14px;color:#FF0000;cursor: default;"></i> 
                                                                 </span>
                                                             </h:panelGroup>  
-
+                                                            <span id="iddataretorno" class="task-title-sp">#{atividades.dataRetorno}</span>
                                                             <div class="pull-right hidden-phone">
                                                                 <p:commandLink id="btnAlterarData" title="Alterar Data" actionListener="#{atividadesMB.selecionarAtividade(atividades)}" oncomplete="PF('alterarData').show()" update=":formDialogData:dialog_alterarData"> 
                                                                     <i class="fa fa-calendar" style="font-size:17px;color:#FFD700;"></i>   

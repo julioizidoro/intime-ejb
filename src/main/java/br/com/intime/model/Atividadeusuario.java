@@ -63,8 +63,11 @@ public class Atividadeusuario implements Serializable {
     private Usuario usuario; 
     @Transient
     private boolean concluido;
+    @Transient
+    private String dataRetorno;
 
     public Atividadeusuario() {
+        setDataRetorno("");
         setSituacao("Pause");
     }
 
@@ -102,6 +105,14 @@ public class Atividadeusuario implements Serializable {
 
     public void setHoraconclusao(LocalTime horaconclusao) {
         this.horaconclusao = horaconclusao;
+    }
+
+    public String getDataRetorno() {
+        return dataRetorno;
+    }
+
+    public void setDataRetorno(String dataRetorno) {
+        this.dataRetorno = dataRetorno;
     }
 
     

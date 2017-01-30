@@ -71,7 +71,7 @@ public class AtividadeComentariosMB implements Serializable {
         if(atividadecomentario.getComentario()!=null && atividadecomentario.getComentario().length()>0){
             atividadecomentario.setData(LocalDate.now());
             atividadecomentario.setAtividadeusuario(atividadeusuario);
-            atvidadeComentarioRepository.update(atividadecomentario); 
+            atividadecomentario = atvidadeComentarioRepository.update(atividadecomentario); 
             if(atividadeusuario.getAtividadecomentarioList()==null){
                 atividadeusuario.setAtividadecomentarioList(new ArrayList<Atividadecomentario>());
             }

@@ -311,6 +311,7 @@ public class AtividadesMB implements Serializable {
     }
 
     public void gerarListaAtivadades() {
+        boolean dataminima = false;
         if (buscar == null) {
             buscar = "";
         }
@@ -326,8 +327,11 @@ public class AtividadesMB implements Serializable {
             }
             sqlOrderBy = " ORDER BY a.atividade.dataexecucao";
         } else {
-            sqlConcluida = " and a.situacao='Concluida' ";
-            if (dataInicial != null) {
+            if (dataInicial != null)  {
+                if (dataInicial.isEqual(LocalDate.MIN)){
+                    dataInicial = LocalDate.now();
+                    dataminima = true;
+                }
                 sqlData = " and a.dataconclusao>= :dataInicial and a.dataconclusao<= :dataFinal ";
             }
             sqlOrderBy = " ORDER BY a.dataconclusao";
@@ -339,6 +343,9 @@ public class AtividadesMB implements Serializable {
             gerarDataHoraMostrarNaoConcluidas();
         } else {
             atividadeConcluida();
+        }
+        if (dataminima){
+            dataInicial = LocalDate.MIN;
         }
     }
 
@@ -354,6 +361,10 @@ public class AtividadesMB implements Serializable {
         if (lista != null) {
             listaAtividade = new ArrayList<Atividadeusuario>();
             for (int i = 0; i < lista.size(); i++) {
+                DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM");
+                LocalDate data = lista.get(i).getDataretorno();
+                String dataMostrar = data.format(formatador);
+                lista.get(i).getAtividadeusuario().setDataRetorno("(Retorno " + dataMostrar + ")");
                 listaAtividade.add(lista.get(i).getAtividadeusuario());
             }
         }
@@ -459,7 +470,8 @@ public class AtividadesMB implements Serializable {
                 atividadeusuario.setHoraconclusao(hora);
                 atividadeusuario.setDataconclusao(LocalDate.now());
                 atividadeusuario.setConcluido(true);
-                atividadeusuario.setSituacao(situacao);
+                atividadeusuario.setSituacao("Concluida");
+                gerarListaAtivadades();
                 Mensagem.lancarMensagemInfo("Tarefa concluída!", "");
             } else {
                 Map<String, Object> options = new HashMap<String, Object>();
@@ -471,10 +483,13 @@ public class AtividadesMB implements Serializable {
             }
         }
         atividadeUsuarioRepository.update(atividadeusuario);
+        if (situacao.equalsIgnoreCase("Concluida")){
+            gerarListaAtivadades();
+        }
     }
 
     public boolean mostrarTrianguloUrgente(String prioridade) {
-        if (prioridade.equalsIgnoreCase("Urgênte")) {
+        if (prioridade.equalsIgnoreCase("Urgente")) {
             return true;
         } else {
             return false;
