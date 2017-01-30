@@ -30,8 +30,6 @@ public class Empresa implements Serializable {
     @Column(name = "usuariomaster")
     private Integer usuariomaster;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "empresa")
-    private List<Cliente> clienteList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "empresa")
     private List<Usuario> usuarioList;
 
     private static final long serialVersionUID = 1L;
@@ -259,14 +257,6 @@ public class Empresa implements Serializable {
 
     public void setUsuariomaster(Integer usuariomaster) {
         this.usuariomaster = usuariomaster;
-    }
-
-    public List<Cliente> getClienteList() {
-        return clienteList;
-    }
-
-    public void setClienteList(List<Cliente> clienteList) {
-        this.clienteList = clienteList;
     }
 
     public List<Usuario> getUsuarioList() {

@@ -6,17 +6,12 @@
 package br.com.intime.model;
 
 import java.io.Serializable;
-import java.util.List;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
@@ -63,9 +58,7 @@ public class Cliente implements Serializable {
     @Size(max = 10)
     @Column(name = "nomefoto")
     private String nomefoto;
-    @JoinColumn(name = "empresa_idempresa", referencedColumnName = "idempresa")
-    @ManyToOne(optional = false)
-    private Empresa empresa; 
+    
 
     public Cliente() {
     }
@@ -144,14 +137,6 @@ public class Cliente implements Serializable {
 
     public void setResponsavel(String responsavel) {
         this.responsavel = responsavel;
-    }
-
-    public Empresa getEmpresa() {
-        return empresa;
-    }
-
-    public void setEmpresa(Empresa empresa) {
-        this.empresa = empresa;
     }
 
     public String getApelido() {

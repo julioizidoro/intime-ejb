@@ -3,7 +3,6 @@ package br.com.intime.managerBean.cliente;
 import br.com.intime.model.Cliente;
 import br.com.intime.model.Clientedepartamento;
 import br.com.intime.model.Departamento;
-import br.com.intime.model.Empresa;
 import br.com.intime.model.Ftpdados;
 import br.com.intime.repository.ClienteDepartamentoRepository;
 import br.com.intime.repository.ClienteRepository;
@@ -15,7 +14,6 @@ import br.com.intime.util.Mensagem;
 import java.io.IOException;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
-import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -48,8 +46,6 @@ public class CadClienteMB implements Serializable {
     @EJB
     private FtpDadosRepository ftpDadosRepository; 
     private Cliente cliente;
-    private Empresa empresa;
-    private List<Empresa> listaEmpresa;
     private String status;
     private UploadedFile file;
     private FileUploadEvent ex;
@@ -69,10 +65,8 @@ public class CadClienteMB implements Serializable {
         session.removeAttribute("cliente");
         if (cliente == null) {
             cliente = new Cliente();
-            empresa = new Empresa();
             listaClienteDepartamento = new ArrayList<>();
         } else {
-            empresa = cliente.getEmpresa();
             if (cliente.getStatus()) {
                 status = "Ativo";
             } else {
@@ -80,9 +74,7 @@ public class CadClienteMB implements Serializable {
             }
             listarClienteDepartamentos();
         }
-        gerarListaEmpresa();
         listarDepartamentos();
-        //verificarLista();
     }
 
     public ClienteRepository getClienteRepository() {
@@ -109,35 +101,12 @@ public class CadClienteMB implements Serializable {
         this.empresaRepository = empresaRepository;
     }
 
-    public Empresa getEmpresa() {
-        return empresa;
-    }
-
-    public void setEmpresa(Empresa empresa) {
-        this.empresa = empresa;
-    }
-
-    public List<Empresa> getListaEmpresa() {
-        return listaEmpresa;
-    }
-
-    public void setListaEmpresa(List<Empresa> listaEmpresa) {
-        this.listaEmpresa = listaEmpresa;
-    }
-
     public String getStatus() {
         return status;
     }
 
     public void setStatus(String status) {
         this.status = status;
-    }
-
-    public void gerarListaEmpresa() {
-        listaEmpresa = empresaRepository.list("Select e from Empresa e");
-        if (listaEmpresa == null) {
-            listaEmpresa = new ArrayList<Empresa>();
-        }
     }
 
     public FileUploadEvent getEx() {
@@ -184,7 +153,6 @@ public class CadClienteMB implements Serializable {
 
     public String salvar() {
         if (validarDados()) {
-            cliente.setEmpresa(empresa);
             if (status.equalsIgnoreCase("Ativo")) {
                 cliente.setStatus(true);
             } else {
@@ -211,10 +179,6 @@ public class CadClienteMB implements Serializable {
     }
 
     public boolean validarDados() {
-        if (empresa == null && empresa.getIdempresa() == null) {
-            Mensagem.lancarMensagemErro("Atenção!", "Empresa não selecionada.");
-            return false;
-        }
         if (cliente.getNomefantasia() == null && cliente.getNomefantasia().length() == 0) {
             Mensagem.lancarMensagemErro("Atenção!", "Nome fantasia não informado.");
             return false;
@@ -245,8 +209,6 @@ public class CadClienteMB implements Serializable {
         }
         try {
             if(cliente.getIdcliente()==null){
-                Empresa empresa = empresaRepository.find(1);
-                cliente.setEmpresa(empresa);
                 cliente = clienteRepository.update(cliente);
             }else{
                 if(cliente.getNomefoto()!=null && cliente.getNomefoto().length()>0){
