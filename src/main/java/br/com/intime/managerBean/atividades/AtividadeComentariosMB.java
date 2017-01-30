@@ -18,8 +18,7 @@ import javax.ejb.EJB;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
-import javax.servlet.http.HttpSession;
-import org.primefaces.context.RequestContext;
+import javax.servlet.http.HttpSession; 
 
 /**
  *

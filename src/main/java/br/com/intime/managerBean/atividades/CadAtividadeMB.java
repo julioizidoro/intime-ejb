@@ -265,6 +265,9 @@ public class CadAtividadeMB implements Serializable {
                         Formatacao.converterStringParaLocalTime(atividadeusuario.getAtividade().getMeta()));
             }
             atividadeusuario.getAtividade().setCliente(cliente);
+            if(atividadeusuario.getAtividade().getIdatividade()==null){
+             atividadeusuario.getAtividade().setUsuario(usuarioLogadoMB.getUsuario());
+            }
             atividadeusuario.setAtividade(atividadeRepository.update(atividadeusuario.getAtividade()));
             atividadeUsuarioRepository.update(atividadeusuario);
             if (listaUsuarioSelecionado != null && listaUsuarioSelecionado.size() > 0) {
@@ -372,8 +375,11 @@ public class CadAtividadeMB implements Serializable {
                 && atividadeusuario.getAtividade().getMeta().length() > 0) {
             atividadeusuario.getAtividade().setMetatempo(
                     Formatacao.converterStringParaLocalTime(atividadeusuario.getAtividade().getMeta()));
-        }
+        } 
         atividadeusuario.getAtividade().setCliente(cliente);
+        if(atividadeusuario.getAtividade().getIdatividade()==null){
+            atividadeusuario.getAtividade().setUsuario(usuarioLogadoMB.getUsuario());
+        }
         atividadeusuario.setAtividade(atividadeRepository.update(atividadeusuario.getAtividade()));
         atividadeusuario = atividadeUsuarioRepository.update(atividadeusuario);
         if (atividadeusuario.getIdatividadeusuario() != null) {

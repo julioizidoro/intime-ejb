@@ -1,5 +1,5 @@
 package br.com.intime.managerBean.atividades;
-
+ 
 import br.com.intime.managerBean.usuario.UsuarioLogadoMB;
 import br.com.intime.model.Atividade;
 import br.com.intime.model.Atividadeaguardando;

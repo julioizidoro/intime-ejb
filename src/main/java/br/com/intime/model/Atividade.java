@@ -59,6 +59,9 @@ public class Atividade implements Serializable {
     @JoinColumn(name = "subdepartamento_idsubdepartamento", referencedColumnName = "idsubdepartamento")
     @ManyToOne(optional = false)
     private Subdepartamento subdepartamento;
+    @JoinColumn(name = "usuario_idusuario", referencedColumnName = "idusuario")
+    @ManyToOne(optional = false)
+    private Usuario usuario; 
     @Transient
     private String dataMostrar;
     @Transient 
@@ -203,6 +206,14 @@ public class Atividade implements Serializable {
 
     public void setMeta(String meta) {
         this.meta = meta;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 
     @Override
