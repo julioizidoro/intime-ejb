@@ -6,14 +6,11 @@
 package br.com.intime.managerBean.usuario;
 
 import br.com.intime.managerBean.cliente.CadClienteMB;
-import br.com.intime.model.Acesso;
-import br.com.intime.model.Cliente;
 import br.com.intime.model.Departamento;
 import br.com.intime.model.Empresa;
 import br.com.intime.model.Ftpdados;
 import br.com.intime.model.Subdepartamento;
 import br.com.intime.model.Usuario;
-import br.com.intime.repository.AcessoRepository;
 import br.com.intime.repository.DepartamentoRepository;
 import br.com.intime.repository.EmpresaRepository;
 import br.com.intime.repository.FtpDadosRepository;
@@ -55,9 +52,6 @@ public class CadUsuarioMB implements Serializable{
     private List<Empresa> listaEmpresa;
     @EJB
     private EmpresaRepository empresaRepository;
-    private Acesso acesso;
-    @EJB
-    private AcessoRepository acessoRepository;
     private UploadedFile file;
     private FileUploadEvent ex;
     @EJB
@@ -88,7 +82,6 @@ public class CadUsuarioMB implements Serializable{
         }
         gerarListaEmpresa();
         gerarListaDepartamentos();
-        acesso = acessoRepository.find(1);
     }
 
     public Usuario getUsuario() {
@@ -139,21 +132,6 @@ public class CadUsuarioMB implements Serializable{
         this.empresaRepository = empresaRepository;
     }
 
-    public Acesso getAcesso() {
-        return acesso;
-    }
-
-    public void setAcesso(Acesso acesso) {
-        this.acesso = acesso;
-    }
-
-    public AcessoRepository getAcessoRepository() {
-        return acessoRepository;
-    }
-
-    public void setAcessoRepository(AcessoRepository acessoRepository) {
-        this.acessoRepository = acessoRepository;
-    }
 
     public UploadedFile getFile() {
         return file;
@@ -290,7 +268,6 @@ public class CadUsuarioMB implements Serializable{
             String mensagem = validarDados();
             if (mensagem.length() < 1) {
                 usuario.setEmpresa(empresa);
-                usuario.setAcesso(acesso);
                 usuario.setSubdepartamento(subdepartamento);
                 usuario = usuarioRepository.update(usuario);
                 RequestContext.getCurrentInstance().closeDialog(usuario);
@@ -324,8 +301,6 @@ public class CadUsuarioMB implements Serializable{
             if (usuario.getIdusuario() == null) {
                 Empresa empresa = empresaRepository.find(1);
                 usuario.setEmpresa(empresa);
-                Acesso acesso = acessoRepository.find(1);
-                usuario.setAcesso(acesso);
                 Subdepartamento subdepartamento = subDepartamentoRepository.find(1);
                 usuario.setSubdepartamento(subdepartamento);
                 usuario = usuarioRepository.update(usuario);

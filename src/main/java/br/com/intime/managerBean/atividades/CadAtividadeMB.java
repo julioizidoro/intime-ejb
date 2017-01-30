@@ -324,7 +324,7 @@ public class CadAtividadeMB implements Serializable {
     }
 
     public void gerarListaCliente() {
-        listaCliente = clienteRepository.list("Select c from Cliente c where c.nomefantasia like '" + nomeCliente + "%'");
+        listaCliente = clienteRepository.list("Select c from Cliente c where c.nomefantasia like '" + nomeCliente + "%' and c.status=1 order by c.nomefantasia");
         if (listaCliente == null) {
             listaCliente = new ArrayList<Cliente>();
         }
@@ -338,7 +338,7 @@ public class CadAtividadeMB implements Serializable {
     public void gerarListaSubDepartamento() {
         if (clientedepartamento != null && clientedepartamento.getIdclientedepartamento() != null) {
             listaSubdepartamento = subDepartamentoRepository.list("Select s From Subdepartamento s"
-                    + " where s.departamento.iddepartamento=" + clientedepartamento.getDepartamento().getIddepartamento() + " order by s.nome");
+                    + " where s.departamento.iddepartamento=" + clientedepartamento.getDepartamento().getIddepartamento() + " and s.status=1 order by s.nome");
         }
     }
 

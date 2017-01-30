@@ -284,15 +284,13 @@ public class CadClienteMB implements Serializable {
     
     public void adicionarDepartamento(){
         Clientedepartamento clientedepartamento = new Clientedepartamento();
-        if (departamento != null) {
-            if (listaClienteDepartamento != null) {
+        if ((departamento != null) && (departamento.getIddepartamento()!=null)){
                 clientedepartamento.setCliente(cliente);
                 clientedepartamento.setDepartamento(departamento);
                 listaClienteDepartamento.add(clientedepartamento);
                 //clienteDepartamentoRepositoory.update(clientedepartamento);
                 clientedepartamento = null;
                 listaDepartamento.remove(departamento);
-            }
         }else{
             Mensagem.lancarMensagemInfo("Escola um departamento", "");
         }

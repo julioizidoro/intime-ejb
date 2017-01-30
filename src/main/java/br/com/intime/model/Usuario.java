@@ -7,7 +7,9 @@ package br.com.intime.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,19 +17,25 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.Size; 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  *
- * @author Wolverine
+ * @author jizid
  */
 @Entity
 @Table(name = "usuario")
+@NamedQueries({
+    @NamedQuery(name = "Usuario.findAll", query = "SELECT u FROM Usuario u")})
 public class Usuario implements Serializable {
-    
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,6 +61,10 @@ public class Usuario implements Serializable {
     @Size(max = 20)
     @Column(name = "nivel")
     private String nivel;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "acesso_idacesso")
+    private int acessoIdacesso;
     @Column(name = "status")
     private Boolean status;
     @Size(max = 30)
@@ -61,12 +73,25 @@ public class Usuario implements Serializable {
     @Size(max = 100)
     @Column(name = "senha")
     private String senha;
-    @Size(max = 10)
+    @Size(max = 20)
     @Column(name = "nomefoto")
     private String nomefoto;
-    @JoinColumn(name = "acesso_idacesso", referencedColumnName = "idacesso")
-    @ManyToOne(optional = false)
-    private Acesso acesso;
+    @Column(name = "alterarprazorotina")
+    private Boolean alterarprazorotina;
+    @Size(max = 10)
+    @Column(name = "notificacaoconclusao")
+    private String notificacaoconclusao;
+    @Size(max = 10)
+    @Column(name = "notificacaoatraso")
+    private String notificacaoatraso;
+    @Column(name = "cadastroclinte")
+    private Integer cadastroclinte;
+    @Column(name = "cadastrorotina")
+    private Integer cadastrorotina;
+    @Column(name = "cadastrusuario")
+    private Integer cadastrusuario;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuario")
+    private List<Departamento> departamentoList;
     @JoinColumn(name = "empresa_idempresa", referencedColumnName = "idempresa")
     @ManyToOne(optional = false)
     private Empresa empresa;
@@ -79,6 +104,11 @@ public class Usuario implements Serializable {
 
     public Usuario(Integer idusuario) {
         this.idusuario = idusuario;
+    }
+
+    public Usuario(Integer idusuario, int acessoIdacesso) {
+        this.idusuario = idusuario;
+        this.acessoIdacesso = acessoIdacesso;
     }
 
     public Integer getIdusuario() {
@@ -137,6 +167,14 @@ public class Usuario implements Serializable {
         this.nivel = nivel;
     }
 
+    public int getAcessoIdacesso() {
+        return acessoIdacesso;
+    }
+
+    public void setAcessoIdacesso(int acessoIdacesso) {
+        this.acessoIdacesso = acessoIdacesso;
+    }
+
     public Boolean getStatus() {
         return status;
     }
@@ -161,12 +199,68 @@ public class Usuario implements Serializable {
         this.senha = senha;
     }
 
-    public Acesso getAcesso() {
-        return acesso;
+    public String getNomefoto() {
+        return nomefoto;
     }
 
-    public void setAcesso(Acesso acesso) {
-        this.acesso = acesso;
+    public void setNomefoto(String nomefoto) {
+        this.nomefoto = nomefoto;
+    }
+
+    public Boolean getAlterarprazorotina() {
+        return alterarprazorotina;
+    }
+
+    public void setAlterarprazorotina(Boolean alterarprazorotina) {
+        this.alterarprazorotina = alterarprazorotina;
+    }
+
+    public String getNotificacaoconclusao() {
+        return notificacaoconclusao;
+    }
+
+    public void setNotificacaoconclusao(String notificacaoconclusao) {
+        this.notificacaoconclusao = notificacaoconclusao;
+    }
+
+    public String getNotificacaoatraso() {
+        return notificacaoatraso;
+    }
+
+    public void setNotificacaoatraso(String notificacaoatraso) {
+        this.notificacaoatraso = notificacaoatraso;
+    }
+
+    public Integer getCadastroclinte() {
+        return cadastroclinte;
+    }
+
+    public void setCadastroclinte(Integer cadastroclinte) {
+        this.cadastroclinte = cadastroclinte;
+    }
+
+    public Integer getCadastrorotina() {
+        return cadastrorotina;
+    }
+
+    public void setCadastrorotina(Integer cadastrorotina) {
+        this.cadastrorotina = cadastrorotina;
+    }
+
+    public Integer getCadastrusuario() {
+        return cadastrusuario;
+    }
+
+    public void setCadastrusuario(Integer cadastrusuario) {
+        this.cadastrusuario = cadastrusuario;
+    }
+
+    public List<Departamento> getDepartamentoList() {
+        return departamentoList;
+    }
+
+    public void setDepartamentoList(List<Departamento> departamentoList) {
+        this.departamentoList = departamentoList;
     }
 
     public Empresa getEmpresa() {
@@ -185,16 +279,6 @@ public class Usuario implements Serializable {
         this.subdepartamento = subdepartamento;
     }
 
-    
-
-    public String getNomefoto() {
-        return nomefoto;
-    }
-
-    public void setNomefoto(String nomefoto) {
-        this.nomefoto = nomefoto;
-    }
-    
     @Override
     public int hashCode() {
         int hash = 0;
@@ -219,4 +303,5 @@ public class Usuario implements Serializable {
     public String toString() {
         return "br.com.intime.model.Usuario[ idusuario=" + idusuario + " ]";
     }
+    
 }

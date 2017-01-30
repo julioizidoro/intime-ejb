@@ -61,6 +61,7 @@ public class Cliente implements Serializable {
     
 
     public Cliente() {
+        setStatus(true);
     }
 
     public Cliente(Integer idcliente) {

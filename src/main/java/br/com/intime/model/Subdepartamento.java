@@ -47,6 +47,7 @@ public class Subdepartamento implements Serializable {
     private List<Usuario> usuarioList;
 
     public Subdepartamento() {
+        setStatus(true);
     }
 
     public Subdepartamento(Integer idsubdepartamento) {
