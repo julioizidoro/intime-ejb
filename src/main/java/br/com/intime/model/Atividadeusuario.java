@@ -67,7 +67,7 @@ public class Atividadeusuario implements Serializable {
     private String dataRetorno;
 
     public Atividadeusuario() {
-        setDataRetorno("");
+        setDataRetorno(""); 
         setSituacao("Pause");
     }
 
