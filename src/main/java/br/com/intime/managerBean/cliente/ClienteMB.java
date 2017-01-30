@@ -1,9 +1,11 @@
 package br.com.intime.managerBean.cliente;
 
+import br.com.intime.managerBean.usuario.UsuarioLogadoMB;
 import br.com.intime.model.Cliente;
 import br.com.intime.model.Ftpdados;
 import br.com.intime.repository.ClienteRepository;
 import br.com.intime.repository.FtpDadosRepository; 
+import br.com.intime.util.Mensagem;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,7 +15,10 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
+
+
 import javax.servlet.http.HttpSession;
 import org.primefaces.context.RequestContext;
 
@@ -26,6 +31,8 @@ import org.primefaces.context.RequestContext;
 public class ClienteMB implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    @Inject
+    private UsuarioLogadoMB usuarioLogadoMB;
     @EJB
     private ClienteRepository clienteRepository;
     private List<Cliente> listaCliente;
@@ -80,20 +87,38 @@ public class ClienteMB implements Serializable {
         this.ftpDadosRepository = ftpDadosRepository;
     }
 
+    public UsuarioLogadoMB getUsuarioLogadoMB() {
+        return usuarioLogadoMB;
+    }
+
+    public void setUsuarioLogadoMB(UsuarioLogadoMB usuarioLogadoMB) {
+        this.usuarioLogadoMB = usuarioLogadoMB;
+    }
+
     public String novoCliente() {
-        Map<String, Object> options = new HashMap<String, Object>();
-        options.put("contentWidth", 630);
-        RequestContext.getCurrentInstance().openDialog("cadCliente", options, null);
+        if(usuarioLogadoMB.getUsuario().getCadastroclinte()==3
+           || usuarioLogadoMB.getUsuario().getCadastroclinte()==4){
+            Map<String, Object> options = new HashMap<String, Object>();
+            options.put("contentWidth", 630);
+            RequestContext.getCurrentInstance().openDialog("cadCliente", options, null);
+        }else{
+            Mensagem.lancarMensagemWarn("Acesso Negado!", "");
+        }
         return "";
     }
 
     public String editar(Cliente cliente) {
-        Map<String, Object> options = new HashMap<String, Object>();
-        options.put("contentWidth", 630);
-        FacesContext fc = FacesContext.getCurrentInstance();
-        HttpSession session = (HttpSession) fc.getExternalContext().getSession(false);
-        session.setAttribute("cliente", cliente);
-        RequestContext.getCurrentInstance().openDialog("cadCliente", options, null);
+        if(usuarioLogadoMB.getUsuario().getCadastroclinte()==3
+           || usuarioLogadoMB.getUsuario().getCadastroclinte()==4){
+            Map<String, Object> options = new HashMap<String, Object>();
+            options.put("contentWidth", 630);
+            FacesContext fc = FacesContext.getCurrentInstance();
+            HttpSession session = (HttpSession) fc.getExternalContext().getSession(false);
+            session.setAttribute("cliente", cliente);
+            RequestContext.getCurrentInstance().openDialog("cadCliente", options, null);
+        }else{
+            Mensagem.lancarMensagemWarn("Acesso Negado!", "");
+        }  
         return "";
     }
 

@@ -107,12 +107,14 @@
                                 </p:commandLink>
                             </li>
                             <li class="sub-menu">   
-                                <p:commandLink action="#{menuMB.consRotina()}" >
-                                    <i class="fa fa-rotate-left"></i> 
-                                    <span style="margin-left:2%;font-size:15px;">
-                                        Rotinas
-                                    </span>
-                                </p:commandLink>
+                                <h:panelGroup rendered="#{menuMB.acessoMenuRotina()}">
+                                    <p:commandLink action="#{menuMB.consRotina()}" >
+                                        <i class="fa fa-rotate-left"></i> 
+                                        <span style="margin-left:2%;font-size:15px;">
+                                            Rotinas
+                                        </span>
+                                    </p:commandLink>   
+                                </h:panelGroup>
                             </li>    
                             <li class="sub-menu">   
                                 <a href="javascript:;"  >    
@@ -141,9 +143,13 @@
                                     <span style="margin-left:2%;font-size:15px;">Cadastro</span>
                                 </a>
                                 <ul class="sub">   
-                                    <li><p:commandLink value="Clientes" action="#{menuMB.cliente()}" style="font-size: 14px;"/></li>
+                                    <h:panelGroup rendered="#{menuMB.acessoMenuCliente()}">
+                                        <li><p:commandLink value="Clientes" action="#{menuMB.cliente()}" style="font-size: 14px;"/></li>
+                                    </h:panelGroup>
                                     <li><p:commandLink value="Departamentos" style="font-size: 14px;" action="#{menuMB.departamentos()}"/></li>
-                                    <li><p:commandLink value="Usuários" style="font-size: 14px;" action="#{menuMB.usuario()}"/></li>
+                                    <h:panelGroup rendered="#{menuMB.acessoMenuUsuario()}">
+                                        <li><p:commandLink value="Usuários" style="font-size: 14px;" action="#{menuMB.usuario()}"/></li>
+                                    </h:panelGroup>
                                     <li><p:commandLink value="Empresa" style="font-size: 14px;" action="#{menuMB.novaEmpresa()}"/></li>
                                     <li><p:commandLink value="Motivos Atraso" style="font-size: 14px;" action="#{menuMB.motivosatraso()}"/></li>
                                 </ul> 
@@ -235,10 +241,12 @@
                                                         <p:outputLabel value="Notificações" style="margin-left: 1%;"/>
                                                         <p:ajax event="dialogReturn" listener="#{dashboardMB.gerarListaNotificacoes()}" update=":telaInicial:btnVisualizarNotificacoes"/>
                                                     </p:commandLink> <br/><br/>
-                                                    <p:commandLink action="#{menuMB.cliente()}">  
-                                                        <i class="fa fa-user" style="color: #8E9398;font-size: 14px;"/>
-                                                        <p:outputLabel value="Cadastro de Clientes" style="margin-left: 1%;"/>
-                                                    </p:commandLink>   
+                                                    <h:panelGroup rendered="#{menuMB.acessoMenuCliente()}">
+                                                        <p:commandLink action="#{menuMB.cliente()}">  
+                                                            <i class="fa fa-user" style="color: #8E9398;font-size: 14px;"/>
+                                                            <p:outputLabel value="Cadastro de Clientes" style="margin-left: 1%;"/>
+                                                        </p:commandLink>
+                                                    </h:panelGroup>
                                                 </p:overlayPanel>  
                                             </div>
                                         </div>      

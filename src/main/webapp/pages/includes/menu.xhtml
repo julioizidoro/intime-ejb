@@ -79,12 +79,14 @@
                     </p:commandLink>
                 </li>
                 <li class="sub-menu">   
-                    <p:commandLink action="#{menuMB.consRotina()}" >
-                        <i class="fa fa-rotate-left"></i> 
-                        <span style="margin-left:2%;font-size:15px;">
-                            Rotinas
-                        </span>
-                    </p:commandLink>
+                    <h:panelGroup rendered="#{menuMB.acessoMenuRotina()}">
+                        <p:commandLink action="#{menuMB.consRotina()}" >
+                            <i class="fa fa-rotate-left"></i> 
+                            <span style="margin-left:2%;font-size:15px;">
+                                Rotinas
+                            </span>
+                        </p:commandLink>
+                    </h:panelGroup>
                 </li>
                 <li class="sub-menu">   
                     <a href="javascript:;"  >  
@@ -113,9 +115,13 @@
                         <span style="margin-left:2%;font-size:15px;">Cadastro</span>
                     </a>
                     <ul class="sub">
-                        <li><p:commandLink value="Clientes" action="#{menuMB.cliente()}" style="font-size: 14px;"/></li>
+                        <h:panelGroup rendered="#{menuMB.acessoMenuCliente()}">
+                            <li><p:commandLink value="Clientes" action="#{menuMB.cliente()}" style="font-size: 14px;"/></li>
+                        </h:panelGroup>
                         <li><p:commandLink value="Departamentos" style="font-size: 14px;" action="#{menuMB.departamentos()}"/></li>
-                        <li><p:commandLink value="Usuários" style="font-size: 14px;" action="#{menuMB.usuario()}"/></li>
+                        <h:panelGroup rendered="#{menuMB.acessoMenuUsuario()}">
+                            <li><p:commandLink value="Usuários" style="font-size: 14px;" action="#{menuMB.usuario()}"/></li>
+                        </h:panelGroup>
                         <li><p:commandLink value="Empresa" action="#{menuMB.novaEmpresa()}" style="font-size: 14px;"/></li>
                         <li><p:commandLink value="Motivos Atraso" style="font-size: 14px;" action="#{menuMB.motivosatraso()}"/></li>
                     </ul> 
