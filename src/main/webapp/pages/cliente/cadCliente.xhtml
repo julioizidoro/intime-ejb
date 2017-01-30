@@ -43,19 +43,18 @@
                 </p:selectOneMenu>
             </h:panelGrid>
             <br/>
-            <h:panelGrid columns="3" columnClasses="tamanho50, tamanho50, tamanho50" style="width: 100%;font-size: 12px;">
-                <p:outputLabel />
+            <h:panelGrid columns="3" columnClasses="tamanho30, tamanho30, tamanho50" style="width: 100%;font-size: 12px;">
+                <p:commandButton style="width: 90%;" id="idCadDepartamentos" oncomplete="PF('cadDepartamento').show()" class="btn btn-success" value="Departamentos"/>
                 <p:outputLabel/>
-
+     
                 <h:panelGroup>
                     <p:selectBooleanCheckbox id="atividades"
                                              value="#{cadClienteMB.cliente.atividade}" /> 
                     <h:outputText value="Desempenhar atividades"
                                   class="titTela" style="font-size: 15px;text-align: left;margin-left:1%;"/> 
-                </h:panelGroup>
-                <p:commandButton style="margin-left: -2%; width: 90%;" id="idCadDepartamentos" oncomplete="PF('cadDepartamento').show()" class="btn btn-success" value="Departamentos"/>
+                </h:panelGroup> 
             </h:panelGrid> 
-            <br/>
+            <br/>     
             <p:fileUpload multiple="true"  dragDropSupport="false" fileLimit="1" style="font-size:12px; width:85%;" label="Anexar" fileUploadListener="#{cadClienteMB.fileUploadListener}" value="#{cadClienteMB.file}"  mode="advanced" 
                      update="growl"  allowTypes="/(\.|\/)(|jpe?g|png)$/" sizeLimit="52428800">
             </p:fileUpload>

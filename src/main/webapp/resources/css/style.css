@@ -6273,6 +6273,10 @@ header.blue-bg .search:focus {
     width: 30%; 
 }
 
+.tamanho40{
+    width:40%;    
+}
+
 .tamanho70{
     width: 70%; 
 }

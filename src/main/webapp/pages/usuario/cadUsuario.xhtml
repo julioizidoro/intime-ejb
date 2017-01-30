@@ -5,7 +5,7 @@
     <h:head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
         <link href="../../resources/css/bootstrap.min.css" rel="stylesheet"/>  
-        <link href="../../resources/css/style.css" rel="stylesheet"/> 
+        <link href="../../resources/css/style.css" rel="stylesheet"/>    
     </h:head>
     <h:body style="background:#FFFFFF;" > 
         <h:form id="cadUsuario"  style="font-size: 11px;width:95%;margin-left:3%;" enctype="multipart/form-data"> 
@@ -32,11 +32,11 @@
                 <p:inputText id="idtelefone" value="#{cadUsuarioMB.usuario.fone}" style="width: 95%;"/>
             </h:panelGrid>
             <br/>
-            <h:panelGrid columns="3" columnClasses="tamanho50, tamanho20, tamanho20" style="width: 100%;font-size: 12px;">
+            <h:panelGrid columns="4" columnClasses="tamanho40, tamanho20, tamanho20, tamanho20" style="width: 100%;font-size: 12px;">
                 <p:outputLabel for="idempresa" value="Empresa"/>
                 <p:outputLabel for="idLogin" value="Login"/>
-                <p:outputLabel/>
-
+                <p:outputLabel  value="Status"/> 
+                <p:outputLabel  value="Nivel"/> 
                 
                 <p:selectOneMenu id="idempresa"  style="width:95%;" value="#{cadUsuarioMB.empresa}" converter="EmpresaConverter"
                                  filter="true" filterMatchMode="contains" panelStyle="width:180px" >
@@ -45,43 +45,85 @@
                     <f:attribute name="listaEmpresa" value="#{cadUsuarioMB.listaEmpresa}"/>
                 </p:selectOneMenu>
                 <p:inputText id="idLogin" value="#{cadUsuarioMB.usuario.login}" style="width: 95%;"/> 
-                 <p:outputLabel/>  
-            </h:panelGrid>
-            <br/>
-            <h:panelGrid columns="3" columnClasses="tamanho20, tamanho20, tamanho50" style="width:100%;font-size: 12px;">  
-                <p:outputLabel  value="Nivel"/>
-                <p:outputLabel  value="Status"/>
-                <p:outputLabel  value="Departamento"/> 
-            
+                <p:selectOneMenu  id="idStatus" value="#{cadUsuarioMB.status}"  style="width:95%;">
+                    <f:selectItem itemLabel="Selecione" itemValue="" noSelectionOption="true"/> 
+                    <f:selectItem itemLabel="Ativo" itemValue="ativo" /> 
+                    <f:selectItem itemLabel="Inativo" itemValue="inativo" />   
+                </p:selectOneMenu> 
                 <p:selectOneMenu  id="idNivel" value="#{cadUsuarioMB.nivel}"  style="width:80%;">
                     <f:selectItem itemLabel="Selecione" itemValue="" noSelectionOption="true"/> 
                     <f:selectItem itemLabel="Global" itemValue="1" /> 
                     <f:selectItem itemLabel="Departamental" itemValue="2" />  
                     <f:selectItem itemLabel="Sub-Departamental" itemValue="3" />  
                     <f:selectItem itemLabel="Individual" itemValue="4" />  
-                </p:selectOneMenu>
-                <p:selectOneMenu  id="idStatus" value="#{cadUsuarioMB.status}"  style="width:80%;">
-                    <f:selectItem itemLabel="Selecione" itemValue="" noSelectionOption="true"/> 
-                    <f:selectItem itemLabel="Ativo" itemValue="ativo" /> 
-                    <f:selectItem itemLabel="Inativo" itemValue="inativo" />   
-                </p:selectOneMenu>
+                </p:selectOneMenu>  
+            </h:panelGrid>
+            <br/>
+            <h:panelGrid id="idPanelSubDepartamento" columns="3" columnClasses="tamanho30, tamanho30, tamanho30" style="width:100%;font-size: 12px;">  
+                <p:outputLabel  value="Departamento"/>   
+                <p:outputLabel  value="Sub-Departamento"/>     
+                <p:outputLabel />
+                
                 <p:selectOneMenu id="iddepartamento"  style="width:95%;" value="#{cadUsuarioMB.departamento}" converter="DepartamentoConverter"
                                  filter="true" filterMatchMode="contains" panelStyle="width:180px" >
                     <f:selectItem  itemLabel="Selecione" itemValue="0" noSelectionOption="true"/> 
                     <f:selectItems  value="#{cadUsuarioMB.listaDepartamento}" var="departamentoselecionado" itemLabel="#{departamentoselecionado.nome}" itemValue="#{departamentoselecionado}"/>
                     <f:attribute name="listaDepartamento" value="#{cadUsuarioMB.listaDepartamento}"/>
-                    <p:ajax listener="#{cadUsuarioMB.gerarListaSubDepartamento()}" event="change" update="idPanelSubDepartamento, idsubdepartamento"/>
-                </p:selectOneMenu>
-            </h:panelGrid>
-            <br/>
-            <h:panelGrid id="idPanelSubDepartamento" columns="1" columnClasses="tamanho50" style="width:100%;font-size: 12px;">  
-                <p:outputLabel  value="Sub-Departamento"/> 
-            
-                <p:selectOneMenu id="idsubdepartamento"  style="width:44%;" value="#{cadUsuarioMB.subdepartamento}" converter="SubDepartamentoConverter"
+                    <p:ajax listener="#{cadUsuarioMB.gerarListaSubDepartamento()}" event="change" update="idsubdepartamento"/>
+                </p:selectOneMenu>   
+                <p:selectOneMenu id="idsubdepartamento"  style="width:97%;" value="#{cadUsuarioMB.subdepartamento}" converter="SubDepartamentoConverter"
                                  filter="true" filterMatchMode="contains" panelStyle="width:180px" >
                     <f:selectItem  itemLabel="Selecione" itemValue="0" noSelectionOption="true"/> 
                     <f:selectItems  value="#{cadUsuarioMB.listaSubDepartamento}" var="subdepartamentoselecionado" itemLabel="#{subdepartamentoselecionado.nome}" itemValue="#{subdepartamentoselecionado}"/>
                     <f:attribute name="listaSubDepartamento" value="#{cadUsuarioMB.listaSubDepartamento}"/>
+                </p:selectOneMenu>  
+                <h:panelGroup>
+                    <p:selectBooleanCheckbox id="idPodeAlterar"
+                                             value="#{cadUsuarioMB.usuario.alterarprazorotina}" /> 
+                    <p:outputLabel  value="Alterar prazos e rotinas."
+                                  class="titTela" style="font-size:13px;text-align: left;margin-left:1%;"/> 
+                </h:panelGroup> 
+            </h:panelGrid>   
+            <br/>
+            <h:panelGrid columns="3" columnClasses="tamanho30, tamanho30, tamanho30" style="width:100%;font-size: 12px;">  
+                <p:outputLabel value="Cadastro Cliente"/>
+                <p:outputLabel value="Cadastro Rotina"/>
+                <p:outputLabel value="Cadastro Usuário"/>       
+                
+                <p:selectOneMenu id="acessoCliente"  style="width:90%;" value="#{cadUsuarioMB.usuario.cadastroclinte}">
+                    <f:selectItem  itemLabel="Acesso Negado" itemValue="1"/> 
+                    <f:selectItem  itemLabel="Apenas Visualizar" itemValue="2"/>    
+                    <f:selectItem  itemLabel="Cadastrar e Editar" itemValue="3"/> 
+                    <f:selectItem  itemLabel="Cadastrar, Editar e Excluir" itemValue="4"/>  
+                </p:selectOneMenu>
+                <p:selectOneMenu id="acessoRotina"  style="width:90%;" value="#{cadUsuarioMB.usuario.cadastrorotina}">
+                    <f:selectItem  itemLabel="Acesso Negado" itemValue="1"/> 
+                    <f:selectItem  itemLabel="Apenas Visualizar" itemValue="2"/> 
+                    <f:selectItem  itemLabel="Cadastrar e Editar" itemValue="3"/> 
+                    <f:selectItem  itemLabel="Cadastrar, Editar e Excluir" itemValue="4"/>  
+                </p:selectOneMenu>
+                <p:selectOneMenu id="acessoUsuario"  style="width:90%;" value="#{cadUsuarioMB.usuario.cadastrusuario}">
+                    <f:selectItem  itemLabel="Acesso Negado" itemValue="1"/> 
+                    <f:selectItem  itemLabel="Apenas Visualizar" itemValue="2"/> 
+                    <f:selectItem  itemLabel="Cadastrar e Editar" itemValue="3"/> 
+                    <f:selectItem  itemLabel="Cadastrar, Editar e Excluir" itemValue="4"/>  
+                </p:selectOneMenu>
+            </h:panelGrid>
+            <br/>  
+            <h:panelGrid columns="3" columnClasses="tamanho30, tamanho30, tamanho30" style="width:100%;font-size: 12px;">  
+                <p:outputLabel value="Notificação conclusão"/>
+                <p:outputLabel value="Notificação atrasos"/> 
+                <p:outputLabel/> 
+                
+                <p:selectOneMenu id="notificacoesConclusao"  style="width:90%;" value="#{cadUsuarioMB.usuario.notificacaoconclusao}">
+                    <f:selectItem  itemLabel="Todos" itemValue="Todos"/> 
+                    <f:selectItem  itemLabel="Delegado" itemValue="Delegado"/> 
+                    <f:selectItem  itemLabel="Nenhuma" itemValue="Nenhuma"/>       
+                </p:selectOneMenu>
+                <p:selectOneMenu id="notificacoesAtraso"  style="width:90%;" value="#{cadUsuarioMB.usuario.notificacaoatraso}">
+                    <f:selectItem  itemLabel="Todos" itemValue="Todos"/> 
+                    <f:selectItem  itemLabel="Delegado" itemValue="Delegado"/> 
+                    <f:selectItem  itemLabel="Nenhuma" itemValue="Nenhuma"/>   
                 </p:selectOneMenu>
             </h:panelGrid>
             <br/>

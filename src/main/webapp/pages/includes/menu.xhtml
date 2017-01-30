@@ -33,9 +33,9 @@
             <ul class="sidebar-menu" id="nav-accordion">    
                 <li>
                     <h:panelGrid columns="2" columnClasses="tamanho50, tamanho50rigth" style="width:100%;"> 
-                        <p:commandLink>
-                            <i class="fa fa-reorder"></i>  
-                        </p:commandLink>
+                        <p:commandLink title="Alterar Senha" action="#{usuarioLogadoMB.alterarSenha()}">
+                            <i class="fa fa-gears"></i>  
+                        </p:commandLink>    
                         <p:commandLink title="Sair" action="#{usuarioLogadoMB.deslogar()}">
                             <i class="fa fa-power-off"></i>
                         </p:commandLink>  

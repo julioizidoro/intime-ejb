@@ -114,7 +114,7 @@ public class UsuarioMB implements Serializable{
     
      public String novoUsuario() {
         Map<String, Object> options = new HashMap<String, Object>();
-        options.put("contentWidth", 580);
+        options.put("contentWidth", 600);
         RequestContext.getCurrentInstance().openDialog("cadUsuario", options, null);
         return "";
     }
