@@ -48,12 +48,6 @@
                 <p:outputLabel />
                 <p:outputLabel/>
 
-                <p:selectOneMenu id="empresa"  style="width:80%;" value="#{cadClienteMB.empresa}" converter="EmpresaConverter"
-                                 filter="true" filterMatchMode="contains" panelStyle="width:180px" >
-                    <f:selectItem  itemLabel="Selecione" itemValue="0" noSelectionOption="true"/> 
-                    <f:selectItems  value="#{cadClienteMB.listaEmpresa}" var="em" itemLabel="#{em.nomefantasia}" itemValue="#{em}"/>
-                    <f:attribute name="listaEmpresa" value="#{cadClienteMB.listaEmpresa}"/>
-                </p:selectOneMenu>
                 <h:panelGroup>
                     <p:selectBooleanCheckbox id="atividades"
                                              value="#{cadClienteMB.cliente.atividade}" /> 
