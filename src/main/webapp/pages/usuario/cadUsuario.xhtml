@@ -85,52 +85,52 @@
                 </h:panelGroup> 
             </h:panelGrid>   
             <br/>
-            <h:panelGrid columns="3" columnClasses="tamanho30, tamanho30, tamanho30" style="width:100%;font-size: 12px;">  
-                <p:outputLabel value="Cadastro Cliente"/>
-                <p:outputLabel value="Cadastro Rotina"/>
-                <p:outputLabel value="Cadastro Usuário"/>       
+            <h:panelGrid columns="3"  style="width:100%;font-size: 12px;">  
+                <p:outputLabel value="Cadastro de Cliente"/>
+                <p:outputLabel value="Cadastro de Rotina"/>
+                <p:outputLabel value="Cadastro de Usuário"/>
                 
-                <p:selectOneMenu id="acessoCliente"  style="width:90%;" value="#{cadUsuarioMB.usuario.cadastroclinte}">
+                <p:selectOneMenu id="cadCliente"  style="width: 177px;min-width: 30px !important;" value="#{cadUsuarioMB.usuario.cadastroclinte}">
                     <f:selectItem  itemLabel="Acesso Negado" itemValue="1"/> 
-                    <f:selectItem  itemLabel="Apenas Visualizar" itemValue="2"/>    
-                    <f:selectItem  itemLabel="Cadastrar e Editar" itemValue="3"/> 
-                    <f:selectItem  itemLabel="Cadastrar, Editar e Excluir" itemValue="4"/>  
+                    <f:selectItem  itemLabel="Apenas Visualizar" itemValue="2"/>        
+                    <f:selectItem  itemLabel="Cadastrar e Editar" itemValue="3"/>                  
+                    <f:selectItem  itemLabel="Cadastrar, Editar e Excluir" itemValue="4"/>   
                 </p:selectOneMenu>
-                <p:selectOneMenu id="acessoRotina"  style="width:90%;" value="#{cadUsuarioMB.usuario.cadastrorotina}">
-                    <f:selectItem  itemLabel="Acesso Negado" itemValue="1"/> 
-                    <f:selectItem  itemLabel="Apenas Visualizar" itemValue="2"/> 
-                    <f:selectItem  itemLabel="Cadastrar e Editar" itemValue="3"/> 
-                    <f:selectItem  itemLabel="Cadastrar, Editar e Excluir" itemValue="4"/>  
-                </p:selectOneMenu>
-                <p:selectOneMenu id="acessoUsuario"  style="width:90%;" value="#{cadUsuarioMB.usuario.cadastrusuario}">
+                <p:selectOneMenu id="cadRotina"  style="width: 177px;min-width: 30px !important;" value="#{cadUsuarioMB.usuario.cadastrorotina}">
                     <f:selectItem  itemLabel="Acesso Negado" itemValue="1"/> 
                     <f:selectItem  itemLabel="Apenas Visualizar" itemValue="2"/> 
-                    <f:selectItem  itemLabel="Cadastrar e Editar" itemValue="3"/> 
-                    <f:selectItem  itemLabel="Cadastrar, Editar e Excluir" itemValue="4"/>  
+                    <f:selectItem  itemLabel="Cadastrar e Editar" itemValue="3"/>       
+                    <f:selectItem  itemLabel="Cadastrar, Editar e Excluir" itemValue="4"/>   
                 </p:selectOneMenu>
-            </h:panelGrid>
+                <p:selectOneMenu id="cadUsuario"  style="width: 177px;min-width: 30px !important;" value="#{cadUsuarioMB.usuario.cadastrusuario}">
+                    <f:selectItem  itemLabel="Acesso Negado" itemValue="1"/> 
+                    <f:selectItem  itemLabel="Apenas Visualizar" itemValue="2"/> 
+                    <f:selectItem  itemLabel="Cadastrar e Editar" itemValue="3"/>                  
+                    <f:selectItem  itemLabel="Cadastrar, Editar e Excluir" itemValue="4"/>   
+                </p:selectOneMenu>
+            </h:panelGrid>       
             <br/>  
             <h:panelGrid columns="3" columnClasses="tamanho30, tamanho30, tamanho30" style="width:100%;font-size: 12px;">  
                 <p:outputLabel value="Notificação conclusão"/>
                 <p:outputLabel value="Notificação atrasos"/> 
                 <p:outputLabel/> 
                 
-                <p:selectOneMenu id="notificacoesConclusao"  style="width:90%;" value="#{cadUsuarioMB.usuario.notificacaoconclusao}">
+                <p:selectOneMenu id="notificacoesConclusao"  style="width:95%;" value="#{cadUsuarioMB.usuario.notificacaoconclusao}">
                     <f:selectItem  itemLabel="Todos" itemValue="Todos"/> 
                     <f:selectItem  itemLabel="Delegado" itemValue="Delegado"/> 
                     <f:selectItem  itemLabel="Nenhuma" itemValue="Nenhuma"/>       
                 </p:selectOneMenu>
-                <p:selectOneMenu id="notificacoesAtraso"  style="width:90%;" value="#{cadUsuarioMB.usuario.notificacaoatraso}">
+                <p:selectOneMenu id="notificacoesAtraso"  style="width:97%;" value="#{cadUsuarioMB.usuario.notificacaoatraso}">
                     <f:selectItem  itemLabel="Todos" itemValue="Todos"/> 
                     <f:selectItem  itemLabel="Delegado" itemValue="Delegado"/> 
                     <f:selectItem  itemLabel="Nenhuma" itemValue="Nenhuma"/>   
                 </p:selectOneMenu>
             </h:panelGrid>
-            <br/>
+            <br/>     
             <p:fileUpload multiple="true"  dragDropSupport="false" fileLimit="1" style="font-size:12px; width:85%;" label="Anexar" fileUploadListener="#{cadUsuarioMB.fileUploadListener}" value="#{cadUsuarioMB.file}"  mode="advanced" 
                      update="growl"  allowTypes="/(\.|\/)(jpe?g|png)$/" sizeLimit="52428800">
             </p:fileUpload>
-            <br/><br/>   
+            <br/> 
             <div align="center">
                 <p:commandButton id="btnConfirmar" action="#{cadUsuarioMB.salvar()}" class="btn btn-success" value="Confirmar" update="growl"/>
                 <p:commandButton id="btnCancelar" action="#{cadUsuarioMB.cancelar()}" class="btn btn-danger" value="Cancelar"/>

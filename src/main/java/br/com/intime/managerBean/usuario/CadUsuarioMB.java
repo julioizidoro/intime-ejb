@@ -74,14 +74,16 @@ public class CadUsuarioMB implements Serializable{
         HttpSession session = (HttpSession) fc.getExternalContext().getSession(false);
         usuario = (Usuario) session.getAttribute("usuario");
         session.removeAttribute("usuario");
+        gerarListaEmpresa();
+        gerarListaDepartamentos();
         if (usuario == null) {
             usuario = new Usuario();
             empresa = new Empresa();
         } else {
             empresa = usuario.getEmpresa();
-        }
-        gerarListaEmpresa();
-        gerarListaDepartamentos();
+            departamento = usuario.getSubdepartamento().getDepartamento();
+            subdepartamento = usuario.getSubdepartamento();
+        } 
     }
 
     public Usuario getUsuario() {

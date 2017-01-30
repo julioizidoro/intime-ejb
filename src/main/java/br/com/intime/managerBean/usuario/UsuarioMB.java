@@ -114,14 +114,14 @@ public class UsuarioMB implements Serializable{
     
      public String novoUsuario() {
         Map<String, Object> options = new HashMap<String, Object>();
-        options.put("contentWidth", 600);
+        options.put("contentWidth", 620);
         RequestContext.getCurrentInstance().openDialog("cadUsuario", options, null);
         return "";
     }
 
     public String editar(Usuario usuario) {
         Map<String, Object> options = new HashMap<String, Object>();
-        options.put("contentWidth", 580);
+        options.put("contentWidth", 620);
         FacesContext fc = FacesContext.getCurrentInstance();
         HttpSession session = (HttpSession) fc.getExternalContext().getSession(false);
         session.setAttribute("usuario", usuario);
