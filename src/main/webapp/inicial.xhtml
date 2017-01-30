@@ -40,7 +40,7 @@
                             <li>
                                 <p:commandLink class="dropdown-toggle" title="Adicionar Tarefa" action="#{menuMB.adicionarAtividades()}">
                                     <i class="fa fa-plus"></i>  
-                                    <p:ajax event="dialogReturn" listener="#{dashboardMB.gerarListas()}" update=":telaInicial:colunaTodoList, :telaInicial:colunaNumTarefas, :telaInicial:calendarioAtividades"/>
+                                    <p:ajax event="dialogReturn" listener="#{dashboardMB.gerarListas()}" update="@all"/>
                                 </p:commandLink> 
                             </li>   
                             <li id="header_notification_bar" class="dropdown">
@@ -162,28 +162,32 @@
                             <h:panelGroup id="colunaNumTarefas">
                                 <div class="col-lg-3 col-sm-6">     
                                     <section class="panel" style="background: #C9A471;">
-                                        <div class="symbol terques" style="background: #C9A471;">
-                                            <i class="fa fa-clock-o" style=""></i> 
-                                        </div>
-                                        <div class="value" style="padding-right: 8px;">       
-                                            <h1><p:outputLabel value="#{dashboardMB.retornarAtividadesAtrasadas()}"/></h1>    
-                                            <br/><br/><br/> <br/>        
-                                            <p>TAREFAS</p>
-                                            <p>EM ATRASO</p>    
-                                        </div> 
-                                    </section>
+                                        <p:commandLink action="#{menuMB.atividades()}">
+                                            <div class="symbol terques" style="background: #C9A471;">
+                                                <i class="fa fa-clock-o" style=""></i> 
+                                            </div>
+                                            <div class="value" style="padding-right: 8px;">       
+                                                <h1><p:outputLabel value="#{dashboardMB.retornarAtividadesAtrasadas()}"/></h1>    
+                                                <br/><br/><br/> <br/>        
+                                                <p>TAREFAS</p><br/> 
+                                                <p>EM ATRASO</p>    
+                                            </div> 
+                                        </p:commandLink>      
+                                    </section>  
                                 </div>
                                 <div class="col-lg-3 col-sm-6">
                                     <section class="panel" style="background: #006D4D;margin-left:8%;">
-                                        <div class="symbol terques" style="background: #006D4D;">
-                                            <i class="fa fa-calendar" style=""></i> 
-                                        </div>  
-                                        <div class="value" style="padding-right: 8px;">       
-                                            <h1><p:outputLabel value="#{dashboardMB.retornarAtividadesHoje()}"/></h1>    
-                                            <br/><br/><br/><br/>        
-                                            <p>TAREFAS</p>
-                                            <p>PARA HOJE</p>  
-                                        </div> 
+                                        <p:commandLink action="#{menuMB.atividades()}">
+                                            <div class="symbol terques" style="background: #006D4D;">
+                                                <i class="fa fa-calendar" style=""></i> 
+                                            </div>  
+                                            <div class="value" style="padding-right: 8px;">       
+                                                <h1><p:outputLabel value="#{dashboardMB.retornarAtividadesHoje()}"/></h1>    
+                                                <br/><br/><br/>     
+                                                <p>TAREFAS</p> <br/>      
+                                                <p>PARA HOJE</p>  
+                                            </div> 
+                                        </p:commandLink>
                                     </section>
                                 </div>   
                                 <div class="col-lg-3 col-sm-6">
@@ -194,7 +198,7 @@
                                         <div class="value" style="padding-right: 8px;">       
                                             <h1><p:outputLabel value="#{dashboardMB.retornarAtividadesSemana()}"/></h1>    
                                             <br/><br/><br/>   <br/>      
-                                            <p>CONCLUÍDAS</p>
+                                            <p>CONCLUÍDAS</p><br/> 
                                             <p>NA SEMANA</p>     
                                         </div> 
                                     </section>  
@@ -262,11 +266,11 @@
                                                                 <p:outputPanel>      
                                                                     <h:panelGrid columns="1" style="width:100%;"        
                                                                                  class="dataScrollerBranco">   
-                                                                        <h:panelGroup id="listaAtividadeCalendario"> 
+                                                                        <h:panelGroup id="listaAtividadeCalendario" style="color:#{dashboardMB.retornarCorAtividades(atividadeCalendario)}"> 
                                                                             <h:panelGroup id="painelbtnPlay" rendered="#{dashboardMB.mostrarBotaoPlay(atividadeCalendario.situacao)}" > 
                                                                                 <p:commandLink id="btnPlay" action="#{dashboardMB.mudarSituacaoAtividade(atividadeCalendario, 'Pause')}" update=":telaInicial:colunaTodoList, listaAtividadeCalendario" style="float: left;margin-top: -0.6%;margin-left:1.5%;">
                                                                                     <i class="fa fa-play" style="font-size: 14px;color:#B0B5B9;"></i>       
-                                                                                </p:commandLink>           
+                                                                                </p:commandLink>                  
                                                                             </h:panelGroup>         
                                                                             <h:panelGroup id="painelbtnPause" rendered="#{dashboardMB.mostrarBotaoPause(atividadeCalendario.situacao)}"> 
                                                                                 <p:commandLink id="btnPause" action="#{dashboardMB.mudarSituacaoAtividade(atividadeCalendario, 'Play')}" update=":telaInicial:colunaTodoList, listaAtividadeCalendario" style="float: left;margin-top:-0.6%;margin-left:1.5%;">
