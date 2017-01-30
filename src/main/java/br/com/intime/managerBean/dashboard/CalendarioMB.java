@@ -1,7 +1,9 @@
 package br.com.intime.managerBean.dashboard;
  
 import br.com.intime.managerBean.usuario.UsuarioLogadoMB;
+import br.com.intime.model.Atividadeaguardando;
 import br.com.intime.model.Atividadeusuario;
+import br.com.intime.repository.AtividadeAguardandoRepository;
 import br.com.intime.repository.AtividadeUsuarioRepository;
 import br.com.intime.util.Formatacao;
 import java.io.Serializable;
@@ -36,6 +38,8 @@ public class CalendarioMB implements Serializable {
     private ScheduleEvent event = new DefaultScheduleEvent();
     @EJB
     private AtividadeUsuarioRepository atividadeUsuarioRepository;
+    @EJB
+    private AtividadeAguardandoRepository atividadeAguardandoRepository;
     private List<Atividadeusuario> listaAtividade;
  
     @PostConstruct
@@ -67,6 +71,14 @@ public class CalendarioMB implements Serializable {
 
     public void setListaAtividade(List<Atividadeusuario> listaAtividade) {
         this.listaAtividade = listaAtividade;
+    }
+
+    public AtividadeAguardandoRepository getAtividadeAguardandoRepository() {
+        return atividadeAguardandoRepository;
+    }
+
+    public void setAtividadeAguardandoRepository(AtividadeAguardandoRepository atividadeAguardandoRepository) {
+        this.atividadeAguardandoRepository = atividadeAguardandoRepository;
     }
      
     public Date getRandomDate(Date base) {
@@ -129,6 +141,16 @@ public class CalendarioMB implements Serializable {
         String sql = "SELECT a FROM Atividadeusuario a where a.usuario.idusuario=" + usuarioLogadoMB.getUsuario().getIdusuario()
             + " and a.atividade.dataexecucao>= :dataInicial and a.atividade.dataexecucao<= :dataFinal order by a.atividade.dataexecucao";
         List<Atividadeusuario> listaAtividades = atividadeUsuarioRepository.list(sql, dataInicial, dataFinal);
+        
+        String sqlAguardando = "SELECT a FROM Atividadeaguardando a where a.atividadeusuario.usuario.idusuario=" + usuarioLogadoMB.getUsuario().getIdusuario()
+                + " and a.dataretorno>= :dataInicial"
+                + " ORDER BY a.dataretorno ";
+        List<Atividadeaguardando> lista = atividadeAguardandoRepository.list(sqlAguardando, LocalDate.now(), null);
+        if (lista != null) { 
+            for (int i = 0; i < lista.size(); i++) {
+                listaAtividades.remove(lista.get(i).getAtividadeusuario());
+            }
+        }
         if(listaAtividades!=null && listaAtividades.size()>0){
             GerarListaAtividadeCalendarioBean gerar = new GerarListaAtividadeCalendarioBean(listaAtividades);
             if(gerar.getLista()!=null){ 

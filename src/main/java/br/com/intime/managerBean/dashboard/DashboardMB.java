@@ -1,11 +1,13 @@
 package br.com.intime.managerBean.dashboard;
 
 import br.com.intime.managerBean.usuario.UsuarioLogadoMB;
+import br.com.intime.model.Atividadeaguardando;
 import br.com.intime.model.Atividadeusuario;
 import br.com.intime.model.Feednoticia;
 import br.com.intime.model.Ftpdados;
 import br.com.intime.model.Nota;
 import br.com.intime.model.Notificacao;
+import br.com.intime.repository.AtividadeAguardandoRepository;
 import br.com.intime.repository.AtividadeRepository;
 import br.com.intime.repository.AtividadeUsuarioRepository;
 import br.com.intime.repository.FeedNoticiaRepository;
@@ -59,6 +61,8 @@ public class DashboardMB implements Serializable {
     private FtpDadosRepository ftpRepository;
     @EJB
     private FeedNoticiaRepository feedNoticiaRepository;
+    @EJB
+    private AtividadeAguardandoRepository atividadeAguardandoRepository;
 
     @PostConstruct
     public void init() {
@@ -190,6 +194,16 @@ public class DashboardMB implements Serializable {
                 + " and a.situacao<>'Concluida' and a.atividade.dataexecucao< :dataInicial "
                 + " ORDER BY a.atividade.dataexecucao";
         listaAtividadesAtrasadas = atividadeUsuarioRepository.list(sql, data, null);
+        
+        String sqlAguardando = "SELECT a FROM Atividadeaguardando a where a.atividadeusuario.usuario.idusuario=" + usuarioLogadoMB.getUsuario().getIdusuario()
+                + " and a.dataretorno>= :dataInicial"
+                + " ORDER BY a.dataretorno ";
+        List<Atividadeaguardando> lista = atividadeAguardandoRepository.list(sqlAguardando, LocalDate.now(), null);
+        if (lista != null) { 
+            for (int i = 0; i < lista.size(); i++) {
+                listaAtividadesAtrasadas.remove(lista.get(i).getAtividadeusuario());
+            }
+        }
     }
 
     public void gerarListaAtivadadesHoje() {
@@ -198,6 +212,16 @@ public class DashboardMB implements Serializable {
                 + " and a.situacao<>'Concluida' and a.atividade.dataexecucao= :dataInicial "
                 + " ORDER BY a.atividade.dataexecucao";
         listaAtividadesHoje = atividadeUsuarioRepository.list(sql, data, null);
+        
+        String sqlAguardando = "SELECT a FROM Atividadeaguardando a where a.atividadeusuario.usuario.idusuario=" + usuarioLogadoMB.getUsuario().getIdusuario()
+                + " and a.dataretorno>= :dataInicial"
+                + " ORDER BY a.dataretorno ";
+        List<Atividadeaguardando> lista = atividadeAguardandoRepository.list(sqlAguardando, LocalDate.now(), null);
+        if (lista != null) { 
+            for (int i = 0; i < lista.size(); i++) {
+                listaAtividadesAtrasadas.remove(lista.get(i).getAtividadeusuario());
+            }
+        }
     }
 
     public int retornarAtividadesAtrasadas() {

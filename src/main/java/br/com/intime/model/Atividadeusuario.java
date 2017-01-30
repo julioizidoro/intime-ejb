@@ -114,9 +114,7 @@ public class Atividadeusuario implements Serializable {
     public void setDataRetorno(String dataRetorno) {
         this.dataRetorno = dataRetorno;
     }
-
-    
-
+ 
     public String getTempo() {
         return tempo;
     }
