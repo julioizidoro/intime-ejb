@@ -1,5 +1,6 @@
 package br.com.intime.managerBean.atividades;
  
+import br.com.intime.managerBean.bean.NotificacaoAtividadeConcluidaBean;
 import br.com.intime.managerBean.usuario.UsuarioLogadoMB;
 import br.com.intime.model.Atividade;
 import br.com.intime.model.Atividadeaguardando;
@@ -471,8 +472,8 @@ public class AtividadesMB implements Serializable {
                 atividadeusuario.setDataconclusao(LocalDate.now());
                 atividadeusuario.setConcluido(true);
                 atividadeusuario.setSituacao("Concluida");
-                gerarListaAtivadades();
                 Mensagem.lancarMensagemInfo("Tarefa concluída!", "");
+                gerarNotificacaoConcluidas();
             } else {
                 Map<String, Object> options = new HashMap<String, Object>();
                 options.put("contentWidth", 425);
@@ -610,6 +611,28 @@ public class AtividadesMB implements Serializable {
         HttpSession session = (HttpSession) fc.getExternalContext().getSession(false);
         session.setAttribute("atividadeusuario", atividadeusuario);
         RequestContext.getCurrentInstance().openDialog("atividadeAguardando", options, null);
+    }
+    
+    
+    public void gerarNotificacaoConcluidas(){
+        new Thread() {
+            @Override
+            public void run() {
+                List<Usuario> lista = usuarioRepository.list("SELECT u FROM Usuario u where u.status=1");
+                NotificacaoAtividadeConcluidaBean notificacaoAtividadeConcluidaBean = new NotificacaoAtividadeConcluidaBean(atividadeusuario, lista);
+                List<Usuario> listaSelecionado = notificacaoAtividadeConcluidaBean.getListaSelecionado();
+                for (int i = 0; i < listaSelecionado.size(); i++) {
+                    Notificacao notificacao = new Notificacao();
+                    notificacao.setLido(false);
+                    notificacao.setUsuario(listaSelecionado.get(i));
+                    String descricao = atividadeusuario.getAtividade().getDescricao() + " concluída em " + Formatacao.ConvercaoDataPadrao(new Date())
+                            + " por " + atividadeusuario.getUsuario().getNome() + ".";
+                    notificacao.setDescricao(descricao);
+                    notificacoesRepository.update(notificacao);
+                }
+            }
+        }.start();
+
     }
 
 }

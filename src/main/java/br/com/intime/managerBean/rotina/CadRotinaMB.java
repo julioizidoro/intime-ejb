@@ -5,7 +5,6 @@
  */
 package br.com.intime.managerBean.rotina;
 
-import br.com.intime.model.Departamento;
 import br.com.intime.model.Usuario;
 import java.io.Serializable;
 import java.util.ArrayList;
