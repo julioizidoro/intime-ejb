@@ -55,6 +55,7 @@ public class CadAtividadeMB implements Serializable {
     private Usuario usuario;
     private List<Usuario> listaUsuario;
     private List<Usuario> listaUsuarioSelecionado;
+    private boolean novo=true;
     @EJB
     private ClienteRepository clienteRepository;
     @EJB
@@ -93,6 +94,7 @@ public class CadAtividadeMB implements Serializable {
             clientedepartamento = new Clientedepartamento();
             gerarDadosDefaut();
         } else {
+            novo=false;
             cliente = atividadeusuario.getAtividade().getCliente();
             nomeCliente = cliente.getNomefantasia();
             gerarListaDepartamento();
@@ -270,29 +272,31 @@ public class CadAtividadeMB implements Serializable {
             }
             atividadeusuario.setAtividade(atividadeRepository.update(atividadeusuario.getAtividade()));
             atividadeUsuarioRepository.update(atividadeusuario);
-            Notificacao notificacao;
-            if (listaUsuarioSelecionado != null && listaUsuarioSelecionado.size() > 0) {
-                for (int i = 0; listaUsuarioSelecionado.size() > i; i++) {
-                    Atividadeusuario atividadeUsuarioSelecionados = new Atividadeusuario();
-                    atividadeUsuarioSelecionados.setAtividade(atividadeusuario.getAtividade());
-                    atividadeUsuarioSelecionados.setUsuario(listaUsuarioSelecionado.get(i));
-                    atividadeUsuarioSelecionados.setTempo("00:00");
-                    atividadeUsuarioRepository.update(atividadeUsuarioSelecionados);
+            if(novo){
+                Notificacao notificacao;
+                if (listaUsuarioSelecionado != null && listaUsuarioSelecionado.size() > 0) {
+                    for (int i = 0; listaUsuarioSelecionado.size() > i; i++) {
+                        Atividadeusuario atividadeUsuarioSelecionados = new Atividadeusuario();
+                        atividadeUsuarioSelecionados.setAtividade(atividadeusuario.getAtividade());
+                        atividadeUsuarioSelecionados.setUsuario(listaUsuarioSelecionado.get(i));
+                        atividadeUsuarioSelecionados.setTempo("00:00");
+                        atividadeUsuarioRepository.update(atividadeUsuarioSelecionados);
+                        notificacao = new Notificacao();
+                        notificacao.setLido(false);
+                        notificacao.setUsuario(listaUsuarioSelecionado.get(i));
+                        notificacao.setDescricao(usuarioLogadoMB.getUsuario().getNome() + " lhe encaminhou a tarefa '"
+                                + atividadeusuario.getAtividade().getDescricao() + "'.");
+                        notificacoesRepository.update(notificacao);
+                    }
+                }
+                if (atividadeusuario.getUsuario() != usuarioLogadoMB.getUsuario()) {
                     notificacao = new Notificacao();
                     notificacao.setLido(false);
-                    notificacao.setUsuario(listaUsuarioSelecionado.get(i));
+                    notificacao.setUsuario(usuario);
                     notificacao.setDescricao(usuarioLogadoMB.getUsuario().getNome() + " lhe encaminhou a tarefa '"
                             + atividadeusuario.getAtividade().getDescricao() + "'.");
                     notificacoesRepository.update(notificacao);
                 }
-            }
-            if (atividadeusuario.getUsuario() != usuarioLogadoMB.getUsuario()) {
-                notificacao = new Notificacao();
-                notificacao.setLido(false);
-                notificacao.setUsuario(usuario);
-                notificacao.setDescricao(usuarioLogadoMB.getUsuario().getNome() + " lhe encaminhou a tarefa '"
-                        + atividadeusuario.getAtividade().getDescricao() + "'.");
-                notificacoesRepository.update(notificacao);
             }
             RequestContext.getCurrentInstance().closeDialog(null);
         }

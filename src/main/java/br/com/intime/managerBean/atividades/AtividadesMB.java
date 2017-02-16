@@ -1,5 +1,5 @@
 package br.com.intime.managerBean.atividades;
- 
+
 import br.com.intime.managerBean.bean.NotificacaoAtividadeConcluidaBean;
 import br.com.intime.managerBean.usuario.UsuarioLogadoMB;
 import br.com.intime.model.Atividade;
@@ -228,11 +228,21 @@ public class AtividadesMB implements Serializable {
         if (naoconcluidas.equalsIgnoreCase("false")) {
             naoconcluidas = "true";
             concluidas = "false";
+            if (hoje.equalsIgnoreCase("#cba135")) {
+                mudarCoresBotoes("hoje");
+            } else if (amanha.equalsIgnoreCase("#cba135")) {
+                mudarCoresBotoes("amanha");
+            } else if (seteDias.equalsIgnoreCase("#cba135")) {
+                mudarCoresBotoes("seteDias");
+            } else if (todos.equalsIgnoreCase("#cba135")) {
+                mudarCoresBotoes("todos");
+            }
         } else {
             naoconcluidas = "false";
             concluidas = "true";
+            gerarListaAtivadades();
         }
-        gerarListaAtivadades();
+        
     }
 
     public void mudarCoresBotoes(String funcao) {
@@ -297,6 +307,7 @@ public class AtividadesMB implements Serializable {
         FacesContext fc = FacesContext.getCurrentInstance();
         HttpSession session = (HttpSession) fc.getExternalContext().getSession(false);
         session.setAttribute("atividadeusuario", atividadeusuario);
+        options.put("closable", false);
         RequestContext.getCurrentInstance().openDialog("comentariosAtividades", options, null);
         return "";
     }
@@ -312,7 +323,6 @@ public class AtividadesMB implements Serializable {
     }
 
     public void gerarListaAtivadades() {
-        boolean dataminima = false;
         if (buscar == null) {
             buscar = "";
         }
@@ -328,11 +338,7 @@ public class AtividadesMB implements Serializable {
             }
             sqlOrderBy = " ORDER BY a.atividade.dataexecucao";
         } else {
-            if (dataInicial != null)  {
-                if (dataInicial.isEqual(LocalDate.MIN)){
-                    dataInicial = LocalDate.now();
-                    dataminima = true;
-                }
+            if (dataInicial != null) {
                 sqlData = " and a.dataconclusao>= :dataInicial and a.dataconclusao<= :dataFinal ";
             }
             sqlOrderBy = " ORDER BY a.dataconclusao";
@@ -344,9 +350,6 @@ public class AtividadesMB implements Serializable {
             gerarDataHoraMostrarNaoConcluidas();
         } else {
             atividadeConcluida();
-        }
-        if (dataminima){
-            dataInicial = LocalDate.MIN;
         }
     }
 
@@ -370,7 +373,7 @@ public class AtividadesMB implements Serializable {
             }
         }
     }
-    
+
     public void removerAtivadadesAguardando() {
         if (buscar == null) {
             buscar = "";
@@ -380,7 +383,7 @@ public class AtividadesMB implements Serializable {
                 + " and a.atividadeusuario.atividade.descricao like '%" + buscar + "%'"
                 + " ORDER BY a.dataretorno ";
         List<Atividadeaguardando> lista = atividadeAguardandoRepository.list(sql, LocalDate.now(), null);
-        if (lista != null) { 
+        if (lista != null) {
             for (int i = 0; i < lista.size(); i++) {
                 listaAtividade.remove(lista.get(i).getAtividadeusuario());
             }
@@ -444,7 +447,7 @@ public class AtividadesMB implements Serializable {
         }
     }
 
-    public void mudarSituacaoAtividade(Atividadeusuario atividadeusuario, String situacao) {
+    public String mudarSituacaoAtividade(Atividadeusuario atividadeusuario, String situacao) {
         if (situacao.equalsIgnoreCase("Pause")) {
             Long inicio = new Date().getTime();
             atividadeusuario.setInicio(BigInteger.valueOf(inicio));
@@ -473,7 +476,7 @@ public class AtividadesMB implements Serializable {
                 atividadeusuario.setConcluido(true);
                 atividadeusuario.setSituacao("Concluida");
                 Mensagem.lancarMensagemInfo("Tarefa concluída!", "");
-                gerarNotificacaoConcluidas();
+                listaAtividade.remove(atividadeusuario);
             } else {
                 Map<String, Object> options = new HashMap<String, Object>();
                 options.put("contentWidth", 425);
@@ -481,12 +484,10 @@ public class AtividadesMB implements Serializable {
                 HttpSession session = (HttpSession) fc.getExternalContext().getSession(false);
                 session.setAttribute("atividadeusuario", atividadeusuario);
                 RequestContext.getCurrentInstance().openDialog("motivoAtraso", options, null);
-            }
+            }   
         }
-        atividadeUsuarioRepository.update(atividadeusuario);
-        if (situacao.equalsIgnoreCase("Concluida")){
-            gerarListaAtivadades();
-        }
+        atividadeUsuarioRepository.update(atividadeusuario); 
+        return "";
     }
 
     public boolean mostrarTrianguloUrgente(String prioridade) {
@@ -612,9 +613,8 @@ public class AtividadesMB implements Serializable {
         session.setAttribute("atividadeusuario", atividadeusuario);
         RequestContext.getCurrentInstance().openDialog("atividadeAguardando", options, null);
     }
-    
-    
-    public void gerarNotificacaoConcluidas(){
+
+    public void gerarNotificacaoConcluidas() {
         new Thread() {
             @Override
             public void run() {
@@ -633,6 +633,110 @@ public class AtividadesMB implements Serializable {
             }
         }.start();
 
+    }
+
+    public String retornarNumeroHoje() {
+        dataInicial = LocalDate.MIN;
+        dataFinal = LocalDate.now();
+        String sql = "SELECT a FROM Atividadeusuario a where a.usuario.idusuario=" + usuarioLogadoMB.getUsuario().getIdusuario()
+                + " and a.situacao<>'Concluida' and a.atividade.dataexecucao>= :dataInicial "
+                + " and a.atividade.dataexecucao<= :dataFinal";
+        List<Atividadeusuario> lista = atividadeUsuarioRepository.list(sql, dataInicial, dataFinal);
+        sql = "SELECT a FROM Atividadeaguardando a where a.atividadeusuario.usuario.idusuario=" + usuarioLogadoMB.getUsuario().getIdusuario()
+                + " and a.dataretorno>= :dataInicial "
+                + " and a.atividadeusuario.atividade.descricao like '%" + buscar + "%'"
+                + " ORDER BY a.dataretorno ";
+        List<Atividadeaguardando> listaAguardando = atividadeAguardandoRepository.list(sql, LocalDate.now(), null);
+        if (lista != null && lista.size() > 0) {
+            if (listaAguardando != null && listaAguardando.size() > 0) {
+                for (int i = 0; i < listaAguardando.size(); i++) {
+                    lista.remove(listaAguardando.get(i).getAtividadeusuario());
+                }
+            }
+            return "(" + lista.size() + ")";
+        }
+        return "(0)";
+    }
+
+    public String retornarNumeroAmanha() {
+        LocalDate hoje = LocalDate.now();
+        dataInicial = hoje.plusDays(1);
+        dataFinal = hoje.plusDays(1);
+        String sql = "SELECT a FROM Atividadeusuario a where a.usuario.idusuario=" + usuarioLogadoMB.getUsuario().getIdusuario()
+                + " and a.situacao<>'Concluida' and a.atividade.dataexecucao>= :dataInicial "
+                + " and a.atividade.dataexecucao<= :dataFinal";
+        List<Atividadeusuario> lista = atividadeUsuarioRepository.list(sql, dataInicial, dataFinal);
+        sql = "SELECT a FROM Atividadeaguardando a where a.atividadeusuario.usuario.idusuario=" + usuarioLogadoMB.getUsuario().getIdusuario()
+                + " and a.dataretorno>= :dataInicial "
+                + " and a.atividadeusuario.atividade.descricao like '%" + buscar + "%'"
+                + " ORDER BY a.dataretorno ";
+        List<Atividadeaguardando> listaAguardando = atividadeAguardandoRepository.list(sql, LocalDate.now(), null);
+        if (lista != null && lista.size() > 0) {
+            if (listaAguardando != null && listaAguardando.size() > 0) {
+                for (int i = 0; i < listaAguardando.size(); i++) {
+                    lista.remove(listaAguardando.get(i).getAtividadeusuario());
+                }
+            }
+            return "(" + lista.size() + ")";
+        }
+        return "(0)";
+    }
+
+    public String retornarNumeroProx7() {
+        LocalDate hoje = LocalDate.now();
+        dataInicial = LocalDate.now();
+        dataFinal = hoje.plusDays(7);
+        String sql = "SELECT a FROM Atividadeusuario a where a.usuario.idusuario=" + usuarioLogadoMB.getUsuario().getIdusuario()
+                + " and a.situacao<>'Concluida' and a.atividade.dataexecucao>= :dataInicial "
+                + " and a.atividade.dataexecucao<= :dataFinal";
+        List<Atividadeusuario> lista = atividadeUsuarioRepository.list(sql, dataInicial, dataFinal);
+        sql = "SELECT a FROM Atividadeaguardando a where a.atividadeusuario.usuario.idusuario=" + usuarioLogadoMB.getUsuario().getIdusuario()
+                + " and a.dataretorno>= :dataInicial "
+                + " and a.atividadeusuario.atividade.descricao like '%" + buscar + "%'"
+                + " ORDER BY a.dataretorno ";
+        List<Atividadeaguardando> listaAguardando = atividadeAguardandoRepository.list(sql, LocalDate.now(), null);
+        if (lista != null && lista.size() > 0) {
+            if (listaAguardando != null && listaAguardando.size() > 0) {
+                for (int i = 0; i < listaAguardando.size(); i++) {
+                    lista.remove(listaAguardando.get(i).getAtividadeusuario());
+                }
+            }
+            return "(" + lista.size() + ")";
+        }
+        return "(0)";
+    }
+
+    public String retornarNumeroTodos() {
+        String sql = "SELECT a FROM Atividadeusuario a where a.usuario.idusuario=" + usuarioLogadoMB.getUsuario().getIdusuario()
+                + " and a.situacao<>'Concluida'";
+        List<Atividadeusuario> lista = atividadeUsuarioRepository.list(sql, null, null);
+        sql = "SELECT a FROM Atividadeaguardando a where a.atividadeusuario.usuario.idusuario=" + usuarioLogadoMB.getUsuario().getIdusuario()
+                + " and a.dataretorno>= :dataInicial "
+                + " and a.atividadeusuario.atividade.descricao like '%" + buscar + "%'"
+                + " ORDER BY a.dataretorno ";
+        List<Atividadeaguardando> listaAguardando = atividadeAguardandoRepository.list(sql, LocalDate.now(), null);
+        if (lista != null && lista.size() > 0) {
+            if (listaAguardando != null && listaAguardando.size() > 0) {
+                for (int i = 0; i < listaAguardando.size(); i++) {
+                    lista.remove(listaAguardando.get(i).getAtividadeusuario());
+                }
+            }
+            return "(" + lista.size() + ")";
+        }
+        return "(0)";
+    }
+
+    public String retornarNumeroAguardando() {
+        dataInicial = LocalDate.now();
+        String sql = "SELECT a FROM Atividadeaguardando a where a.atividadeusuario.usuario.idusuario=" + usuarioLogadoMB.getUsuario().getIdusuario()
+                + " and a.dataretorno>= :dataInicial "
+                + " and a.atividadeusuario.atividade.descricao like '%" + buscar + "%'"
+                + " ORDER BY a.dataretorno ";
+        List<Atividadeaguardando> lista = atividadeAguardandoRepository.list(sql, LocalDate.now(), null);
+        if (lista != null && lista.size() > 0) {
+            return "(" + lista.size() + ")";
+        }
+        return "(0)";
     }
 
 }

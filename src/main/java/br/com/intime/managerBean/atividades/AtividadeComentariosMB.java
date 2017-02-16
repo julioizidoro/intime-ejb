@@ -19,6 +19,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession; 
+import org.primefaces.context.RequestContext;
 
 /**
  *
@@ -86,5 +87,9 @@ public class AtividadeComentariosMB implements Serializable {
         return dataMostrar;
     }
     
+    public String fechar(){
+        RequestContext.getCurrentInstance().closeDialog(null);
+        return "";
+    }
     
 }

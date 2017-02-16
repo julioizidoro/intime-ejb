@@ -24,19 +24,19 @@
                 <h:panelGrid id="painelBtn" columns="2" style="width: 100%;" columnClasses="tamanho75,tamanho">   
                     <h:panelGroup style="text-align: left;">    
                         <p:commandLink id="btnhoje" action="#{atividadesMB.mudarCoresBotoes('hoje')}" style="margin-left:2%;" update="painelBtn, tabelaAtividades">
-                            <span class="badge badge-sm label-radio" style="background:#{atividadesMB.hoje};">HOJE</span>
+                            <span class="badge badge-sm label-radio" style="background:#{atividadesMB.hoje};">HOJE #{atividadesMB.retornarNumeroHoje()}</span>
                         </p:commandLink>
                         <p:commandLink id="btnamanha" action="#{atividadesMB.mudarCoresBotoes('amanha')}" style="margin-left:0.5%;" update="painelBtn, tabelaAtividades"> 
-                            <span class="badge badge-sm label-radio" style="background:#{atividadesMB.amanha};">AMANHÃ</span>
+                            <span class="badge badge-sm label-radio" style="background:#{atividadesMB.amanha};">AMANHÃ #{atividadesMB.retornarNumeroAmanha()}</span>
                         </p:commandLink>
                         <p:commandLink id="btn7dias" action="#{atividadesMB.mudarCoresBotoes('seteDias')}" style="margin-left:0.5%;" update="painelBtn, tabelaAtividades">   
-                            <span class="badge badge-sm label-radio" style="background:#{atividadesMB.seteDias};">7 DIAS</span>
+                            <span class="badge badge-sm label-radio" style="background:#{atividadesMB.seteDias};">7 DIAS #{atividadesMB.retornarNumeroProx7()}</span>
                         </p:commandLink>
                         <p:commandLink id="btntodos" action="#{atividadesMB.mudarCoresBotoes('todos')}" style="margin-left:0.5%;" update="painelBtn, tabelaAtividades">     
-                            <span class="badge badge-sm label-radio" style="background:#{atividadesMB.todos};">TODOS</span>   
-                        </p:commandLink>   
+                            <span class="badge badge-sm label-radio" style="background:#{atividadesMB.todos};">TODOS #{atividadesMB.retornarNumeroTodos()}</span>   
+                        </p:commandLink>      
                         <p:commandLink id="btnaguardando" action="#{atividadesMB.mudarCoresBotoes('aguardando')}" style="margin-left:0.5%;" update="consAtividades">
-                            <span class="badge badge-sm label-radio" style="background:#{atividadesMB.aguardando};">AGUARDANDO</span>
+                            <span class="badge badge-sm label-radio" style="background:#{atividadesMB.aguardando};">AGUARDANDO #{atividadesMB.retornarNumeroAguardando()}</span>
                         </p:commandLink> 
                         <span id="visualizarConcluidas" class="badge badge-sm label-radio" style="margin-left:0.5%;height: 20px;">   
                             <p:commandButton id="btnNaoVisualizarConcluidas" rendered="#{atividadesMB.naoconcluidas}" action="#{atividadesMB.visualizarConcluidas()}" value="VISUALIZAR CONCLUÍDAS" icon="fa fa-fw fa-toggle-off" style="border: transparent;background: transparent;font-size: 14px;top: -40%;font-weight: unset;color: #2A3542;" update="painelBtn,tabelaAtividades"/>
@@ -60,13 +60,13 @@
                     <div class="row" >  
                         <div class="col-md-12"> 
                             <section class="panel tasks-widget" style="width:100%;">
-                                <div class="panel-body">  
+                                <div class="panel-body">     
                                     <div  class="task-content">
                                         <ul id="sortable" class="task-list ui-sortable">   
-                                            <p:dataTable value="#{atividadesMB.listaAtividade}" var="atividades"  draggableRows="true"> 
+                                            <p:dataTable value="#{atividadesMB.listaAtividade}" var="atividades"  draggableRows="true" emptyMessage="Nenhuma Tarefa encontrada."> 
                                                 <p:ajax event="rowReorder" update=":consAtividades:tabelaAtividades" /> 
                                                 <p:column>
-                                                    <li class="list ui-sortable-handle" style="color:#{atividadesMB.retornarCorAtividades(atividades)}">
+                                                    <li class="list ui-sortable-handle" style="color:#{atividadesMB.retornarCorAtividades(atividades)}">    
                                                         <i class="fa fa-ellipsis-v" style="font-size: 14px;float: left;margin-top:0.3%;"></i>
                                                         <p:commandLink id="btnPlay" action="#{atividadesMB.mudarSituacaoAtividade(atividades, 'Pause')}" update="@form" style="float: left;margin-top: -0.2%;margin-left:1%;" rendered="#{atividadesMB.mostrarBotaoPlay(atividades.situacao)}">
                                                             <i class="fa fa-play" style="font-size: 14px;color:#B0B5B9;"></i>
@@ -75,11 +75,11 @@
                                                             <i class="fa fa-pause" style="font-size: 14px;color:#B0B5B9;"></i>   
                                                         </p:commandLink>   
                                                         <div class="task-checkbox" style="margin-left:1%;">  
-                                                            <p:commandLink action="#{atividadesMB.mudarSituacaoAtividade(atividades, 'Concluida')}" update="@form"> 
+                                                            <p:commandLink action="#{atividadesMB.mudarSituacaoAtividade(atividades, 'Concluida')}" update="@all"> 
                                                                 <p:selectBooleanCheckbox id="cbxConcluido" class="list-child" value="#{atividades.concluido}"  style="float: left;margin-top:0.6%;margin-left:1.5%;"/> 
                                                                 <p:ajax event="dialogReturn" listener="#{atividadesMB.gerarListaAtivadades()}" update="@form"/>
-                                                            </p:commandLink>   
-                                                        </div>            
+                                                            </p:commandLink>      
+                                                        </div>               
                                                         <div class="task-title"> 
                                                             <span id="nome" class="task-title-sp">#{atividades.atividade.descricao}</span> |     
                                                             <span id="cliente" class="task-title-sp">#{atividades.atividade.cliente.apelido}</span> 
@@ -115,8 +115,8 @@
                                                                 </p:commandLink>
                                                                 <p:commandLink id="btnEditar" title="Editar Tarefa" action="#{atividadesMB.editarAtividades(atividades)}"> 
                                                                     <i class="fa fa-edit" style="font-size:17px;color:#FF6C60;"></i> 
-                                                                    <p:ajax event="dialogReturn" listener="#{atividadesMB.gerarListaAtivadades()}" update="@form"/>
-                                                                </p:commandLink> 
+                                                                    <p:ajax event="dialogReturn" listener="#{atividadesMB.mudarCoresBotoes('hoje')}" update="@form"/>
+                                                                </p:commandLink>   
                                                                 <a id="btnMenu" data-toggle="dropdown" class="dropdown-toggle">
                                                                     <i class="fa fa-bars" style="font-size:17px;color:#1C86EE;"></i> 
                                                                     <b class="caret"></b>

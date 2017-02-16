@@ -49,14 +49,14 @@
                 </p:overlayPanel>
             </h:panelGrid>
             <br/>
-            <h:panelGrid columns="2" columnClasses="tamanho30, tamanho30" style="width: 100%;font-size: 12px;">
+            <h:panelGrid id="painelDepartamento" columns="2" columnClasses="tamanho30, tamanho30" style="width: 100%;font-size: 12px;">
                 <p:selectOneMenu id="departamento"  style="width:91%;"  value="#{cadAtividadeMB.clientedepartamento}" converter="ClienteDepartamentoConverter"
                                  filter="true" filterMatchMode="contains" panelStyle="width:180px" >
                     <f:selectItem  itemLabel="Departamento" itemValue="0" noSelectionOption="true"/>    
                     <f:selectItems  value="#{cadAtividadeMB.listaClientedepartamentos}" var="departamentoselecionado" itemLabel="#{departamentoselecionado.departamento.nome}" itemValue="#{departamentoselecionado}"/>
                     <f:attribute name="listaClienteDepartamento" value="#{cadAtividadeMB.listaClientedepartamentos}"/>
-                    <p:ajax event="change" listener="#{cadAtividadeMB.gerarListaSubDepartamento()}" update="@form"/>  
-                </p:selectOneMenu>
+                    <p:ajax event="change" listener="#{cadAtividadeMB.gerarListaSubDepartamento()}" update="painelDepartamento, subdepartamento"/>  
+                </p:selectOneMenu>      
                 <p:selectOneMenu id="subdepartamento"  style="width:95%;"  value="#{cadAtividadeMB.atividadeusuario.atividade.subdepartamento}" converter="SubDepartamentoConverter"
                                  filter="true" filterMatchMode="contains" panelStyle="width:180px" >
                     <f:selectItem  itemLabel="Sub-Departamento" itemValue="0" noSelectionOption="true"/>    
@@ -93,10 +93,10 @@
                     </p:commandLink>
                 </h:panelGroup>
 
-                <p:commandLink id="btnAdicionar" action="#{cadAtividadeMB.salvar()}" title="Adicionar">
-                    <i class="fa fa-check" style="color:#008B00;font-size:60px;"/>
-                </p:commandLink>
-            </h:panelGrid>
+                <h:commandButton id="btnAdicionar" action="#{cadAtividadeMB.salvar()}" title="Adicionar"
+                    image="../../resources/img/confirmar.PNG">   
+                </h:commandButton>
+            </h:panelGrid>   
         </h:form> 
         <h:form id="formHorario">
             <p:dialog id="dialog_horario"  header="ADICIONAR HORÁRIO" widgetVar="horario" resizable="false" >
