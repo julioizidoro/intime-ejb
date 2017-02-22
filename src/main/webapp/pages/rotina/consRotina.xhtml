@@ -20,21 +20,9 @@
                     </h:panelGroup>   
                 </h:panelGrid>    
                 <br/>       
-                <p:outputLabel value="Cadastro de Rotinas" style="margin-left:1.5%;color:#797979;font-weight: inherit;font-size: 22px;"/>
-                <h:panelGrid id="painelBtn" columns="4" columnClasses="tamanho20,tamanho20,tamanho20,tamanho30" style="width:98%;margin-left:1.5%;" >    
-                    <p:selectOneMenu id="departamento"  style="width:200px;" value="#{processoMB.departamento}" converter="DepartamentoConverter"
-                                     filter="true" filterMatchMode="contains" panelStyle="width:180px" >         
-                        <f:selectItem  itemLabel="Departamento" itemValue="0" noSelectionOption="true"/>         
-                        <f:selectItems  value="#{processoMB.listaDepartamento}" var="d" itemLabel="#{d.nome}" itemValue="#{d}"/>
-                        <f:attribute name="listaDepartamento" value="#{processoMB.listaDepartamento}"/>
-                        <p:ajax event="change" listener="#{processoMB.listarSubDepartamento()}" update="subdepartamento, painelBtn"/>
-                    </p:selectOneMenu>
-                    <p:selectOneMenu id="subdepartamento"  style="width:200px;margin-left: 2%;" value="#{processoMB.subdepartamento}" converter="SubDepartamentoConverter"
-                                     filter="true" filterMatchMode="contains" panelStyle="width:180px" >
-                        <f:selectItem  itemLabel="Sub-departamento" itemValue="0" noSelectionOption="true"/> 
-                        <f:selectItems  value="#{processoMB.listaSubDepartamento}" var="sd" itemLabel="#{sd.nome}" itemValue="#{sd}"/>
-                        <f:attribute name="listaSubDepartamento" value="#{processoMB.listaSubDepartamento}"/>
-                    </p:selectOneMenu> 
+                <p:outputLabel value="Consulta de Rotinas" style="margin-left:1.5%;color:#797979;font-weight: inherit;font-size: 22px;"/>
+                <h:panelGrid id="painelBtn" columns="2" columnClasses="tamanho20, tamanho20" style="width:98%;margin-left:1.5%;" >    
+                   
                     <h:panelGroup>  
                         <span>   
                             <p:inputText id="inputbuscar" class="form-control search-consultas" placeholder="Buscar">
@@ -43,11 +31,8 @@
                         </span>
                     </h:panelGroup>       
                     <h:panelGroup>  
-                        <p:commandLink id="btnSalvar" title="Salvar" action="#{processoMB.agendaRotina()}" class="hoverTextos">
-                            <i class="fa fa-check" style="font-size:35px;color: #C9A471;"/>  
-                        </p:commandLink>  
-                        <p:commandLink id="btnCancelar" title="Limpar" action="#" class="hoverTextos">
-                            <i class="fa fa-times" style="font-size:35px;color: #293949;"/> 
+                        <p:commandLink id="btnCadRotina" title="Cadastrar Rotina" action="#{rotinaMB.cadastroRotina()}" style="margin-right: 2%;float: right;" class="hoverTextos">
+                            <i class="fa fa-plus" style="font-size:35px;color: #C9A471;"/>  
                         </p:commandLink>  
                     </h:panelGroup>
                 </h:panelGrid>
@@ -57,37 +42,20 @@
                             <div class="panel-body">
                                 <div class="task-content">
                                     <p:dataTable var="car" value="#" scrollable="true" scrollHeight="150"> 
-                                        <p:column headerText="" style="text-align: center;width: 10%;border: none;">
-                                            <p:commandLink id="btnadicionar" title="Adicionar" action="#{processoMB.cadastrarRotina()}" update=":consRotina:growl" class="hoverTextos">
-                                                <i class="fa fa-plus" style="font-size:19px;color: #293949;"/>  
-                                            </p:commandLink>  
-                                            <p:commandLink id="btnEditar" title="Editar" action="#{processoMB.editarRotina()}" update=":consRotina:growl" class="hoverTextos">
+                                        <p:column headerText="NOME"  style="width: 25%;border: none;text-align: left;">
+                                            <h:outputText value="Anderson Luiz" />
+                                        </p:column>
+                                        <p:column headerText="SUB-DEPARTAMENTO"  style="text-align: center;border: none;text-align: left;">
+                                            <h:outputText value="teste" />
+                                        </p:column>   
+                                        <p:column headerText="" style="text-align: center;width: 10%;border: none;"> 
+                                            <p:commandLink id="btnEditar" title="Editar" action="#" update=":consRotina:growl" class="hoverTextos">
                                                 <i class="fa fa-pencil-square-o" style="font-size:19px;color:#4F4F4F;"/> 
                                             </p:commandLink> 
-                                            <p:commandLink id="btnExcluir"  title="Excluir" action="#{processoMB.excluirRotina()}"  update=":consRotina:growl" class="hoverTextos">
+                                            <p:commandLink id="btnExcluir"  title="Excluir" action="#"  update=":consRotina:growl" class="hoverTextos">
                                                 <i class="fa fa-trash" style="font-size:19px;color: #C9A471;"/> 
                                             </p:commandLink>    
                                         </p:column>   
-                                        <p:column headerText="CLIENTE"  style="width: 25%;border: none;text-align: left;">
-                                            <h:outputText value="Anderson Luiz" />
-                                        </p:column>
-                                        <p:column headerText="FREQUÊNCIA"  style="text-align: center;border: none;text-align: left;">
-                                            <h:outputText value="Semanal" />
-                                        </p:column>   
-                                        <p:column headerText="RESPONSÁVEL" style="text-align: center;width: 20%;border: none;text-align: left;">
-                                            <h:outputText value="Carlos Souza" />
-                                        </p:column>
-                                        <p:column headerText="INÍCIO" style="text-align: center;border: none;">
-                                            <h:outputText style="font-style: oblique;font-weight:400;" value="28/12/2016" />
-                                        </p:column>      
-                                        <p:column headerText="FIM"  style="text-align: center;border: none;">
-                                            <h:outputText style="font-style: oblique;font-weight:400;" value="31/12/2016" />
-                                        </p:column>     
-                                        <p:column headerText="PRIORIDADE"  style="width: 10%;text-align: center;border: none;">
-                                            <p:commandLink id="btnPrioridade" title="Prioridade" action="#" class="hoverTextos">
-                                                <i class="fa fa-exclamation-triangle" style="font-size:22px;color: red;"/> 
-                                            </p:commandLink>    
-                                        </p:column>
                                     </p:dataTable>
                                 </div> 
                             </div>

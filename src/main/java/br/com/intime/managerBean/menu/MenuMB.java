@@ -61,6 +61,10 @@ public class MenuMB implements Serializable {
         return "consRotina";
     }
     
+     public String cadastrarRotina() {
+        return "cadRotina";
+    }
+     
     public String agendaRotina() {
         return "consRotina";
     }
