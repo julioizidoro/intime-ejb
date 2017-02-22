@@ -1,0 +1,107 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets" 
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <ui:composition template="/pages/templates/default.xhtml">
+        <ui:define name="corpo">
+            <h:form id="consProcesso">   
+                <p:growl id="growl" showDetail="true" sticky="true" />
+                <h:panelGrid columns="2" style="width: 100%;margin-top: -1.5%;">
+                    <h:panelGroup> 
+                        <p:commandLink id="btnHome" action="#{usuarioLogadoMB.paginainicial()}" style="margin-left:0.5%;" class="hoverTextos">
+                            <i class="fa fa-home"/>
+                            <p:outputLabel value="Home" style="margin-left:0.5%;font-weight: inherit;"/>
+                        </p:commandLink>
+                        <p:outputLabel value="/" style="margin-left:0.5%;color:#797979;font-weight: inherit;"/>
+                         
+                        <p:outputLabel value="Consulta de Processos" style="margin-left:0.5%;color:#797979;font-weight: inherit;"/>
+                    </h:panelGroup>   
+                    <br/>  <br/>     
+                    <p:outputLabel value="Consulta de Processos" style="margin-left:2.5%;color:#797979;font-weight: inherit;font-size: 22px;"/>
+                 </h:panelGrid>          
+                <div class="col-lg-7">              
+                    <div class="row" >      
+                        <div class="col-md-12">    
+                            <section class="panel tasks-widget" style="width:100%;">
+                                <div class="panel-body">
+                                    <div class="task-content">
+                                        <h:panelGrid id="painelBtn" columns="2" columnClasses="tamanho20,tamanho20" style="width:100%;" >    
+                                            <h:panelGroup>         
+                                                <span>   
+                                                    <p:inputText id="inputbuscar" value="#{processoMB.descricao}" class="form-control search-consultas" placeholder="Buscar Processo">
+                                                        <p:ajax event="blur" listener="#{processoMB.pesquisarProcesso()}" update="tabelaProcesso, tabelaAtividadeProcesso"/>
+                                                    </p:inputText>
+                                                    <h:commandButton id="btnPesquisar" style="background: transparent;border: none;" />  
+                                                </span>
+                                            </h:panelGroup>      
+                                            <p:commandLink id="btnAdicionar" title="Adicionar Processo" action="#{processoMB.cadastrarProcesso()}" class="hoverTextos" style="float: right;">
+                                                <i class="fa fa-3x fa-plus" /> 
+                                                <p:ajax event="dialogReturn" listener="#{processoMB.gerarListaProcesso()}" update="@form"/>
+                                            </p:commandLink>   
+                                        </h:panelGrid>             
+                                        <p:dataTable id="tabelaProcesso" var="processo" value="#{processoMB.listaProcesso}" scrollable="true" scrollHeight="150"
+                                                     selectionMode="single" selection="#{processoMB.processo}" rowKey="#{processo.idprocesso}"> 
+                                            <p:ajax event="rowSelect"
+                                                listener="#{processoMB.gerarListaProcessoRotina()}"
+                                                update="consProcesso:tabelaAtividadeProcesso" />
+                                            <p:column headerText="DESCRIÇÃO"  style="width:40%;border: none;text-align: left;">
+                                                <h:outputText value="#{processo.descricao}" />
+                                            </p:column>
+                                            <p:column headerText="SUBDEPARTAMENTO"  style="width:40%;text-align: center;border: none;text-align: left;">
+                                                <h:outputText value="#{processo.subdepartamento.nome}" />
+                                            </p:column>    
+                                            <p:column style="width:15%;text-align: center;border: none;">
+                                                <p:commandLink id="btnAdicionarAtividade" title="Adicionar Atividade" action="#{processoMB.cadastrarProcessoRotina(processo)}" class="hoverTextos">
+                                                    <i class="fa fa-plus" style="font-size:21px;color:#293949;"/>   
+                                                    <p:ajax event="dialogReturn" listener="#{processoMB.gerarListaProcessoRotina()}" update=":consProcesso:tabelaAtividadeProcesso"/>
+                                                </p:commandLink>       
+                                                <p:commandLink id="btnIniciar" title="Iníciar" action="#{processoMB.iniciarSituacaoProcesso(processo)}" class="hoverTextos">
+                                                    <i class="fa fa-play" style="font-size:21px;color:#797979;margin-left:2%;"/> 
+                                                </p:commandLink>   
+                                                <p:commandLink id="btnVisualizarIniciados" title="Visualizar Iníciados" action="#{processoMB.visualizarProcessosIniciados(processo)}" class="hoverTextos">
+                                                    <i class="fa fa-search" style="font-size:21px;color:#C9A471;margin-left:2%;"/> 
+                                                </p:commandLink>   
+                                            </p:column>       
+                                        </p:dataTable>  
+                                    </div>   
+                                </div>
+                            </section>
+                        </div> 
+                    </div>  
+                </div>
+                <div class="col-lg-5">  
+                    <div class="row" >     
+                        <div class="col-md-12">
+                            <section class="panel tasks-widget" style="width:100%;">
+                                <div class="panel-body">
+                                    <div class="task-content">
+                                        <h:panelGrid style="width:100%;" >      
+                                            <i class="fa fa-plus" style="color:#FFF;font-size:3.2em;"/>      
+                                        </h:panelGrid>     
+                                        <p:dataTable id="tabelaAtividadeProcesso" var="atividadeprocesso" value="#{processoMB.listaProcessorotina}" scrollable="true" scrollHeight="150"> 
+                                            <p:column headerText="DESCRIÇÃO"  style="width:40%;border: none;text-align: left;">
+                                                <h:outputText value="#{atividadeprocesso.descricao}" />
+                                            </p:column> 
+                                            <p:column style="width:15%;text-align: center;border: none;">
+                                                <p:commandLink id="btnEditar" title="Editar" action="#{processoMB.editarProcessoRotina(atividadeprocesso)}" class="hoverTextos">
+                                                    <i class="fa fa-pencil" style="font-size:20px;color:#293949;"/>   
+                                                    <p:ajax event="dialogReturn" listener="#{processoMB.gerarListaProcessoRotina()}" update="consProcesso:tabelaAtividadeProcesso"/>
+                                                </p:commandLink>       
+                                                <p:commandLink id="btnExcluir" title="Excluir" update="consProcesso:tabelaAtividadeProcesso, consProcesso:growl" action="#{processoMB.excluirProcessoRotina(atividadeprocesso)}" class="hoverTextos">
+                                                    <i class="fa fa-trash-o" style="font-size:21px;color:#C9A471;margin-left:2%;" /> 
+                                                </p:commandLink>      
+                                            </p:column>      
+                                        </p:dataTable>              
+                                    </div>           
+                                </div>
+                            </section>
+                        </div> 
+                    </div>  
+                </div>       
+            </h:form>  
+        </ui:define>
+    </ui:composition>
+</html>   

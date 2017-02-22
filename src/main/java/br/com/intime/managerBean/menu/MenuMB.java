@@ -64,6 +64,10 @@ public class MenuMB implements Serializable {
     public String agendaRotina() {
         return "consRotina";
     }
+    
+     public String consProcesso() {
+        return "consProcesso";
+    }
 
     
     public String adicionarAtividades() {
@@ -87,7 +91,7 @@ public class MenuMB implements Serializable {
         }else{
             return false;
         }
-    }
+    } 
     
     public boolean acessoMenuUsuario(){
         if(usuarioLogadoMB.getUsuario().getCadastrusuario()!=1){

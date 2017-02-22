@@ -107,6 +107,14 @@
             <redirect />
         </navigation-case> 
     </navigation-rule>
+    <navigation-rule>   
+        <from-view-id>*</from-view-id>
+        <navigation-case>
+            <from-outcome>consProcesso</from-outcome> 
+            <to-view-id>/pages/processo/consProcesso.xhtml</to-view-id>
+            <redirect />
+        </navigation-case> 
+    </navigation-rule>
     <application>
         <action-listener>
             org.primefaces.application.DialogActionListener

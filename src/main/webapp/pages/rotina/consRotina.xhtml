@@ -22,18 +22,18 @@
                 <br/>       
                 <p:outputLabel value="Cadastro de Rotinas" style="margin-left:1.5%;color:#797979;font-weight: inherit;font-size: 22px;"/>
                 <h:panelGrid id="painelBtn" columns="4" columnClasses="tamanho20,tamanho20,tamanho20,tamanho30" style="width:98%;margin-left:1.5%;" >    
-                    <p:selectOneMenu id="departamento"  style="width:200px;" value="#{rotinaMB.departamento}" converter="DepartamentoConverter"
+                    <p:selectOneMenu id="departamento"  style="width:200px;" value="#{processoMB.departamento}" converter="DepartamentoConverter"
                                      filter="true" filterMatchMode="contains" panelStyle="width:180px" >         
                         <f:selectItem  itemLabel="Departamento" itemValue="0" noSelectionOption="true"/>         
-                        <f:selectItems  value="#{rotinaMB.listaDepartamento}" var="d" itemLabel="#{d.nome}" itemValue="#{d}"/>
-                        <f:attribute name="listaDepartamento" value="#{rotinaMB.listaDepartamento}"/>
-                        <p:ajax event="change" listener="#{rotinaMB.listarSubDepartamento()}" update="subdepartamento, painelBtn"/>
+                        <f:selectItems  value="#{processoMB.listaDepartamento}" var="d" itemLabel="#{d.nome}" itemValue="#{d}"/>
+                        <f:attribute name="listaDepartamento" value="#{processoMB.listaDepartamento}"/>
+                        <p:ajax event="change" listener="#{processoMB.listarSubDepartamento()}" update="subdepartamento, painelBtn"/>
                     </p:selectOneMenu>
-                    <p:selectOneMenu id="subdepartamento"  style="width:200px;margin-left: 2%;" value="#{rotinaMB.subdepartamento}" converter="SubDepartamentoConverter"
+                    <p:selectOneMenu id="subdepartamento"  style="width:200px;margin-left: 2%;" value="#{processoMB.subdepartamento}" converter="SubDepartamentoConverter"
                                      filter="true" filterMatchMode="contains" panelStyle="width:180px" >
                         <f:selectItem  itemLabel="Sub-departamento" itemValue="0" noSelectionOption="true"/> 
-                        <f:selectItems  value="#{rotinaMB.listaSubDepartamento}" var="sd" itemLabel="#{sd.nome}" itemValue="#{sd}"/>
-                        <f:attribute name="listaSubDepartamento" value="#{rotinaMB.listaSubDepartamento}"/>
+                        <f:selectItems  value="#{processoMB.listaSubDepartamento}" var="sd" itemLabel="#{sd.nome}" itemValue="#{sd}"/>
+                        <f:attribute name="listaSubDepartamento" value="#{processoMB.listaSubDepartamento}"/>
                     </p:selectOneMenu> 
                     <h:panelGroup>  
                         <span>   
@@ -43,7 +43,7 @@
                         </span>
                     </h:panelGroup>       
                     <h:panelGroup>  
-                        <p:commandLink id="btnSalvar" title="Salvar" action="#{rotinaMB.agendaRotina()}" class="hoverTextos">
+                        <p:commandLink id="btnSalvar" title="Salvar" action="#{processoMB.agendaRotina()}" class="hoverTextos">
                             <i class="fa fa-check" style="font-size:35px;color: #C9A471;"/>  
                         </p:commandLink>  
                         <p:commandLink id="btnCancelar" title="Limpar" action="#" class="hoverTextos">
@@ -58,13 +58,13 @@
                                 <div class="task-content">
                                     <p:dataTable var="car" value="#" scrollable="true" scrollHeight="150"> 
                                         <p:column headerText="" style="text-align: center;width: 10%;border: none;">
-                                            <p:commandLink id="btnadicionar" title="Adicionar" action="#{rotinaMB.cadastrarRotina()}" update=":consRotina:growl" class="hoverTextos">
+                                            <p:commandLink id="btnadicionar" title="Adicionar" action="#{processoMB.cadastrarRotina()}" update=":consRotina:growl" class="hoverTextos">
                                                 <i class="fa fa-plus" style="font-size:19px;color: #293949;"/>  
                                             </p:commandLink>  
-                                            <p:commandLink id="btnEditar" title="Editar" action="#{rotinaMB.editarRotina()}" update=":consRotina:growl" class="hoverTextos">
+                                            <p:commandLink id="btnEditar" title="Editar" action="#{processoMB.editarRotina()}" update=":consRotina:growl" class="hoverTextos">
                                                 <i class="fa fa-pencil-square-o" style="font-size:19px;color:#4F4F4F;"/> 
                                             </p:commandLink> 
-                                            <p:commandLink id="btnExcluir"  title="Excluir" action="#{rotinaMB.excluirRotina()}"  update=":consRotina:growl" class="hoverTextos">
+                                            <p:commandLink id="btnExcluir"  title="Excluir" action="#{processoMB.excluirRotina()}"  update=":consRotina:growl" class="hoverTextos">
                                                 <i class="fa fa-trash" style="font-size:19px;color: #C9A471;"/> 
                                             </p:commandLink>    
                                         </p:column>   

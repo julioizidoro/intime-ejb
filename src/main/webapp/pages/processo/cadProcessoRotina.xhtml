@@ -1,0 +1,33 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core" > 
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+        <link href="../../resources/css/bootstrap.min.css" rel="stylesheet"/>  
+        <link href="../../resources/css/style.css" rel="stylesheet"/> 
+        <link href="../../resources/css/css.css" rel="stylesheet"/> 
+    </h:head>
+    <h:body style="background:#FFFFFF;" > 
+        <h:form id="cadProcessoAtividade"  style="font-size: 11px;width:95%;margin-left:3%;" enctype="multipart/form-data"> 
+            <title style="background: #cf7000">
+                ADICIONAR ATIVIDADE
+            </title>
+            <br/><br/>
+            <p:growl id="growl" showDetail="true" autoUpdate="true"  />
+  
+            <h:panelGrid columns="2" columnClasses="tamanho70, tamanho30" style="width: 100%;font-size: 12px;">
+                <p:outputLabel for="descricao" value="Descrição"/>
+                <p:outputLabel for="diasUteis" value="Dias Úteis"/>  
+
+                <p:inputText id="descricao" value="#{cadProcessoRotinaMB.processorotina.descricao}" style="width: 95%;"/>
+                <p:inputText id="diasUteis" value="#{cadProcessoRotinaMB.processorotina.diasuteis}" style="width: 95%;"/>   
+            </h:panelGrid>
+            <br/>  
+            <div align="center">    
+                <p:commandButton id="btnConfirmar" action="#{cadProcessoRotinaMB.salvar()}" class="btn btn-success" value="Confirmar" update="growl"/>
+                <p:commandButton id="btnCancelar" action="#{cadProcessoRotinaMB.fechar()}" class="btn btn-danger" value="Cancelar"/>
+            </div>
+        </h:form>
+    </h:body>
+</html>

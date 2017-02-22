@@ -29,7 +29,7 @@
                         </h:panelGroup>  
                         <h:panelGroup style="text-align: right;"> 
                             <p:commandLink id="btnadicionar" title="Adicionar" action="#{clienteMB.novoCliente()}" update="growl" class="hoverTextos">
-                                <i class="fa fa-3x fa-plus" />
+                                <i class="fa fa-3x fa-plus" />  
                                 <p:ajax event="dialogReturn" listener="#{clienteMB.gerarListaCliente()}" update="@form"/>
                             </p:commandLink>  
                         </h:panelGroup>

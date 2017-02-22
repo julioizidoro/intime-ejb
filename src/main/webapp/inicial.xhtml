@@ -98,13 +98,13 @@
                                     </span>
                                 </p:commandLink>
                             </li> 
-                            <li class="sub-menu">   
-                                <p:commandLink action="#" >  
+                            <li class="sub-menu">    
+                                <p:commandLink action="#{menuMB.consProcesso()}" >  
                                     <i class="fa fa-cogs"></i> 
                                     <span style="margin-left:2%;font-size:15px;">
                                         Processos
-                                    </span>
-                                </p:commandLink>
+                                    </span>  
+                                </p:commandLink> 
                             </li>
                             <li class="sub-menu">   
                                 <h:panelGroup rendered="#{menuMB.acessoMenuRotina()}">
@@ -415,25 +415,25 @@
             <link href="resources/css/tasks.css" rel="stylesheet"/>   
             <script src="resources/js/common-scripts.js"></script>  
             <script>
-                window.fbAsyncInit = function () {
-                    FB.init({
-                        appId: 'your-app-id',
-                        xfbml: true,
-                        version: 'v2.8'
-                    });
-                    FB.AppEvents.logPageView();
-                };
+                                                                window.fbAsyncInit = function () {
+                                                                    FB.init({
+                                                                        appId: 'your-app-id',
+                                                                        xfbml: true,
+                                                                        version: 'v2.8'
+                                                                    });
+                                                                    FB.AppEvents.logPageView();
+                                                                };
 
-                (function (d, s, id) {
-                    var js, fjs = d.getElementsByTagName(s)[0];
-                    if (d.getElementById(id)) {
-                        return;
-                    }
-                    js = d.createElement(s);
-                    js.id = id;
-                    js.src = "//connect.facebook.net/en_US/sdk.js";
-                    fjs.parentNode.insertBefore(js, fjs);
-                }(document, 'script', 'facebook-jssdk'));
+                                                                (function (d, s, id) {
+                                                                    var js, fjs = d.getElementsByTagName(s)[0];
+                                                                    if (d.getElementById(id)) {
+                                                                        return;
+                                                                    }
+                                                                    js = d.createElement(s);
+                                                                    js.id = id;
+                                                                    js.src = "//connect.facebook.net/en_US/sdk.js";
+                                                                    fjs.parentNode.insertBefore(js, fjs);
+                                                                }(document, 'script', 'facebook-jssdk'));
             </script> 
         </h:form>   
     </h:body>
