@@ -36,6 +36,13 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "Usuario.findAll", query = "SELECT u FROM Usuario u")})
 public class Usuario implements Serializable {
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuario")
+    private List<Atividade> atividadeList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuario")
+    private List<Processosituacao> processosituacaoList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuario")
+    private List<Atividadeusuario> atividadeusuarioList;
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -302,6 +309,30 @@ public class Usuario implements Serializable {
     @Override
     public String toString() {
         return "br.com.intime.model.Usuario[ idusuario=" + idusuario + " ]";
+    }
+
+    public List<Atividade> getAtividadeList() {
+        return atividadeList;
+    }
+
+    public void setAtividadeList(List<Atividade> atividadeList) {
+        this.atividadeList = atividadeList;
+    }
+
+    public List<Processosituacao> getProcessosituacaoList() {
+        return processosituacaoList;
+    }
+
+    public void setProcessosituacaoList(List<Processosituacao> processosituacaoList) {
+        this.processosituacaoList = processosituacaoList;
+    }
+
+    public List<Atividadeusuario> getAtividadeusuarioList() {
+        return atividadeusuarioList;
+    }
+
+    public void setAtividadeusuarioList(List<Atividadeusuario> atividadeusuarioList) {
+        this.atividadeusuarioList = atividadeusuarioList;
     }
     
 }

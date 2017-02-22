@@ -183,4 +183,6 @@ public class Cliente implements Serializable {
         return "br.com.intime.model.Cliente[ idcliente=" + idcliente + " ]";
     } 
 
+  
+
 }

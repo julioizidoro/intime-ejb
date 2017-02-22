@@ -21,6 +21,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.Size;
@@ -59,6 +60,8 @@ public class Atividadeusuario implements Serializable {
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "atividadeusuario")
     private List<Atividadecomentario> atividadecomentarioList;
     @JoinColumn(name = "usuario_idusuario", referencedColumnName = "idusuario")
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "atividadeusuario")
+    private Processoatividade processoatividade;
     @ManyToOne(optional = false)
     private Usuario usuario; 
     @Transient
@@ -195,6 +198,14 @@ public class Atividadeusuario implements Serializable {
 
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
+    }
+
+    public Processoatividade getProcessoatividade() {
+        return processoatividade;
+    }
+
+    public void setProcessoatividade(Processoatividade processoatividade) {
+        this.processoatividade = processoatividade;
     }
     
 }
