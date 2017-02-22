@@ -14,7 +14,7 @@ import javax.ejb.Stateless;
  * @author jizid
  */
 @Stateless
-public class ProcessoAtividadeRepository extends AbstractRepository<Nota>{
+public class ProcessoAtividadeRepository extends AbstractRepository<Processoatividade>{
 
     public ProcessoAtividadeRepository() {
         super(Processoatividade.class);

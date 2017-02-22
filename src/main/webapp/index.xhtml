@@ -30,6 +30,16 @@
                 <div align="right" style="margin-top: -5%;">
                     <img src="resources/img/logoIntime.png" width="80" />
                 </div>
+                <div style="margin-top: 20px; background: #ffffff;">
+                    <p:ajaxStatus onstart="PF('statusDialog').show()"
+                                  onsuccess="PF('statusDialog').hide()" />      
+                    <p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+                              closable="false" resizable="false" showHeader="false">
+                        <p:commandLink>
+                            <img src="resources/img/ajax-loader.gif" />
+                        </p:commandLink>
+                    </p:dialog>           
+                </div>
             </h:form> 
         </div>    
     </h:body>

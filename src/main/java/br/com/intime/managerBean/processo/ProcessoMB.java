@@ -165,8 +165,8 @@ public class ProcessoMB implements Serializable {
     }
     
     public void pesquisarProcesso() {
-        listaProcesso = processoRepository.list("Select p from Processo where p.descricao like '%"+
-                descricao+"%' p order by p.descricao");
+        listaProcesso = processoRepository.list("Select p from Processo p where p.descricao like '%"+
+                descricao+"%' order by p.descricao");
         if (listaProcesso == null) {
             listaProcesso = new ArrayList<Processo>();
         }

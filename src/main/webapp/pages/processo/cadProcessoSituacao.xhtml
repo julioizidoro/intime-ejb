@@ -1,0 +1,96 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core" > 
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+        <link href="../../resources/css/bootstrap.min.css" rel="stylesheet"/>  
+        <link href="../../resources/css/style.css" rel="stylesheet"/> 
+        <link href="../../resources/css/css.css" rel="stylesheet"/> 
+    </h:head>
+    <h:body style="background:#FFFFFF;" > 
+        <h:form id="cadProcessoSituacao"  style="font-size: 11px;width:95%;margin-left:3%;" enctype="multipart/form-data"> 
+            <title style="background: #cf7000">
+                INÍCIAR PROCESSOS
+            </title>
+            <br/>
+            <p:growl id="growl" showDetail="true" autoUpdate="true"  />  
+
+            <p:outputLabel value="#{cadProcessoSituacaoMB.processo.descricao}" style="font-size:20px;color:#293949;"/>
+            <br/>
+            <h:panelGrid columns="2" columnClasses="tamanho30, tamanho70" style="width: 100%;font-size: 12px;">
+                <p:outputLabel value="Data de Início"/> 
+                <p:outputLabel value="Cliente"/>
+
+                <p:inputMask id="dataAbertura" style="width: 60%" readonly="true" value="#{cadProcessoSituacaoMB.processosituacao.datainicio}" mask="99/99/9999">
+                     <f:convertDateTime   pattern="dd/MM/yyyy" timeZone="America/Sao_Paulo"/>
+                </p:inputMask>
+                <p:selectOneMenu id="cliente"  style="width:70%;"  value="#{cadProcessoSituacaoMB.cliente}" converter="ClienteConverter"
+                                 filter="true" filterMatchMode="contains" panelStyle="width:180px" >
+                    <f:selectItem  itemLabel="Selecione" itemValue="0" noSelectionOption="true"/>    
+                    <f:selectItems  value="#{cadProcessoSituacaoMB.listaCliente}" var="clienteselecionado" itemLabel="#{clienteselecionado.apelido}" itemValue="#{clienteselecionado}"/>
+                    <f:attribute name="listaCliente" value="#{cadProcessoSituacaoMB.listaCliente}"/>
+                    <p:ajax event="change"/>        
+                </p:selectOneMenu> 
+                
+            </h:panelGrid>  
+            <br/>
+            <p:dataTable id="tabelaProcessoRotina" var="processoRotina" value="#{cadProcessoSituacaoMB.listaProcessoRotina}"
+                        editable="true" editMode="cell" widgetVar="cellProcesso" scrollable="true" scrollHeight="150"> 
+                <p:column headerText="ATIVIDADES"  style="width:30%;border: none;text-align: left;">
+                    <h:outputText value="#{processoRotina.descricao}" />
+                </p:column> 
+                <p:column id="colunaData" headerText="DATA"  style="width:15%;border: none;text-align: left;">
+                   <p:cellEditor>
+                     <f:facet name="output"> 
+                        <h:outputText value="#{processoRotina.datamostrar}" >
+                            <f:convertDateTime   pattern="dd/MM/yyyy" timeZone="America/Sao_Paulo"/>
+                        </h:outputText>
+                     </f:facet>
+                     <f:facet name="input">
+                         <p:inputText id="modelInput" value="#{processoRotina.datamostrar}" style="width:96%" >
+                             <f:convertDateTime   pattern="dd/MM/yyyy" timeZone="America/Sao_Paulo"/>
+                             <p:ajax event="blur" update="colunaData"/>
+                         </p:inputText>
+                     </f:facet>
+                   </p:cellEditor>
+                </p:column> 
+                <p:column id="colunaUsuario" headerText="USUÁRIO"  style="width:30%;border: none;text-align: left;">
+                    <p:cellEditor>
+                        <f:facet name="output">
+                            <h:outputText value="#{processoRotina.usuario.nome}" />
+                        </f:facet>
+                        <f:facet name="input">
+                            <p:selectOneMenu id="usuario" style="width:95%;" value="#{processoRotina.usuario}"  converter="UsuarioConverter"
+                                             filter="true" filterMatchMode="contains" panelStyle="width:180px" >
+                                <f:selectItem  itemLabel="EXECUTOR" itemValue="0" noSelectionOption="true"/>    
+                                <f:selectItems  value="#{cadProcessoSituacaoMB.listaUsuario}" var="usuarioselecionado" 
+                                                itemLabel="#{usuarioselecionado.nome}" itemValue="#{usuarioselecionado}"/>
+                                <f:attribute name="listaUsuarios" value="#{cadProcessoSituacaoMB.listaUsuario}"/>
+                                <p:ajax event="change" update="colunaUsuario"/>
+                            </p:selectOneMenu> 
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>     
+                <p:column style="width:10%;text-align:center;border: none;">
+                    <p:selectBooleanCheckbox value="#{processoRotina.selecionado}" />          
+                </p:column>       
+            </p:dataTable> 
+            <div align="center">    
+                <p:commandButton id="btnConfirmar" action="#{cadProcessoSituacaoMB.salvar()}" class="btn btn-success" value="Confirmar" update="growl"/>
+                <p:commandButton id="btnCancelar" action="#{cadProcessoSituacaoMB.fechar()}" class="btn btn-danger" value="Cancelar"/>
+            </div>
+
+            <div style="margin-top: 20px; background: #ffffff;">
+                <p:ajaxStatus onstart="PF('statusDialog').show()"
+                              onsuccess="PF('statusDialog').hide()" />      
+                <p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+                          closable="false" resizable="false" showHeader="false">
+                    <p:commandLink>
+                        <img src="../../resources/img/ajax-loader.gif" />
+                    </p:commandLink>
+                </p:dialog>           
+            </div>
+        </h:form>
+    </h:body>
+</html>

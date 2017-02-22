@@ -66,7 +66,7 @@ public class CadProcessoRotinaMB implements Serializable{
     
     public void salvar(){
         if(processorotina.getDescricao()!=null && processorotina.getDescricao().length()>0){
-            if(processorotina.getDiasuteis()!=null && processorotina.getDiasuteis()>0){
+            if(processorotina.getDiasuteis()!=null){
                 processorotina.setProcesso(processo);
                 processorotina = processoRotinaRepository.update(processorotina);
                 Mensagem.lancarMensagemInfo("Salvo com sucesso!", "");

@@ -30,6 +30,7 @@
 
     <h:body style="background: #fff;">
         <h:form id="telaInicial">
+            
             <p:poll interval="120" listener="#{dashboardMB.gerarListas()}" update="colunaTodoList, calendarioAtividades, colunaNumTarefas, colunaFeed, btnVisualizarNotificacoes"/>
             <p:growl id="growl" showDetail="true" sticky="true" />  
             <section id="container" >    
@@ -407,7 +408,16 @@
                     </section>            
                 </section>       
             </section>                
-
+<div style="margin-top: 20px; background: #ffffff;">
+                <p:ajaxStatus onstart="PF('statusDialog').show()"
+                              onsuccess="PF('statusDialog').hide()" />      
+                <p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+                          closable="false" resizable="false" showHeader="false">
+                    <p:commandLink>
+                        <img src="resources/img/ajax-loader.gif" />
+                    </p:commandLink>
+                </p:dialog>           
+            </div>
             <script src="resources/js/calendario.js"></script>
             <script class="include" type="text/javascript" src="resources/js/jquery.dcjqaccordion.2.7.js"></script>
             <script src="resources/js/jquery.scrollTo.min.js"></script> 

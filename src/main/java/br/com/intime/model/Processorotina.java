@@ -6,6 +6,8 @@
 package br.com.intime.model;
 
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -18,6 +20,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.Size;
 
 /**
@@ -46,6 +49,14 @@ public class Processorotina implements Serializable {
     private List<Processogatilho> processogatilhoList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "processorotina")
     private List<Processoatividade> processoatividadeList;
+    @Transient
+    private LocalDate data;
+    @Transient
+    private Date datamostrar;
+    @Transient
+    private Usuario usuario;
+    @Transient
+    private boolean selecionado;
 
     public Processorotina() {
     }
@@ -100,6 +111,38 @@ public class Processorotina implements Serializable {
 
     public void setProcessoatividadeList(List<Processoatividade> processoatividadeList) {
         this.processoatividadeList = processoatividadeList;
+    }
+
+    public LocalDate getData() {
+        return data;
+    }
+
+    public void setData(LocalDate data) {
+        this.data = data;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
+    public boolean isSelecionado() {
+        return selecionado;
+    }
+
+    public void setSelecionado(boolean selecionado) {
+        this.selecionado = selecionado;
+    }
+
+    public Date getDatamostrar() {
+        return datamostrar;
+    }
+
+    public void setDatamostrar(Date datamostrar) {
+        this.datamostrar = datamostrar;
     }
 
     @Override
