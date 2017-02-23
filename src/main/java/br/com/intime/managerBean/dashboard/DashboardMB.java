@@ -1,12 +1,16 @@
 package br.com.intime.managerBean.dashboard;
 
 import br.com.intime.managerBean.usuario.UsuarioLogadoMB;
+import br.com.intime.model.Atividade;
 import br.com.intime.model.Atividadeaguardando;
 import br.com.intime.model.Atividadeusuario;
 import br.com.intime.model.Feednoticia;
 import br.com.intime.model.Ftpdados;
 import br.com.intime.model.Nota;
 import br.com.intime.model.Notificacao;
+import br.com.intime.model.Processoatividade;
+import br.com.intime.model.Processoatividadegatilho;
+import br.com.intime.model.Processogatilho;
 import br.com.intime.repository.AtividadeAguardandoRepository;
 import br.com.intime.repository.AtividadeRepository;
 import br.com.intime.repository.AtividadeUsuarioRepository;
@@ -14,7 +18,11 @@ import br.com.intime.repository.FeedNoticiaRepository;
 import br.com.intime.repository.FtpDadosRepository;
 import br.com.intime.repository.NotaRepository;
 import br.com.intime.repository.NotificacoesRepository;
+import br.com.intime.repository.ProcessoAtividadeGatilhoRepository;
+import br.com.intime.repository.ProcessoAtividadeRepository;
+import br.com.intime.repository.ProcessoGatilhoRepository;
 import br.com.intime.util.Formatacao;
+import br.com.intime.util.Mensagem;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.time.LocalDate;
@@ -63,6 +71,12 @@ public class DashboardMB implements Serializable {
     private FeedNoticiaRepository feedNoticiaRepository;
     @EJB
     private AtividadeAguardandoRepository atividadeAguardandoRepository;
+    @EJB
+    private ProcessoAtividadeRepository processoAtividadeRepository;
+    @EJB
+    private ProcessoGatilhoRepository processoGatilhoRepository;
+    @EJB
+    private ProcessoAtividadeGatilhoRepository processoAtividadeGatilhoRepository;
 
     @PostConstruct
     public void init() {
@@ -176,6 +190,38 @@ public class DashboardMB implements Serializable {
 
     public void setAtividadeRepository(AtividadeRepository atividadeRepository) {
         this.atividadeRepository = atividadeRepository;
+    }
+
+    public AtividadeAguardandoRepository getAtividadeAguardandoRepository() {
+        return atividadeAguardandoRepository;
+    }
+
+    public void setAtividadeAguardandoRepository(AtividadeAguardandoRepository atividadeAguardandoRepository) {
+        this.atividadeAguardandoRepository = atividadeAguardandoRepository;
+    }
+
+    public ProcessoAtividadeRepository getProcessoAtividadeRepository() {
+        return processoAtividadeRepository;
+    }
+
+    public void setProcessoAtividadeRepository(ProcessoAtividadeRepository processoAtividadeRepository) {
+        this.processoAtividadeRepository = processoAtividadeRepository;
+    }
+
+    public ProcessoGatilhoRepository getProcessoGatilhoRepository() {
+        return processoGatilhoRepository;
+    }
+
+    public void setProcessoGatilhoRepository(ProcessoGatilhoRepository processoGatilhoRepository) {
+        this.processoGatilhoRepository = processoGatilhoRepository;
+    }
+
+    public ProcessoAtividadeGatilhoRepository getProcessoAtividadeGatilhoRepository() {
+        return processoAtividadeGatilhoRepository;
+    }
+
+    public void setProcessoAtividadeGatilhoRepository(ProcessoAtividadeGatilhoRepository processoAtividadeGatilhoRepository) {
+        this.processoAtividadeGatilhoRepository = processoAtividadeGatilhoRepository;
     }
 
     public void gerarListaAtivadadesSemana() {
@@ -401,6 +447,7 @@ public class DashboardMB implements Serializable {
             atividadeusuario.setHoraconclusao(hora);
             atividadeusuario.setDataconclusao(LocalDate.now());
             atividadeusuario.setConcluido(true);
+            verificarProcessoGatilho(atividadeusuario);
             gerarListaAtivadadesHoje();
             gerarListaAtivadadesSemana();
         }
@@ -451,6 +498,64 @@ public class DashboardMB implements Serializable {
             return "#9C9C9C;text-decoration: line-through !important;";
         } else {
             return "#4F4F4F;";
+        }
+    }
+    
+    public void verificarProcessoGatilho(Atividadeusuario atividadeusuario) {
+        Processoatividade processoatividade = processoAtividadeRepository.find("select p from Processoatividade p"
+                + " where p.atividadeusuario.idatividadeusuario=" + atividadeusuario.getIdatividadeusuario());
+        if (processoatividade != null) {
+            Processoatividadegatilho processoatividadegatilho = processoAtividadeGatilhoRepository
+                    .find("select p from Processoatividadegatilho p where p.processoatividade.idprocessoatividade="
+                            + processoatividade.getIdprocessoatividade());
+            if (processoatividadegatilho != null) {
+                processoatividadegatilho.getProcessogatilho().setExecutado(true);
+                processoatividadegatilho.setProcessogatilho(processoGatilhoRepository.update(processoatividadegatilho.getProcessogatilho()));
+                List<Processogatilho> listaGatilho = processoGatilhoRepository
+                        .list("select p from Processogatilho p where p.processorotina.idprocessorotina="
+                                + processoatividadegatilho.getProcessogatilho().getProcessorotina().getIdprocessorotina()
+                                + " and p.processosituacao.idprocessosituacao=" + processoatividadegatilho.getProcessogatilho().getProcessosituacao().getIdprocessosituacao());
+                if (listaGatilho != null && listaGatilho.size() > 0) {
+                    for (int i = 0; i < listaGatilho.size(); i++) {
+                        if (listaGatilho.get(i).getExecutado().equals(false)) {
+                            Atividade atividade = new Atividade();
+                            atividade.setCliente(atividadeusuario.getAtividade().getCliente());
+                            atividade.setDataexecucao(listaGatilho.get(i).getProcessorotina().getData());
+                            atividade.setDatalancamento(LocalDate.now());
+                            LocalTime hora = LocalTime.of(23, 59);
+                            atividade.setHoraexecucao(hora);
+                            atividade.setDescricao(listaGatilho.get(i).getProcessorotina().getDescricao());
+                            atividade.setNotificacaohorario(false);
+                            atividade.setPrioridade("Regular");
+                            atividade.setRotina(false);
+                            atividade.setSubdepartamento(atividadeusuario.getAtividade().getSubdepartamento());
+                            atividade.setUsuario(usuarioLogadoMB.getUsuario());
+                            atividade = atividadeRepository.update(atividade);
+
+                            Atividadeusuario atdusuario = new Atividadeusuario();
+                            atdusuario.setAtividade(atividade);
+                            atdusuario.setConcluido(false);
+                            atdusuario.setSituacao("Play");
+                            atdusuario.setTempo("00:00");
+                            atdusuario.setUsuario(usuarioLogadoMB.getUsuario());
+                            atdusuario = atividadeUsuarioRepository.update(atdusuario);
+
+                            Processoatividade procAtividade = new Processoatividade();
+                            procAtividade.setAtividadeusuario(atdusuario);
+                            procAtividade.setProcessorotina(listaGatilho.get(i).getProcessorotina());
+                            procAtividade.setProcessosituacao(listaGatilho.get(i).getProcessosituacao());
+                            procAtividade = processoAtividadeRepository.update(procAtividade);
+
+                            Processoatividadegatilho procAtividadegatilho = new Processoatividadegatilho();
+                            procAtividadegatilho.setProcessoatividade(procAtividade);
+                            procAtividadegatilho.setProcessogatilho(listaGatilho.get(i));
+                            processoAtividadeGatilhoRepository.update(procAtividadegatilho);
+                            
+                            Mensagem.lancarMensagemInfo("Nova tarefa do Processo '"+listaGatilho.get(i).getProcessorotina().getProcesso().getDescricao()+"' criada.", "");
+                        }
+                    }
+                }
+            }
         }
     }
 }

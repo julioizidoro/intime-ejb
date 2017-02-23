@@ -35,6 +35,10 @@ public class Processogatilho implements Serializable {
     private Integer idprocessogatilho;
     @Column(name = "executado")
     private Boolean executado;
+    @Column(name = "numeroatividade")
+    private int numeroatividade;
+    @Column(name = "atividadeprecedente")
+    private int atividadeprecedente;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "processogatilho")
     private List<Processoatividadegatilho> processoatividadegatilhoList;
     @JoinColumn(name = "processorotina_idprocessorotina", referencedColumnName = "idprocessorotina")
@@ -89,6 +93,22 @@ public class Processogatilho implements Serializable {
 
     public void setProcessosituacao(Processosituacao processosituacao) {
         this.processosituacao = processosituacao;
+    }
+
+    public int getNumeroatividade() {
+        return numeroatividade;
+    }
+
+    public void setNumeroatividade(int numeroatividade) {
+        this.numeroatividade = numeroatividade;
+    }
+
+    public int getAtividadeprecedente() {
+        return atividadeprecedente;
+    }
+
+    public void setAtividadeprecedente(int atividadeprecedente) {
+        this.atividadeprecedente = atividadeprecedente;
     }
 
     @Override

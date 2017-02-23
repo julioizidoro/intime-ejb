@@ -75,14 +75,17 @@
                                                             <i class="fa fa-pause" style="font-size: 14px;color:#B0B5B9;"></i>   
                                                         </p:commandLink>   
                                                         <div class="task-checkbox" style="margin-left:1%;">  
-                                                            <p:commandLink action="#{atividadesMB.mudarSituacaoAtividade(atividades, 'Concluida')}" update="@all"> 
+                                                            <p:commandLink action="#{atividadesMB.mudarSituacaoAtividade(atividades, 'Concluida')}" update="@all" rendered="#{atividadesMB.mostrarAtividadeEmdia(atividades)}"> 
                                                                 <p:selectBooleanCheckbox id="cbxConcluido" class="list-child" value="#{atividades.concluido}"  style="float: left;margin-top:0.6%;margin-left:1.5%;"/> 
-                                                                <p:ajax event="dialogReturn" listener="#{atividadesMB.gerarListaAtivadades()}" update="@form"/>
-                                                            </p:commandLink>      
-                                                        </div>               
+                                                            </p:commandLink>  
+                                                            <p:commandLink action="#{atividadesMB.concluirTarefaAtrasada()}" rendered="#{atividadesMB.mostrarAtrasada(atividades)}"> 
+                                                                <p:selectBooleanCheckbox id="cbxConcluidoAtrasados" class="list-child" value="#{atividades.concluido}"  style="float: left;margin-top:0.6%;margin-left:1.5%;"/> 
+                                                                oi<p:ajax event="dialogReturn" listener="#{atividadesMB.gerarListaAtivadades()}" update="@form"/> 
+                                                            </p:commandLink>  
+                                                        </div>                         
                                                         <div class="task-title"> 
                                                             <span id="nome" class="task-title-sp">#{atividades.atividade.descricao}</span> |     
-                                                            <span id="cliente" class="task-title-sp">#{atividades.atividade.cliente.apelido}</span> 
+                                                            <span id="cliente" class="task-title-sp">#{atividades.atividade.cliente.apelido}</span>   
                                                             <h:panelGroup rendered="#{atividadesMB.mostrarComentarios(atividades)}">
                                                                 <span id="comentarios" class="task-title-sp" style="font-weight: bold;" >
                                                                     (   

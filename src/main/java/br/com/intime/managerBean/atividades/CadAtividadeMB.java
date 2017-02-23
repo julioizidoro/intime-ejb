@@ -97,7 +97,7 @@ public class CadAtividadeMB implements Serializable {
             novo=false;
             cliente = atividadeusuario.getAtividade().getCliente();
             nomeCliente = cliente.getNomefantasia();
-            gerarListaDepartamento();
+            gerarListaDepartamento();  
             clientedepartamento = clienteDepartamentoRepository.find("Select c From Clientedepartamento c"
                     + " where c.cliente.idcliente=" + cliente.getIdcliente() + " and c.departamento.iddepartamento="
                     + atividadeusuario.getAtividade().getSubdepartamento().getDepartamento().getIddepartamento());
