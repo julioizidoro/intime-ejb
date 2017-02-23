@@ -1,15 +1,15 @@
 package br.com.intime.managerBean.processo;
-  
+
 import br.com.intime.managerBean.usuario.UsuarioLogadoMB;
 import br.com.intime.model.Atividade;
 import br.com.intime.model.Atividadeusuario;
 import br.com.intime.model.Cliente;
-import br.com.intime.model.Processo; 
+import br.com.intime.model.Processo;
 import br.com.intime.model.Processoatividade;
 import br.com.intime.model.Processoatividadegatilho;
 import br.com.intime.model.Processogatilho;
 import br.com.intime.model.Processorotina;
-import br.com.intime.model.Processosituacao; 
+import br.com.intime.model.Processosituacao;
 import br.com.intime.model.Usuario;
 import br.com.intime.repository.AtividadeRepository;
 import br.com.intime.repository.AtividadeUsuarioRepository;
@@ -23,10 +23,11 @@ import br.com.intime.repository.ProcessoSituacaoRepository;
 import br.com.intime.repository.UsuarioRepository;
 import br.com.intime.util.Formatacao;
 import br.com.intime.util.Mensagem;
-import java.io.Serializable; 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList; 
+import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -38,11 +39,10 @@ import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 import org.primefaces.context.RequestContext;
 
-
 @Named
 @ViewScoped
-public class CadProcessoSituacaoMB implements Serializable{
-     
+public class CadProcessoSituacaoMB implements Serializable {
+
     @Inject
     private UsuarioLogadoMB usuarioLogadoMB;
     @EJB
@@ -61,7 +61,7 @@ public class CadProcessoSituacaoMB implements Serializable{
     private AtividadeUsuarioRepository atividadeUsuarioRepository;
     @EJB
     private AtividadeRepository atividadeRepository;
-     @EJB
+    @EJB
     private UsuarioRepository usuarioRepository;
     @EJB
     private NotificacoesRepository notificacoesRepository;
@@ -71,22 +71,16 @@ public class CadProcessoSituacaoMB implements Serializable{
     private List<Cliente> listaCliente;
     private List<Processorotina> listaProcessoRotina;
     private List<Usuario> listaUsuario;
-    
+
     @PostConstruct
-    public void init(){
+    public void init() {
         FacesContext fc = FacesContext.getCurrentInstance();
-        HttpSession session = (HttpSession) fc.getExternalContext().getSession(false); 
+        HttpSession session = (HttpSession) fc.getExternalContext().getSession(false);
         processo = (Processo) session.getAttribute("processo");
         session.removeAttribute("processo");
-        if(processo!=null){
-            processosituacao = processoSituacaoRepository.find("select p from Processosituacao p"
-                    + " where p.processo.idprocesso="+processo.getIdprocesso());
-            if(processosituacao==null){
-                processosituacao = new Processosituacao();
-                processosituacao.setDatainicio(new Date());
-            }else{
-                cliente = processosituacao.getCliente();
-            }
+        if (processo != null) {  
+            processosituacao = new Processosituacao();
+            processosituacao.setDatainicio(new Date()); 
             gerarListaProcessoRotina();
         }
         gerarListaCliente();
@@ -108,14 +102,14 @@ public class CadProcessoSituacaoMB implements Serializable{
     public void setProcessosituacao(Processosituacao processosituacao) {
         this.processosituacao = processosituacao;
     }
- 
+
     public Processo getProcesso() {
         return processo;
     }
 
     public void setProcesso(Processo processo) {
         this.processo = processo;
-    } 
+    }
 
     public UsuarioLogadoMB getUsuarioLogadoMB() {
         return usuarioLogadoMB;
@@ -228,94 +222,126 @@ public class CadProcessoSituacaoMB implements Serializable{
     public void setUsuarioRepository(UsuarioRepository usuarioRepository) {
         this.usuarioRepository = usuarioRepository;
     }
- 
-    public void fechar(){
+
+    public void fechar() {
         RequestContext.getCurrentInstance().closeDialog(null);
     }
-    
-    public void salvar(){
-        if(processosituacao.getDatainicio()!=null && cliente!=null && cliente.getIdcliente()!=null){ 
+
+    public void salvar() {
+        if (processosituacao.getDatainicio() != null && cliente != null && cliente.getIdcliente() != null) {
             processosituacao.setProcesso(processo);
-            processosituacao.setCliente(cliente); 
+            processosituacao.setCliente(cliente);
             processosituacao.setUsuario(usuarioLogadoMB.getUsuario());
             processosituacao.setSituacao("Aberto");
             processosituacao = processoSituacaoRepository.update(processosituacao);
-            
+
             for (int i = 0; i < listaProcessoRotina.size(); i++) {
-                if(listaProcessoRotina.get(i).isSelecionado()){
-                    Atividade atividade = new Atividade();
-                    atividade.setCliente(cliente);
-                    atividade.setDataexecucao(
-                            Formatacao.converterDateParaLocalDate(listaProcessoRotina.get(i).getDatamostrar()));
-                    atividade.setDatalancamento(LocalDate.now());
-                    LocalTime hora = LocalTime.of(23, 59);
-                    atividade.setHoraexecucao(hora);
-                    atividade.setDescricao(listaProcessoRotina.get(i).getDescricao());
-                    atividade.setNotificacaohorario(false);
-                    atividade.setPrioridade("Regular");
-                    atividade.setRotina(false);
-                    atividade.setSubdepartamento(processo.getSubdepartamento());
-                    atividade.setUsuario(usuarioLogadoMB.getUsuario()); 
-                    atividade = atividadeRepository.update(atividade);
-                    
-                    Atividadeusuario atividadeusuario = new Atividadeusuario();
-                    atividadeusuario.setAtividade(atividade);
-                    atividadeusuario.setConcluido(false);
-                    atividadeusuario.setSituacao("Play");
-                    atividadeusuario.setTempo("00:00");
-                    atividadeusuario.setUsuario(usuarioLogadoMB.getUsuario());
-                    atividadeusuario = atividadeUsuarioRepository.update(atividadeusuario);
-                    
-                    Processoatividade processoatividade = new Processoatividade();
-                    processoatividade.setAtividadeusuario(atividadeusuario);
-                    processoatividade.setProcessorotina(listaProcessoRotina.get(i));
-                    processoatividade.setProcessosituacao(processosituacao);
-                    processoatividade = processoAtividadeRepository.update(processoatividade);
-                    
-                    if(processo.getTipoprocesso().equalsIgnoreCase("Gatilho")){
+                if (listaProcessoRotina.get(i).isSelecionado()) {
+                    if (processo.getTipoprocesso().equalsIgnoreCase("Gatilho")) {
                         Processogatilho processogatilho = new Processogatilho();
-                        processoatividade.setAtividadeusuario(atividadeusuario);
                         processogatilho.setProcessorotina(listaProcessoRotina.get(i));
                         processogatilho.setProcessosituacao(processosituacao);
+                        processogatilho.setExecutado(false);
                         processogatilho = processoGatilhoRepository.update(processogatilho);
-                        
-                        Processoatividadegatilho processoatividadegatilho = new Processoatividadegatilho();
-                        processoatividadegatilho.setProcessoatividade(processoatividade);
-                        processoatividadegatilho.setProcessogatilho(processogatilho);
-                        processoAtividadeGatilhoRepository.update(processoatividadegatilho);
+                         
+                        if (i == 0) {
+                            Atividade atividade = new Atividade();
+                            atividade.setCliente(cliente);
+                            atividade.setDataexecucao(
+                                    Formatacao.converterDateParaLocalDate(listaProcessoRotina.get(i).getDatamostrar()));
+                            atividade.setDatalancamento(LocalDate.now());
+                            LocalTime hora = LocalTime.of(23, 59);
+                            atividade.setHoraexecucao(hora);
+                            atividade.setDescricao(listaProcessoRotina.get(i).getDescricao());
+                            atividade.setNotificacaohorario(false);
+                            atividade.setPrioridade("Regular");
+                            atividade.setRotina(false);
+                            atividade.setSubdepartamento(processo.getSubdepartamento());
+                            atividade.setUsuario(usuarioLogadoMB.getUsuario());
+                            atividade = atividadeRepository.update(atividade);
+
+                            Atividadeusuario atividadeusuario = new Atividadeusuario();
+                            atividadeusuario.setAtividade(atividade);
+                            atividadeusuario.setConcluido(false);
+                            atividadeusuario.setSituacao("Play");
+                            atividadeusuario.setTempo("00:00");
+                            atividadeusuario.setUsuario(usuarioLogadoMB.getUsuario());
+                            atividadeusuario = atividadeUsuarioRepository.update(atividadeusuario);
+
+                            Processoatividade processoatividade = new Processoatividade();
+                            processoatividade.setAtividadeusuario(atividadeusuario);
+                            processoatividade.setProcessorotina(listaProcessoRotina.get(i));
+                            processoatividade.setProcessosituacao(processosituacao);
+                            processoatividade = processoAtividadeRepository.update(processoatividade);
+                            
+                            Processoatividadegatilho processoatividadegatilho = new Processoatividadegatilho();
+                            processoatividadegatilho.setProcessoatividade(processoatividade);
+                            processoatividadegatilho.setProcessogatilho(processogatilho);
+                            processoAtividadeGatilhoRepository.update(processoatividadegatilho);
+                        }
+                    } else {
+                        Atividade atividade = new Atividade();
+                        atividade.setCliente(cliente);
+                        atividade.setDataexecucao(
+                                Formatacao.converterDateParaLocalDate(listaProcessoRotina.get(i).getDatamostrar()));
+                        atividade.setDatalancamento(LocalDate.now());
+                        LocalTime hora = LocalTime.of(23, 59);
+                        atividade.setHoraexecucao(hora);
+                        atividade.setDescricao(listaProcessoRotina.get(i).getDescricao());
+                        atividade.setNotificacaohorario(false);
+                        atividade.setPrioridade("Regular");
+                        atividade.setRotina(false);
+                        atividade.setSubdepartamento(processo.getSubdepartamento());
+                        atividade.setUsuario(usuarioLogadoMB.getUsuario());
+                        atividade = atividadeRepository.update(atividade);
+
+                        Atividadeusuario atividadeusuario = new Atividadeusuario();
+                        atividadeusuario.setAtividade(atividade);
+                        atividadeusuario.setConcluido(false);
+                        atividadeusuario.setSituacao("Play");
+                        atividadeusuario.setTempo("00:00");
+                        atividadeusuario.setUsuario(usuarioLogadoMB.getUsuario());
+                        atividadeusuario = atividadeUsuarioRepository.update(atividadeusuario);
+
+                        Processoatividade processoatividade = new Processoatividade();
+                        processoatividade.setAtividadeusuario(atividadeusuario);
+                        processoatividade.setProcessorotina(listaProcessoRotina.get(i));
+                        processoatividade.setProcessosituacao(processosituacao);
+                        processoatividade = processoAtividadeRepository.update(processoatividade);
                     }
-                }   
-            }  
+                }
+            }
             Mensagem.lancarMensagemInfo("Salvo com sucesso!", "");
-            RequestContext.getCurrentInstance().closeDialog(null); 
-        }else Mensagem.lancarMensagemErro("Campos obrigatórios não preenchido.", "");
+            RequestContext.getCurrentInstance().closeDialog(null);
+        } else {
+            Mensagem.lancarMensagemErro("Campos obrigatórios não preenchido.", "");
+        }
     }
-    
-    
+
     public void gerarListaCliente() {
         listaCliente = clienteRepository.list("Select c from Cliente c where c.status=1 order by c.nomefantasia");
         if (listaCliente == null) {
             listaCliente = new ArrayList<Cliente>();
         }
     }
-    
-    public void gerarListaProcessoRotina() { 
+
+    public void gerarListaProcessoRotina() {
         listaProcessoRotina = processoRotinaRepository.list("Select p from Processorotina p where p.processo.idprocesso="
-                +processo.getIdprocesso()+" order by p.descricao");
+                + processo.getIdprocesso() + " order by p.descricao");
         if (listaProcessoRotina == null) {
             listaProcessoRotina = new ArrayList<Processorotina>();
-        } 
+        }
         for (int i = 0; i < listaProcessoRotina.size(); i++) {
             listaProcessoRotina.get(i).setUsuario(usuarioLogadoMB.getUsuario());
             LocalDate data = LocalDate.now();
-            if(listaProcessoRotina.get(i).getDiasuteis()>0){
+            if (listaProcessoRotina.get(i).getDiasuteis() > 0) {
                 data = data.plusDays(listaProcessoRotina.get(i).getDiasuteis());
             }
-            listaProcessoRotina.get(i).setDatamostrar(new Date());
-            listaProcessoRotina.get(i).setData(Formatacao.converterDateParaLocalDate(listaProcessoRotina.get(i).getDatamostrar())); 
+            listaProcessoRotina.get(i).setDatamostrar(Date.from(data.atStartOfDay(ZoneId.systemDefault()).toInstant()));
+            listaProcessoRotina.get(i).setData(Formatacao.converterDateParaLocalDate(listaProcessoRotina.get(i).getDatamostrar()));
         }
     }
-    
+
     public void gerarListaUsuario() {
         listaUsuario = usuarioRepository.list("select u from Usuario u where u.status=TRUE order by u.nome");
         if (listaUsuario == null) {

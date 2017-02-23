@@ -161,7 +161,7 @@ public class ProcessoMB implements Serializable {
         FacesContext fc = FacesContext.getCurrentInstance();
         HttpSession session = (HttpSession) fc.getExternalContext().getSession(false);
         session.setAttribute("processo", processo);
-        RequestContext.getCurrentInstance().openDialog("visualizarProcessosIniciados", options, null);
+        RequestContext.getCurrentInstance().openDialog("consProcessoSituacaoAtivo", options, null);
     }
     
     public void pesquisarProcesso() {
