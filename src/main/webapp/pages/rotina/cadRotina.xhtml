@@ -16,7 +16,7 @@
                             <p:outputLabel value="Home" style="margin-left:0.5%;font-weight: inherit;"/>
                         </p:commandLink>
                         <p:outputLabel value="/" style="margin-left:0.5%;color:#797979;font-weight: inherit;"/>
-                        <p:commandLink id="btnConsultaRotina" action="#{usuarioLogadoMB.paginainicial()}" style="margin-left:0.5%;" class="hoverTextos">
+                        <p:commandLink id="btnConsultaRotina" action="#{menuMB.consRotina()}" style="margin-left:0.5%;" class="hoverTextos">
                             <p:outputLabel value="Consulta de Rotinas" style="margin-left:0.5%;font-weight: inherit;"/>
                         </p:commandLink>
                         <p:outputLabel value="/" style="margin-left:0.5%;color:#797979;font-weight: inherit;"/>
@@ -39,18 +39,14 @@
                         <f:selectItems  value="#{cadRotinaMB.listaSubDepartamento}" var="sd" itemLabel="#{sd.nome}" itemValue="#{sd}"/>
                         <f:attribute name="listaSubDepartamento" value="#{cadRotinaMB.listaSubDepartamento}"/>
                     </p:selectOneMenu> 
-                    <h:panelGroup>  
-                        <span>   
-                            <p:inputText id="inputbuscar" class="form-control search-consultas" placeholder="Buscar">
-                            </p:inputText>
-                            <h:commandButton id="btnPesquisar" style="background: transparent;border: none;" />  
-                        </span>
+                    <h:panelGroup>   
+                        <p:inputText id="inputbuscar" placeholder="Nome Rotina" value="#{cadRotinaMB.rotina.nome}"/>   
                     </h:panelGroup>       
                     <h:panelGroup>  
-                        <p:commandLink id="btnSalvar" title="Salvar" action="#{cadRotinaMB.agendaRotina()}" class="hoverTextos">
+                        <p:commandLink id="btnSalvar" title="Salvar" action="#{cadRotinaMB.salvarRotina()}" class="hoverTextos" update="tabelaRotinaCliente, growl">
                             <i class="fa fa-check" style="font-size:35px;color: #C9A471;"/>  
                         </p:commandLink>  
-                        <p:commandLink id="btnCancelar" title="Limpar" action="#" class="hoverTextos">
+                        <p:commandLink id="btnCancelar" title="Cancelar" action="#{cadRotinaMB.cancelar()}" class="hoverTextos">
                             <i class="fa fa-times" style="font-size:35px;color: #293949;"/> 
                         </p:commandLink>  
                     </h:panelGroup>
@@ -60,36 +56,40 @@
                         <section class="panel tasks-widget" style="width:100%;">
                             <div class="panel-body">
                                 <div class="task-content">
-                                    <p:dataTable var="car" value="#" scrollable="true" scrollHeight="150"> 
+                                    <p:dataTable id="tabelaRotinaCliente" var="cliente" value="#{cadRotinaMB.listaCliente}" scrollable="true" scrollHeight="180"> 
                                         <p:column headerText="" style="text-align: center;width: 10%;border: none;">
-                                            <p:commandLink id="btnadicionar" title="Adicionar" action="#{cadRotinaMB.cadastrarFuncoesRotina()}" update=":consRotina:growl" class="hoverTextos">
+                                            <p:commandLink id="btnadicionar" title="Adicionar" action="#{cadRotinaMB.cadastrarFuncoesRotina(cliente)}" update=":consRotina:growl" class="hoverTextos">
                                                 <i class="fa fa-plus" style="font-size:19px;color: #293949;"/>  
                                             </p:commandLink>  
-                                            <p:commandLink id="btnEditar" title="Editar" action="#{cadRotinaMB.editarRotina()}" update=":consRotina:growl" class="hoverTextos">
+                                            <p:commandLink id="btnEditar" title="Editar" action="#{cadRotinaMB.editarRotina(cliente)}" update=":consRotina:growl" class="hoverTextos">
                                                 <i class="fa fa-pencil-square-o" style="font-size:19px;color:#4F4F4F;"/> 
                                             </p:commandLink> 
-                                            <p:commandLink id="btnExcluir"  title="Excluir" action="#{cadRotinaMB.excluirRotina()}"  update=":consRotina:growl" class="hoverTextos">
+                                            <p:commandLink id="btnExcluir"  title="Excluir" action="#{cadRotinaMB.excluirRotina(cliente)}"  update=":consRotina:growl" class="hoverTextos">
                                                 <i class="fa fa-trash" style="font-size:19px;color: #C9A471;"/> 
                                             </p:commandLink>    
                                         </p:column>   
                                         <p:column headerText="CLIENTE"  style="width: 25%;border: none;text-align: left;">
-                                            <h:outputText value="Anderson Luiz" />
+                                            <h:outputText value="#{cliente.cliente.apelido}" />
                                         </p:column>
                                         <p:column headerText="FREQUÊNCIA"  style="text-align: center;border: none;text-align: left;">
-                                            <h:outputText value="Semanal" />
+                                            <h:outputText value="#{cliente.rotinacliente.recorrencia}" />
                                         </p:column>   
                                         <p:column headerText="RESPONSÁVEL" style="text-align: center;width: 20%;border: none;text-align: left;">
-                                            <h:outputText value="Carlos Souza" />
+                                            <h:outputText value="#" />
                                         </p:column>
                                         <p:column headerText="INÍCIO" style="text-align: center;border: none;">
-                                            <h:outputText style="font-style: oblique;font-weight:400;" value="28/12/2016" />
+                                            <h:outputText style="font-style: oblique;font-weight:400;" value="#{cliente.rotinacliente.datainicio}" >
+                                                <f:convertDateTime   pattern="dd/MM/yyyy" timeZone="America/Sao_Paulo"/>
+                                            </h:outputText>
                                         </p:column>      
                                         <p:column headerText="FIM"  style="text-align: center;border: none;">
-                                            <h:outputText style="font-style: oblique;font-weight:400;" value="31/12/2016" />
+                                            <h:outputText style="font-style: oblique;font-weight:400;" value="#{cliente.rotinacliente.datatermino}" >
+                                                <f:convertDateTime   pattern="dd/MM/yyyy" timeZone="America/Sao_Paulo"/>
+                                            </h:outputText>
                                         </p:column>     
                                         <p:column headerText="PRIORIDADE"  style="width: 10%;text-align: center;border: none;">
-                                            <p:commandLink id="btnPrioridade" title="Prioridade" action="#" class="hoverTextos">
-                                                <i class="fa fa-exclamation-triangle" style="font-size:22px;color: red;"/> 
+                                            <p:commandLink id="btnPrioridade" title="Prioridade" class="hoverTextos">
+                                                <i class="fa fa-exclamation-triangle" style="font-size:22px;color:#{cadRotinaMB.corPrioridade(cliente)};"/> 
                                             </p:commandLink>    
                                         </p:column>
                                     </p:dataTable>

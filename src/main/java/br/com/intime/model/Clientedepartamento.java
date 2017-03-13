@@ -15,6 +15,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 /**
  *
@@ -36,6 +37,8 @@ public class Clientedepartamento implements Serializable {
     @JoinColumn(name = "departamento_iddepartamento", referencedColumnName = "iddepartamento")
     @ManyToOne(optional = false)
     private Departamento departamento;
+    @Transient
+    private Rotinacliente rotinacliente;
 
     public Clientedepartamento() {
     }
@@ -66,6 +69,14 @@ public class Clientedepartamento implements Serializable {
 
     public void setDepartamento(Departamento departamento) {
         this.departamento = departamento;
+    }
+
+    public Rotinacliente getRotinacliente() {
+        return rotinacliente;
+    }
+
+    public void setRotinacliente(Rotinacliente rotinacliente) {
+        this.rotinacliente = rotinacliente;
     }
 
     @Override

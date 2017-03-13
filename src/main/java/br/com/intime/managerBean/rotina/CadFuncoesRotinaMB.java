@@ -5,13 +5,30 @@
  */
 package br.com.intime.managerBean.rotina;
 
+import br.com.intime.model.Atividade;
+import br.com.intime.model.Atividadeusuario;
+import br.com.intime.model.Cliente; 
+import br.com.intime.model.Rotina;
+import br.com.intime.model.Rotinaatividade;
+import br.com.intime.model.Rotinacliente;
 import br.com.intime.model.Usuario;
+import br.com.intime.repository.AtividadeRepository;
+import br.com.intime.repository.AtividadeUsuarioRepository;
+import br.com.intime.repository.RotinaAtividadeRepository;
+import br.com.intime.repository.RotinaClienteRepository;
+import br.com.intime.util.Formatacao;
+import br.com.intime.util.Mensagem;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import javax.servlet.http.HttpSession;
+import org.primefaces.context.RequestContext;
 
 /**
  *
@@ -21,6 +38,14 @@ import javax.inject.Named;
 @ViewScoped
 public class CadFuncoesRotinaMB implements Serializable{
     
+    @EJB
+    private RotinaClienteRepository clienteRepository;
+    @EJB
+    private RotinaAtividadeRepository rotinaAtividadeRepository;
+    @EJB
+    private AtividadeRepository atividadeRepository;
+    @EJB
+    private AtividadeUsuarioRepository atividadeUsuarioRepository;
     private List<Usuario> listaUsuario;
     private Usuario usuario;
     private boolean diario = true;
@@ -38,11 +63,28 @@ public class CadFuncoesRotinaMB implements Serializable{
     private boolean terminaApos = false;
     private boolean terminaRecorrencia = false;
     private boolean terminaData = false;
-    
+    private Cliente cliente;
+    private Rotinacliente rotinacliente;
+    private Rotina rotina;
     
     @PostConstruct
     public void init(){
-        listaUsuario = new ArrayList<>();
+        FacesContext fc = FacesContext.getCurrentInstance();
+        HttpSession session = (HttpSession) fc.getExternalContext().getSession(false);
+        rotina = (Rotina) session.getAttribute("rotina");
+        cliente = (Cliente) session.getAttribute("cliente");
+        session.removeAttribute("cliente");
+        session.removeAttribute("rotina");
+        if(rotina!=null){
+            if(cliente!=null){
+                rotinacliente = clienteRepository.find("select r from Rotinacliente r where"
+                        + " r.rotina.idrotina="+rotina.getIdrotina()
+                        + " and r.cliente.idcliente="+cliente.getIdcliente());
+            }else{
+                rotinacliente= new Rotinacliente();
+            }
+        }
+        listaUsuario = new ArrayList<Usuario>();
     }
 
     
@@ -184,9 +226,54 @@ public class CadFuncoesRotinaMB implements Serializable{
         this.terminaData = terminaData;
     }
 
-    
-    
-    
+    public Rotinacliente getRotinacliente() {
+        return rotinacliente;
+    }
+
+    public void setRotinacliente(Rotinacliente rotinacliente) {
+        this.rotinacliente = rotinacliente;
+    }
+
+    public RotinaClienteRepository getClienteRepository() {
+        return clienteRepository;
+    }
+
+    public void setClienteRepository(RotinaClienteRepository clienteRepository) {
+        this.clienteRepository = clienteRepository;
+    }
+
+    public Cliente getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
+    }
+
+    public Rotina getRotina() {
+        return rotina;
+    }
+
+    public void setRotina(Rotina rotina) {
+        this.rotina = rotina;
+    }
+
+    public RotinaAtividadeRepository getRotinaAtividadeRepository() {
+        return rotinaAtividadeRepository;
+    }
+
+    public void setRotinaAtividadeRepository(RotinaAtividadeRepository rotinaAtividadeRepository) {
+        this.rotinaAtividadeRepository = rotinaAtividadeRepository;
+    }
+
+    public AtividadeRepository getAtividadeRepository() {
+        return atividadeRepository;
+    }
+
+    public void setAtividadeRepository(AtividadeRepository atividadeRepository) {
+        this.atividadeRepository = atividadeRepository;
+    }
+ 
     public void verificarRecorrenciaDiaria(){
         if (diario) {
             verificarRecorrencia("diario");
@@ -442,5 +529,46 @@ public class CadFuncoesRotinaMB implements Serializable{
             terminaData = false;
         }
         
+    }
+    
+    public String salvar(){
+        boolean novo = false;
+        if(rotinacliente.getIdrotinacliente()==null){
+            novo=true;
+        }
+        rotinacliente.setCliente(cliente);
+        rotinacliente.setRotina(rotina);
+        rotinacliente = clienteRepository.update(rotinacliente);
+        
+        if(novo){
+            Atividade atividade = new Atividade();
+            atividade.setCliente(cliente);
+            atividade.setDataexecucao(Formatacao.converterDateParaLocalDate(rotinacliente.getDatainicio()));
+            atividade.setDatalancamento(LocalDate.now());
+            atividade.setDescricao(rotina.getNome());
+            atividade.setHoraexecucao(rotinacliente.getHora());
+            atividade.setMeta(String.valueOf(rotinacliente.getMeta()));
+            atividade.setPrioridade(rotinacliente.getPrioridade());
+            atividade.setRotina(true);
+            atividade.setSubdepartamento(rotina.getSubdepartamento());
+            atividade.setUsuario(usuario);
+            atividade.setNotificacaohorario(true);
+            atividade = atividadeRepository.update(atividade);
+
+            Atividadeusuario atividadeusuario = new Atividadeusuario();
+            atividadeusuario.setAtividade(atividade);
+            atividadeusuario.setSituacao("Play");
+            atividadeusuario.setUsuario(usuario);
+            atividadeusuario.setTempo("00:00");
+            atividadeUsuarioRepository.update(atividadeusuario);
+
+            Rotinaatividade rotinaatividade = new Rotinaatividade();
+            rotinaatividade.setRotina(rotinacliente);
+            rotinaatividade.setAtividade(atividade);
+            rotinaAtividadeRepository.update(rotinaatividade); 
+        }
+        RequestContext.getCurrentInstance().closeDialog(null);
+        Mensagem.lancarMensagemInfo("Salvo com sucesso!", "");
+        return "";
     }
 }

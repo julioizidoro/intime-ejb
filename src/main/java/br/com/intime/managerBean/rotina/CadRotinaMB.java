@@ -6,9 +6,16 @@
 package br.com.intime.managerBean.rotina;
 
 import br.com.intime.managerBean.usuario.UsuarioLogadoMB;
+import br.com.intime.model.Clientedepartamento;
 import br.com.intime.model.Departamento;
+import br.com.intime.model.Rotina;
+import br.com.intime.model.Rotinacliente;
 import br.com.intime.model.Subdepartamento;
+import br.com.intime.repository.ClienteDepartamentoRepository;
 import br.com.intime.repository.DepartamentoRepository;
+import br.com.intime.repository.RotinaClienteRepository;
+import br.com.intime.repository.RotinaRepository;
+import br.com.intime.repository.SubDepartamentoRepository;
 import br.com.intime.util.Mensagem;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -17,29 +24,51 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
+import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.servlet.http.HttpSession;
 import org.primefaces.context.RequestContext;
-
 
 @Named
 @ViewScoped
-public class CadRotinaMB implements Serializable{
-    
+public class CadRotinaMB implements Serializable {
+
     @EJB
     private DepartamentoRepository departamentoRepository;
+    @EJB
+    private SubDepartamentoRepository subDepartamentoRepository;
+    @EJB
+    private RotinaRepository rotinaRepository;
+    @EJB
+    private RotinaClienteRepository rotinaClienteRepository;
+    @EJB
+    private ClienteDepartamentoRepository clienteDepartamentoRepository;
     @Inject
     private UsuarioLogadoMB usuarioLogadoMB;
     private List<Departamento> listaDepartamento;
     private Departamento departamento;
     private List<Subdepartamento> listaSubDepartamento;
     private Subdepartamento subdepartamento;
-    
-    
+    private Rotina rotina;
+    private List<Clientedepartamento> listaCliente;
+
     @PostConstruct
-    public void init(){
-        listaDepartamento = new ArrayList<>();
+    public void init() {
+        FacesContext fc = FacesContext.getCurrentInstance();
+        HttpSession session = (HttpSession) fc.getExternalContext().getSession(false);
+        rotina = (Rotina) session.getAttribute("rotina");
+        session.removeAttribute("rotina");
+        gerarListaDepartamento();
+        if (rotina != null) {
+            gerarListaClientes();
+            departamento = rotina.getSubdepartamento().getDepartamento();
+            listarSubDepartamento();
+            subdepartamento = rotina.getSubdepartamento();
+        }else{
+            rotina = new Rotina();
+        }
     }
 
     public List<Departamento> getListaDepartamento() {
@@ -89,39 +118,164 @@ public class CadRotinaMB implements Serializable{
     public void setUsuarioLogadoMB(UsuarioLogadoMB usuarioLogadoMB) {
         this.usuarioLogadoMB = usuarioLogadoMB;
     }
-     
-    public void listarSubDepartamento(){
+
+    public SubDepartamentoRepository getSubDepartamentoRepository() {
+        return subDepartamentoRepository;
+    }
+
+    public void setSubDepartamentoRepository(SubDepartamentoRepository subDepartamentoRepository) {
+        this.subDepartamentoRepository = subDepartamentoRepository;
+    }
+
+    public RotinaRepository getRotinaRepository() {
+        return rotinaRepository;
+    }
+
+    public void setRotinaRepository(RotinaRepository rotinaRepository) {
+        this.rotinaRepository = rotinaRepository;
+    }
+
+    public Rotina getRotina() {
+        return rotina;
+    }
+
+    public void setRotina(Rotina rotina) {
+        this.rotina = rotina;
+    }
+
+    public ClienteDepartamentoRepository getClienteDepartamentoRepository() {
+        return clienteDepartamentoRepository;
+    }
+
+    public void setClienteDepartamentoRepository(ClienteDepartamentoRepository clienteDepartamentoRepository) {
+        this.clienteDepartamentoRepository = clienteDepartamentoRepository;
+    }
+
+    public List<Clientedepartamento> getListaCliente() {
+        return listaCliente;
+    }
+
+    public void setListaCliente(List<Clientedepartamento> listaCliente) {
+        this.listaCliente = listaCliente;
+    }
+
+    public void listarSubDepartamento() {
         if (departamento == null) {
             listaSubDepartamento = new ArrayList<>();
+        } else {
+            String sql = "Select s From Subdepartamento s where s.departamento.iddepartamento="
+                    + departamento.getIddepartamento() + " and s.status=true order by s.nome";
+            listaSubDepartamento = subDepartamentoRepository.list(sql);
+        }
+    }
+
+    public void cadastrarFuncoesRotina(Clientedepartamento clientedepartamento) {
+        if (usuarioLogadoMB.getUsuario().getCadastrorotina() == 3
+                || usuarioLogadoMB.getUsuario().getCadastrorotina() == 4) {
+            Map<String, Object> options = new HashMap<String, Object>();
+            options.put("contentWidth", 700);
+            FacesContext fc = FacesContext.getCurrentInstance();
+            HttpSession session = (HttpSession) fc.getExternalContext().getSession(false);
+            session.setAttribute("rotina", rotina);
+            session.setAttribute("cliente", clientedepartamento.getCliente());
+            RequestContext.getCurrentInstance().openDialog("cadFuncoesRotina", options, null);
+        } else {
+            Mensagem.lancarMensagemWarn("Acesso Negado!", "");
+        }
+    }
+
+    public void editarRotina(Clientedepartamento clientedepartamento) {
+        if (usuarioLogadoMB.getUsuario().getCadastrorotina() == 3
+                || usuarioLogadoMB.getUsuario().getCadastrorotina() == 4) {
+            Map<String, Object> options = new HashMap<String, Object>();
+            options.put("contentWidth", 700);
+            FacesContext fc = FacesContext.getCurrentInstance();
+            HttpSession session = (HttpSession) fc.getExternalContext().getSession(false);
+            session.setAttribute("rotina", rotina);
+            session.setAttribute("cliente", clientedepartamento.getCliente());
+            RequestContext.getCurrentInstance().openDialog("cadRotina", options, null);
+        } else {
+            Mensagem.lancarMensagemWarn("Acesso Negado!", "");
+        }
+    }
+
+    public void excluirRotina(Clientedepartamento clientedepartamento) {
+        if (usuarioLogadoMB.getUsuario().getCadastrorotina() == 4) {
+            Rotinacliente rotinacliente = rotinaClienteRepository.find(
+                "select r from Rotinacliente r where r.rotina.idrotina="+rotina.getIdrotina()
+                +" and r.cliente.idcliente="+clientedepartamento.getCliente().getIdcliente());
+            if(rotinacliente!=null){
+                rotinaClienteRepository.remove(rotinacliente.getIdrotinacliente());
+                Mensagem.lancarMensagemInfo("Excluído com sucesso.", "");
+            }
+        } else {
+            Mensagem.lancarMensagemWarn("Acesso Negado!", "");
+        }
+    }
+
+    public String agendaRotina() {
+        return "consAgendaRotina";
+    }
+
+    public void gerarListaDepartamento() {
+        listaDepartamento = departamentoRepository.list("Select d From Departamento d");
+        if (listaDepartamento == null || listaDepartamento.isEmpty()) {
+            listaDepartamento = new ArrayList<Departamento>();
+        }
+    }
+
+    public void salvarRotina() {
+        if (departamento != null && departamento.getIddepartamento() != null) {
+            if (subdepartamento != null && subdepartamento.getIdsubdepartamento() != null) {
+                rotina.setSubdepartamento(subdepartamento);
+                rotina = rotinaRepository.update(rotina);
+                gerarListaClientes();
+                Mensagem.lancarMensagemInfo("Salvo com sucesso!", "");
+            } else {
+                Mensagem.lancarMensagemErro("Atenção!", "Sub-Departamento não informado.");
+            }
+        } else {
+            Mensagem.lancarMensagemErro("Atenção!", "Departamento não informado.");
+        }
+    }
+
+    public void gerarListaClientes() {
+        listaCliente = clienteDepartamentoRepository.list(
+                "select c from Clientedepartamento c where c.departamento.iddepartamento="
+                + rotina.getSubdepartamento().getDepartamento().getIddepartamento()
+                + " order by c.cliente.apelido");
+        if (listaCliente == null) {
+            listaCliente = new ArrayList<Clientedepartamento>();
+        }else{
+            for (int i = 0; i < listaCliente.size(); i++) {
+                Rotinacliente rotinacliente = rotinaClienteRepository.find(
+                    "select r from Rotinacliente r where r.rotina.idrotina="+rotina.getIdrotina()
+                    +" and r.cliente.idcliente="+listaCliente.get(i).getCliente().getIdcliente());
+                if(rotinacliente!=null){
+                    listaCliente.get(i).setRotinacliente(rotinacliente);
+                }else{
+                    rotinacliente = new Rotinacliente();
+                    listaCliente.get(i).setRotinacliente(rotinacliente);
+                }
+            }
         }
     }
     
-    public void cadastrarFuncoesRotina(){
-        if(usuarioLogadoMB.getUsuario().getCadastrorotina()==3
-            || usuarioLogadoMB.getUsuario().getCadastrorotina()==4){
-            Map<String, Object> options = new HashMap<String, Object>();
-            options.put("contentWidth", 700);
-            RequestContext.getCurrentInstance().openDialog("cadFuncoesRotina", options, null);
-        }else Mensagem.lancarMensagemWarn("Acesso Negado!", "");
+    public String cancelar(){
+        return "consRotina";
     }
     
-    public void editarRotina(){
-        if(usuarioLogadoMB.getUsuario().getCadastrorotina()==3
-            || usuarioLogadoMB.getUsuario().getCadastrorotina()==4){
-            Map<String, Object> options = new HashMap<String, Object>();
-            options.put("contentWidth", 700);
-            RequestContext.getCurrentInstance().openDialog("cadRotina", options, null);
-        }else Mensagem.lancarMensagemWarn("Acesso Negado!", "");
+    public String corPrioridade(Clientedepartamento clientedepartamento){
+        if(clientedepartamento.getRotinacliente()!=null && clientedepartamento.getRotinacliente().getIdrotinacliente()!=null){
+            if(clientedepartamento.getRotinacliente().getPrioridade().equalsIgnoreCase("Urgente")){
+                return "red";
+            }else if(clientedepartamento.getRotinacliente().getPrioridade().equalsIgnoreCase("Importante")){
+                return "yellow";
+            }else{
+                return "transparent";
+            }
+        }
+        return "transparent";
     }
     
-    
-    public void excluirRotina(){
-       if(usuarioLogadoMB.getUsuario().getCadastrorotina()==4){ 
-           
-       }else Mensagem.lancarMensagemWarn("Acesso Negado!", "");
-    }
-    
-    public String agendaRotina(){
-       return "consAgendaRotina";
-    }
 }

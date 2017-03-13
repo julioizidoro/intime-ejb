@@ -21,6 +21,7 @@ import br.com.intime.repository.NotificacoesRepository;
 import br.com.intime.repository.ProcessoAtividadeGatilhoRepository;
 import br.com.intime.repository.ProcessoAtividadeRepository;
 import br.com.intime.repository.ProcessoGatilhoRepository;
+import br.com.intime.repository.ProcessoSituacaoRepository;
 import br.com.intime.util.Formatacao;
 import br.com.intime.util.Mensagem;
 import java.io.Serializable;
@@ -77,6 +78,8 @@ public class DashboardMB implements Serializable {
     private ProcessoGatilhoRepository processoGatilhoRepository;
     @EJB
     private ProcessoAtividadeGatilhoRepository processoAtividadeGatilhoRepository;
+    @EJB
+    private ProcessoSituacaoRepository processoSituacaoRepository;
 
     @PostConstruct
     public void init() {
@@ -224,6 +227,14 @@ public class DashboardMB implements Serializable {
         this.processoAtividadeGatilhoRepository = processoAtividadeGatilhoRepository;
     }
 
+    public ProcessoSituacaoRepository getProcessoSituacaoRepository() {
+        return processoSituacaoRepository;
+    }
+
+    public void setProcessoSituacaoRepository(ProcessoSituacaoRepository processoSituacaoRepository) {
+        this.processoSituacaoRepository = processoSituacaoRepository;
+    }
+
     public void gerarListaAtivadadesSemana() {
         LocalDate dataInicial = LocalDate.now().minusDays(7);
         LocalDate dataFinal = LocalDate.now();
@@ -240,12 +251,12 @@ public class DashboardMB implements Serializable {
                 + " and a.situacao<>'Concluida' and a.atividade.dataexecucao< :dataInicial "
                 + " ORDER BY a.atividade.dataexecucao";
         listaAtividadesAtrasadas = atividadeUsuarioRepository.list(sql, data, null);
-        
+
         String sqlAguardando = "SELECT a FROM Atividadeaguardando a where a.atividadeusuario.usuario.idusuario=" + usuarioLogadoMB.getUsuario().getIdusuario()
                 + " and a.dataretorno>= :dataInicial"
                 + " ORDER BY a.dataretorno ";
         List<Atividadeaguardando> lista = atividadeAguardandoRepository.list(sqlAguardando, LocalDate.now(), null);
-        if (lista != null) { 
+        if (lista != null) {
             for (int i = 0; i < lista.size(); i++) {
                 listaAtividadesAtrasadas.remove(lista.get(i).getAtividadeusuario());
             }
@@ -258,12 +269,12 @@ public class DashboardMB implements Serializable {
                 + " and a.situacao<>'Concluida' and a.atividade.dataexecucao= :dataInicial "
                 + " ORDER BY a.atividade.dataexecucao";
         listaAtividadesHoje = atividadeUsuarioRepository.list(sql, data, null);
-        
+
         String sqlAguardando = "SELECT a FROM Atividadeaguardando a where a.atividadeusuario.usuario.idusuario=" + usuarioLogadoMB.getUsuario().getIdusuario()
                 + " and a.dataretorno>= :dataInicial"
                 + " ORDER BY a.dataretorno ";
         List<Atividadeaguardando> lista = atividadeAguardandoRepository.list(sqlAguardando, LocalDate.now(), null);
-        if (lista != null) { 
+        if (lista != null) {
             for (int i = 0; i < lista.size(); i++) {
                 listaAtividadesAtrasadas.remove(lista.get(i).getAtividadeusuario());
             }
@@ -325,16 +336,16 @@ public class DashboardMB implements Serializable {
         LocalTime horarioAtual = LocalTime.now();
         LocalTime horarioAnterior;
         LocalTime horario;
-        if(horarioAtual.getMinute()!=00){
-            horarioAnterior = LocalTime.of(horarioAtual.getHour(), horarioAtual.getMinute() - 1); 
-        }else{
+        if (horarioAtual.getMinute() != 00) {
+            horarioAnterior = LocalTime.of(horarioAtual.getHour(), horarioAtual.getMinute() - 1);
+        } else {
             horarioAnterior = LocalTime.of(horarioAtual.getHour(), horarioAtual.getMinute());
         }
-        if(horarioAtual.getMinute()!=59){
-            horario = LocalTime.of(horarioAtual.getHour(), horarioAtual.getMinute() + 1); 
-        }else{
+        if (horarioAtual.getMinute() != 59) {
+            horario = LocalTime.of(horarioAtual.getHour(), horarioAtual.getMinute() + 1);
+        } else {
             horario = LocalTime.of(horarioAtual.getHour(), horarioAtual.getMinute());
-        } 
+        }
         if (listaAtividadesHoje != null && listaAtividadesHoje.size() > 0) {
             for (int i = 0; i < listaAtividadesHoje.size(); i++) {
                 if (listaAtividadesHoje.get(i).getAtividade().isNotificacaohorario()) {
@@ -358,7 +369,7 @@ public class DashboardMB implements Serializable {
                         horaMostrar = horaMostrar + String.valueOf(im);
                         notificacao.setDescricao("Sua tarefa '" + listaAtividadesHoje.get(i).getAtividade().getDescricao()
                                 + "' deverá ser realizada as " + horaMostrar + " hrs.");
-                        notificacoesRepository.create(notificacao); 
+                        notificacoesRepository.create(notificacao);
                         listaAtividadesHoje.get(i).getAtividade().setNotificacaohorario(false);
                         atividadeRepository.update(listaAtividadesHoje.get(i).getAtividade());
                     } else if ((listaAtividadesHoje.get(i).getAtividade().getHoraexecucao().isBefore(horarioAnterior)
@@ -484,8 +495,7 @@ public class DashboardMB implements Serializable {
         options.put("contentWidth", 350);
         RequestContext.getCurrentInstance().openDialog("cadFeedNoticia", options, null);
     }
-    
-    
+
     public String retornarCorAtividades(Atividadeusuario atividadeusuario) {
         LocalDate data = LocalDate.now();
         if (((atividadeusuario.getAtividade().getDataexecucao().equals(data)
@@ -500,7 +510,7 @@ public class DashboardMB implements Serializable {
             return "#4F4F4F;";
         }
     }
-    
+
     public void verificarProcessoGatilho(Atividadeusuario atividadeusuario) {
         Processoatividade processoatividade = processoAtividadeRepository.find("select p from Processoatividade p"
                 + " where p.atividadeusuario.idatividadeusuario=" + atividadeusuario.getIdatividadeusuario());
@@ -514,48 +524,73 @@ public class DashboardMB implements Serializable {
                 List<Processogatilho> listaGatilho = processoGatilhoRepository
                         .list("select p from Processogatilho p where p.processorotina.idprocessorotina="
                                 + processoatividadegatilho.getProcessogatilho().getProcessorotina().getIdprocessorotina()
+                                + " and p.atividadeprecedente=" + processoatividadegatilho.getProcessogatilho().getNumeroatividade()
                                 + " and p.processosituacao.idprocessosituacao=" + processoatividadegatilho.getProcessogatilho().getProcessosituacao().getIdprocessosituacao());
                 if (listaGatilho != null && listaGatilho.size() > 0) {
-                    for (int i = 0; i < listaGatilho.size(); i++) {
-                        if (listaGatilho.get(i).getExecutado().equals(false)) {
-                            Atividade atividade = new Atividade();
-                            atividade.setCliente(atividadeusuario.getAtividade().getCliente());
-                            atividade.setDataexecucao(listaGatilho.get(i).getProcessorotina().getData());
-                            atividade.setDatalancamento(LocalDate.now());
-                            LocalTime hora = LocalTime.of(23, 59);
-                            atividade.setHoraexecucao(hora);
-                            atividade.setDescricao(listaGatilho.get(i).getProcessorotina().getDescricao());
-                            atividade.setNotificacaohorario(false);
-                            atividade.setPrioridade("Regular");
-                            atividade.setRotina(false);
-                            atividade.setSubdepartamento(atividadeusuario.getAtividade().getSubdepartamento());
-                            atividade.setUsuario(usuarioLogadoMB.getUsuario());
-                            atividade = atividadeRepository.update(atividade);
-
-                            Atividadeusuario atdusuario = new Atividadeusuario();
-                            atdusuario.setAtividade(atividade);
-                            atdusuario.setConcluido(false);
-                            atdusuario.setSituacao("Play");
-                            atdusuario.setTempo("00:00");
-                            atdusuario.setUsuario(usuarioLogadoMB.getUsuario());
-                            atdusuario = atividadeUsuarioRepository.update(atdusuario);
-
-                            Processoatividade procAtividade = new Processoatividade();
-                            procAtividade.setAtividadeusuario(atdusuario);
-                            procAtividade.setProcessorotina(listaGatilho.get(i).getProcessorotina());
-                            procAtividade.setProcessosituacao(listaGatilho.get(i).getProcessosituacao());
-                            procAtividade = processoAtividadeRepository.update(procAtividade);
-
-                            Processoatividadegatilho procAtividadegatilho = new Processoatividadegatilho();
-                            procAtividadegatilho.setProcessoatividade(procAtividade);
-                            procAtividadegatilho.setProcessogatilho(listaGatilho.get(i));
-                            processoAtividadeGatilhoRepository.update(procAtividadegatilho);
-                            
-                            Mensagem.lancarMensagemInfo("Nova tarefa do Processo '"+listaGatilho.get(i).getProcessorotina().getProcesso().getDescricao()+"' criada.", "");
-                        }
-                    }
+                    salvarAtividadeGatilho(listaGatilho, atividadeusuario);
+                } else {
+                    processoatividadegatilho.getProcessoatividade().getProcessosituacao().setSituacao("Concluído");
+                    processoatividadegatilho.getProcessoatividade().getProcessosituacao().setDatatermino(new Date());
+                    processoatividadegatilho.getProcessoatividade().setProcessosituacao(
+                            processoSituacaoRepository.update(processoatividadegatilho.getProcessoatividade().getProcessosituacao()));
                 }
+            } else {
+                verificarProcessoRegular(processoatividade);
             }
         }
+    }
+    
+    public void salvarAtividadeGatilho(List<Processogatilho> listaGatilho, Atividadeusuario atividadeusuario) {
+        for (int i = 0; i < listaGatilho.size(); i++) {
+            Atividade atividade = new Atividade();
+            atividade.setCliente(atividadeusuario.getAtividade().getCliente());
+            atividade.setDataexecucao(Formatacao.converterDateParaLocalDate(
+                    listaGatilho.get(i).getProcessosituacao().getDatainicio()));
+            atividade.setDatalancamento(LocalDate.now());
+            LocalTime hora = LocalTime.of(23, 59);
+            atividade.setHoraexecucao(hora);
+            atividade.setDescricao(listaGatilho.get(i).getProcessorotina().getDescricao());
+            atividade.setNotificacaohorario(false);
+            atividade.setPrioridade("Regular");
+            atividade.setRotina(false);
+            atividade.setSubdepartamento(atividadeusuario.getAtividade().getSubdepartamento());
+            atividade.setUsuario(usuarioLogadoMB.getUsuario());
+            atividade = atividadeRepository.update(atividade);
+
+            Atividadeusuario atdusuario = new Atividadeusuario();
+            atdusuario.setAtividade(atividade);
+            atdusuario.setConcluido(false);
+            atdusuario.setSituacao("Play");
+            atdusuario.setTempo("00:00");
+            atdusuario.setUsuario(usuarioLogadoMB.getUsuario());
+            atdusuario = atividadeUsuarioRepository.update(atdusuario);
+
+            Processoatividade procAtividade = new Processoatividade();
+            procAtividade.setAtividadeusuario(atdusuario);
+            procAtividade.setProcessorotina(listaGatilho.get(i).getProcessorotina());
+            procAtividade.setProcessosituacao(listaGatilho.get(i).getProcessosituacao());
+            procAtividade = processoAtividadeRepository.update(procAtividade);
+
+            Processoatividadegatilho procAtividadegatilho = new Processoatividadegatilho();
+            procAtividadegatilho.setProcessoatividade(procAtividade);
+            procAtividadegatilho.setProcessogatilho(listaGatilho.get(i));
+            processoAtividadeGatilhoRepository.update(procAtividadegatilho);
+
+            Mensagem.lancarMensagemInfo("Nova tarefa do Processo '" + listaGatilho.get(i).getProcessorotina().getProcesso().getDescricao() + "' criada.", "");
+        }
+    }
+
+    public void verificarProcessoRegular(Processoatividade processoatividade) {
+        List<Processoatividade> lista = processoAtividadeRepository.list(
+                "select p from Processoatividade p where p.processosituacao.idprocessosituacao="
+                + processoatividade.getProcessosituacao().getIdprocessosituacao()
+                + " and p.atividadeusuario.situacao<>'Concluida'"
+                + " and p.atividadeusuario.idatividadeusuario<>"+processoatividade.getAtividadeusuario().getIdatividadeusuario());
+        if (lista==null || lista.size()==0) {
+            processoatividade.getProcessosituacao().setSituacao("Concluído");
+            processoatividade.getProcessosituacao().setDatatermino(new Date());
+            processoatividade.setProcessosituacao(
+                    processoSituacaoRepository.update(processoatividade.getProcessosituacao()));
+        } 
     }
 }

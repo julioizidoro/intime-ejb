@@ -25,9 +25,10 @@
                    
                     <h:panelGroup>  
                         <span>   
-                            <p:inputText id="inputbuscar" class="form-control search-consultas" placeholder="Buscar">
+                            <p:inputText id="inputbuscar" class="form-control search-consultas" value="#{rotinaMB.nomeRotina}" placeholder="Buscar">
+                                <p:ajax event="blur" listener="#{rotinaMB.pesquisar()}" update="tabelaRotina"/>
                             </p:inputText>
-                            <h:commandButton id="btnPesquisar" style="background: transparent;border: none;" />  
+                            <h:commandButton id="btnPesquisar" action="#{rotinaMB.pesquisar()}" style="background: transparent;border: none;" />  
                         </span>
                     </h:panelGroup>       
                     <h:panelGroup>  
@@ -41,18 +42,18 @@
                         <section class="panel tasks-widget" style="width:100%;">
                             <div class="panel-body">
                                 <div class="task-content">
-                                    <p:dataTable var="car" value="#" scrollable="true" scrollHeight="150"> 
+                                    <p:dataTable id="tabelaRotina" var="rotina" value="#{rotinaMB.listaRotina}" scrollable="true" scrollHeight="150"> 
                                         <p:column headerText="NOME"  style="width: 25%;border: none;text-align: left;">
-                                            <h:outputText value="Anderson Luiz" />
+                                            <h:outputText value="#{rotina.nome}" />
                                         </p:column>
                                         <p:column headerText="SUB-DEPARTAMENTO"  style="text-align: center;border: none;text-align: left;">
-                                            <h:outputText value="teste" />
+                                            <h:outputText value="#{rotina.subdepartamento.nome}" />  
                                         </p:column>   
                                         <p:column headerText="" style="text-align: center;width: 10%;border: none;"> 
-                                            <p:commandLink id="btnEditar" title="Editar" action="#" update=":consRotina:growl" class="hoverTextos">
+                                            <p:commandLink id="btnEditar" title="Editar" action="#{rotinaMB.editarRotina(rotina)}" update=":consRotina:growl" class="hoverTextos">
                                                 <i class="fa fa-pencil-square-o" style="font-size:19px;color:#4F4F4F;"/> 
                                             </p:commandLink> 
-                                            <p:commandLink id="btnExcluir"  title="Excluir" action="#"  update=":consRotina:growl" class="hoverTextos">
+                                            <p:commandLink id="btnExcluir"  title="Excluir" action="#{rotinaMB.excluirRotina(rotina)}"  update=":consRotina:growl, :consRotina:tabelaRotina" class="hoverTextos">
                                                 <i class="fa fa-trash" style="font-size:19px;color: #C9A471;"/> 
                                             </p:commandLink>    
                                         </p:column>   
