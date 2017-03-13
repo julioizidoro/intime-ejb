@@ -557,19 +557,30 @@ public class AtividadesMB implements Serializable {
     }
 
     public boolean mostrarAtrasada(Atividadeusuario atividadeusuario) {
+        LocalTime hora = LocalTime.now();
         if (atividadeusuario.getAtividade().getDataexecucao().isBefore(LocalDate.now())) {
             return true;
         } else {
+            if(atividadeusuario.getAtividade().getHoraexecucao()!=null 
+                && atividadeusuario.getAtividade().getHoraexecucao().isBefore(hora)){
+                return true;
+            }
             return false;
         }
     }
 
     public boolean mostrarAtividadeEmdia(Atividadeusuario atividadeusuario) {
         LocalDate data = LocalDate.now();
-        if (atividadeusuario.getAtividade().getDataexecucao().equals(data)
-                || atividadeusuario.getAtividade().getDataexecucao().isAfter(data)) {
+        LocalTime hora = LocalTime.now();
+        if (atividadeusuario.getAtividade().getDataexecucao().isAfter(data)) {
             return true;
         } else {
+            if(atividadeusuario.getAtividade().getDataexecucao().equals(data)
+                && (atividadeusuario.getAtividade().getHoraexecucao()!=null 
+                && (atividadeusuario.getAtividade().getHoraexecucao().equals(hora)
+                || atividadeusuario.getAtividade().getHoraexecucao().isAfter(hora)))){
+                return true;
+            }
             return false;
         }
     }
@@ -871,8 +882,8 @@ public class AtividadesMB implements Serializable {
             processoAtividadeGatilhoRepository.update(procAtividadegatilho);
 
             Mensagem.lancarMensagemInfo("Nova tarefa do Processo '" + listaGatilho.get(i).getProcessorotina().getProcesso().getDescricao() + "' criada.", "");
-            listaAtividade.add(atdusuario); 
-        }
+            listaAtividade.add(atdusuario);  
+       }
     }
 
     public void verificarProcessoRegular(Processoatividade processoatividade) {
