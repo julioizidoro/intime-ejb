@@ -5,8 +5,7 @@ import br.com.intime.managerBean.usuario.UsuarioLogadoMB;
 import br.com.intime.model.Atividade;
 import br.com.intime.model.Atividadeaguardando;
 import br.com.intime.model.Atividadeusuario;
-import br.com.intime.model.Notificacao;
-import br.com.intime.model.Processo;
+import br.com.intime.model.Notificacao; 
 import br.com.intime.model.Processoatividade;
 import br.com.intime.model.Processoatividadegatilho;
 import br.com.intime.model.Processogatilho;
@@ -819,7 +818,8 @@ public class AtividadesMB implements Serializable {
                 processoatividadegatilho.getProcessogatilho().setExecutado(true);
                 processoatividadegatilho.setProcessogatilho(processoGatilhoRepository.update(processoatividadegatilho.getProcessogatilho()));
                 List<Processogatilho> listaGatilho = processoGatilhoRepository
-                        .list("select p from Processogatilho p where p.executado=false and p.processosituacao.idprocessosituacao=" + processoatividadegatilho.getProcessogatilho().getProcessosituacao().getIdprocessosituacao());
+                        .list("select p from Processogatilho p where p.executado=false and p.atividadeprecedente="+processoatividadegatilho.getProcessogatilho().getNumeroatividade()
+                                + " and p.processosituacao.idprocessosituacao=" + processoatividadegatilho.getProcessogatilho().getProcessosituacao().getIdprocessosituacao());
                 if (listaGatilho != null && listaGatilho.size() > 0) {
                     salvarAtividadeGatilho(listaGatilho, atividadeusuario);
                 } else {
@@ -871,8 +871,7 @@ public class AtividadesMB implements Serializable {
             processoAtividadeGatilhoRepository.update(procAtividadegatilho);
 
             Mensagem.lancarMensagemInfo("Nova tarefa do Processo '" + listaGatilho.get(i).getProcessorotina().getProcesso().getDescricao() + "' criada.", "");
-            listaAtividade.add(atdusuario);
-            i = 1000;
+            listaAtividade.add(atdusuario); 
         }
     }
 

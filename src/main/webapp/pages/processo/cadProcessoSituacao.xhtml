@@ -37,6 +37,9 @@
             <br/>
             <p:dataTable id="tabelaProcessoRotina" var="processoRotina" value="#{cadProcessoSituacaoMB.listaProcessoRotina}"
                         editable="true" editMode="cell" widgetVar="cellProcesso" scrollable="true" scrollHeight="150"> 
+                <p:column headerText="Nº"  style="width:15%;border: none;text-align: left;" rendered="#{cadProcessoSituacaoMB.habilitarGatilho}"> 
+                    <h:outputText value="#{processoRotina.numeroatividade}" /> 
+                </p:column>     
                 <p:column headerText="ATIVIDADES"  style="width:30%;border: none;text-align: left;">
                     <h:outputText value="#{processoRotina.descricao}" />
                 </p:column> 
@@ -71,7 +74,23 @@
                             </p:selectOneMenu> 
                         </f:facet>
                     </p:cellEditor>
-                </p:column>     
+                </p:column>    
+                <p:column id="colunaPrecedente" headerText="ATIVIDADE PRECEDENTE"  style="width:30%;border: none;text-align: left;" rendered="#{cadProcessoSituacaoMB.habilitarGatilho}">
+                    <p:cellEditor>
+                        <f:facet name="output">   
+                            <h:outputText value="#{processoRotina.atividadeprecedente}" />
+                        </f:facet>
+                        <f:facet name="input">
+                            <p:selectOneMenu id="atividadePrecedente" style="width:95%;" value="#{processoRotina.atividadeprecedente}"  
+                                             filter="true" filterMatchMode="contains" panelStyle="width:180px" >
+                                <f:selectItem  itemLabel="Nº ATIVIDADE" itemValue="0" noSelectionOption="true"/>  
+                                <f:selectItems  value="#{cadProcessoSituacaoMB.listaNumeroAtividades}" var="numero" 
+                                                itemLabel="#{numero}" itemValue="#{numero}"/>
+                                <p:ajax event="change" update="colunaPrecedente"/>
+                            </p:selectOneMenu> 
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>   
                 <p:column style="width:10%;text-align:center;border: none;">
                     <p:selectBooleanCheckbox value="#{processoRotina.selecionado}" />          
                 </p:column>       

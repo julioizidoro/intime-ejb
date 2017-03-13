@@ -71,6 +71,8 @@ public class CadProcessoSituacaoMB implements Serializable {
     private List<Cliente> listaCliente;
     private List<Processorotina> listaProcessoRotina;
     private List<Usuario> listaUsuario;
+    private List<String> listaNumeroAtividades;
+    private boolean habilitarGatilho=false;
 
     @PostConstruct
     public void init() {
@@ -82,6 +84,9 @@ public class CadProcessoSituacaoMB implements Serializable {
             processosituacao = new Processosituacao();
             processosituacao.setDatainicio(new Date()); 
             gerarListaProcessoRotina();
+            if(processo.getTipoprocesso().equalsIgnoreCase("Gatilho")){
+                habilitarGatilho=true;
+            }
         }
         gerarListaCliente();
         gerarListaUsuario();
@@ -223,6 +228,22 @@ public class CadProcessoSituacaoMB implements Serializable {
         this.usuarioRepository = usuarioRepository;
     }
 
+    public List<String> getListaNumeroAtividades() {
+        return listaNumeroAtividades;
+    }
+
+    public void setListaNumeroAtividades(List<String> listaNumeroAtividades) {
+        this.listaNumeroAtividades = listaNumeroAtividades;
+    }
+
+    public boolean isHabilitarGatilho() {
+        return habilitarGatilho;
+    }
+
+    public void setHabilitarGatilho(boolean habilitarGatilho) {
+        this.habilitarGatilho = habilitarGatilho;
+    }
+
     public void fechar() {
         RequestContext.getCurrentInstance().closeDialog(null);
     }
@@ -242,8 +263,10 @@ public class CadProcessoSituacaoMB implements Serializable {
                         processogatilho.setProcessorotina(listaProcessoRotina.get(i));
                         processogatilho.setProcessosituacao(processosituacao);
                         processogatilho.setExecutado(false);
+                        processogatilho.setNumeroatividade(listaProcessoRotina.get(i).getNumeroatividade());
+                        processogatilho.setAtividadeprecedente(listaProcessoRotina.get(i).getAtividadeprecedente());
                         processogatilho = processoGatilhoRepository.update(processogatilho);
-                         
+                            
                         if (i == 0) {
                             Atividade atividade = new Atividade();
                             atividade.setCliente(cliente);
@@ -331,6 +354,8 @@ public class CadProcessoSituacaoMB implements Serializable {
         if (listaProcessoRotina == null) {
             listaProcessoRotina = new ArrayList<Processorotina>();
         }
+        listaNumeroAtividades = new ArrayList<String>();
+        int numeroAtividade=1;
         for (int i = 0; i < listaProcessoRotina.size(); i++) {
             listaProcessoRotina.get(i).setUsuario(usuarioLogadoMB.getUsuario());
             LocalDate data = LocalDate.now();
@@ -339,6 +364,9 @@ public class CadProcessoSituacaoMB implements Serializable {
             }
             listaProcessoRotina.get(i).setDatamostrar(Date.from(data.atStartOfDay(ZoneId.systemDefault()).toInstant()));
             listaProcessoRotina.get(i).setData(Formatacao.converterDateParaLocalDate(listaProcessoRotina.get(i).getDatamostrar()));
+            listaProcessoRotina.get(i).setNumeroatividade(numeroAtividade);
+            listaNumeroAtividades.add(String.valueOf(numeroAtividade));
+            numeroAtividade++;
         }
     }
 

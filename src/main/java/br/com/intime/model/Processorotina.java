@@ -57,6 +57,10 @@ public class Processorotina implements Serializable {
     private Usuario usuario;
     @Transient
     private boolean selecionado;
+    @Transient
+    private int numeroatividade;
+    @Transient
+    private int atividadeprecedente;
 
     public Processorotina() {
     }
@@ -143,6 +147,22 @@ public class Processorotina implements Serializable {
 
     public void setDatamostrar(Date datamostrar) {
         this.datamostrar = datamostrar;
+    }
+
+    public int getNumeroatividade() {
+        return numeroatividade;
+    }
+
+    public void setNumeroatividade(int numeroatividade) {
+        this.numeroatividade = numeroatividade;
+    }
+
+    public int getAtividadeprecedente() {
+        return atividadeprecedente;
+    }
+
+    public void setAtividadeprecedente(int atividadeprecedente) {
+        this.atividadeprecedente = atividadeprecedente;
     }
 
     @Override
