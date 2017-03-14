@@ -87,9 +87,16 @@ body{
     width:70%;
 }
 
+.tamanho55{
+    width:55%;
+}
 
 .tamanho30{
     width:30%;
+}
+
+.tamanho25{
+    width:25%;
 }
   
 .fc-event.fc-draggable {

@@ -63,6 +63,7 @@
                                             </p:commandLink>  
                                             <p:commandLink id="btnEditar" title="Editar" action="#{cadRotinaMB.editarRotina(cliente)}" update=":consRotina:growl" class="hoverTextos">
                                                 <i class="fa fa-pencil-square-o" style="font-size:19px;color:#4F4F4F;"/> 
+                                                <p:ajax event="dialogReturn" listener="#{cadRotinaMB.gerarListaClientes()}" update=":consRotina:tabelaRotinaCliente"/>
                                             </p:commandLink> 
                                             <p:commandLink id="btnExcluir"  title="Excluir" action="#{cadRotinaMB.excluirRotina(cliente)}"  update=":consRotina:growl" class="hoverTextos">
                                                 <i class="fa fa-trash" style="font-size:19px;color: #C9A471;"/> 
@@ -75,20 +76,20 @@
                                             <h:outputText value="#{cliente.rotinacliente.recorrencia}" />
                                         </p:column>   
                                         <p:column headerText="RESPONSÁVEL" style="text-align: center;width: 20%;border: none;text-align: left;">
-                                            <h:outputText value="#" />
+                                            <h:outputText value="#{cliente.rotinacliente.usuario.nome}" />
                                         </p:column>
                                         <p:column headerText="INÍCIO" style="text-align: center;border: none;">
-                                            <h:outputText style="font-style: oblique;font-weight:400;" value="#{cliente.rotinacliente.datainicio}" >
+                                            <h:outputText style="font-style: oblique;font-weight:400;" value="#{cliente.rotinacliente.datainicial}" >
                                                 <f:convertDateTime   pattern="dd/MM/yyyy" timeZone="America/Sao_Paulo"/>
                                             </h:outputText>
                                         </p:column>      
                                         <p:column headerText="FIM"  style="text-align: center;border: none;">
-                                            <h:outputText style="font-style: oblique;font-weight:400;" value="#{cliente.rotinacliente.datatermino}" >
+                                            <h:outputText style="font-style: oblique;font-weight:400;" value="#{cliente.rotinacliente.datafinal}" >
                                                 <f:convertDateTime   pattern="dd/MM/yyyy" timeZone="America/Sao_Paulo"/>
                                             </h:outputText>
                                         </p:column>     
-                                        <p:column headerText="PRIORIDADE"  style="width: 10%;text-align: center;border: none;">
-                                            <p:commandLink id="btnPrioridade" title="Prioridade" class="hoverTextos">
+                                        <p:column headerText="PRIORIDADE"  style="width: 10%;text-align: center;border: none;">  
+                                            <p:commandLink id="btnPrioridade" title="Prioridade" style="cursor: inherit;">
                                                 <i class="fa fa-exclamation-triangle" style="font-size:22px;color:#{cadRotinaMB.corPrioridade(cliente)};"/> 
                                             </p:commandLink>    
                                         </p:column>

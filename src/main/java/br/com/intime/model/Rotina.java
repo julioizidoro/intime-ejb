@@ -18,6 +18,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne; 
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.Size; 
 
 /**
@@ -42,6 +43,12 @@ public class Rotina implements Serializable {
     @JoinColumn(name = "subdepartamento_idsubdepartamento", referencedColumnName = "idsubdepartamento")
     @ManyToOne(optional = false)
     private Subdepartamento subdepartamento;
+    @Transient
+    private boolean imagemcinza;
+    @Transient
+    private boolean imagemvermelha;
+    @Transient
+    private boolean imagemverde;  
 
     public Rotina() {
     }
@@ -80,6 +87,30 @@ public class Rotina implements Serializable {
 
     public void setSubdepartamento(Subdepartamento subdepartamento) {
         this.subdepartamento = subdepartamento;
+    }
+
+    public boolean isImagemcinza() {
+        return imagemcinza;
+    }
+
+    public void setImagemcinza(boolean imagemcinza) {
+        this.imagemcinza = imagemcinza;
+    }
+
+    public boolean isImagemvermelha() {
+        return imagemvermelha;
+    }
+
+    public void setImagemvermelha(boolean imagemvermelha) {
+        this.imagemvermelha = imagemvermelha;
+    }
+
+    public boolean isImagemverde() {
+        return imagemverde;
+    }
+
+    public void setImagemverde(boolean imagemverde) {
+        this.imagemverde = imagemverde;
     }
 
     @Override

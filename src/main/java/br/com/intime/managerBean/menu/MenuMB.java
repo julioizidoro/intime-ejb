@@ -66,7 +66,7 @@ public class MenuMB implements Serializable {
     }
      
     public String agendaRotina() {
-        return "consRotina";
+        return "consAgendaRotina";
     }
     
      public String consProcesso() {

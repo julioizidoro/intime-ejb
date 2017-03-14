@@ -7,20 +7,32 @@ package br.com.intime.managerBean.rotina;
 
 import br.com.intime.model.Atividade;
 import br.com.intime.model.Atividadeusuario;
-import br.com.intime.model.Cliente; 
+import br.com.intime.model.Cliente;
 import br.com.intime.model.Rotina;
+import br.com.intime.model.Rotinaanual;
 import br.com.intime.model.Rotinaatividade;
 import br.com.intime.model.Rotinacliente;
+import br.com.intime.model.Rotinadiaria;
+import br.com.intime.model.Rotinamensal;
+import br.com.intime.model.Rotinasemanal;
 import br.com.intime.model.Usuario;
 import br.com.intime.repository.AtividadeRepository;
 import br.com.intime.repository.AtividadeUsuarioRepository;
+import br.com.intime.repository.RotinaAnualRepository;
 import br.com.intime.repository.RotinaAtividadeRepository;
 import br.com.intime.repository.RotinaClienteRepository;
+import br.com.intime.repository.RotinaDiarioRepository;
+import br.com.intime.repository.RotinaMensalRepository;
+import br.com.intime.repository.RotinaSemanalRepository;
+import br.com.intime.repository.UsuarioRepository;
 import br.com.intime.util.Formatacao;
 import br.com.intime.util.Mensagem;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -32,12 +44,12 @@ import org.primefaces.context.RequestContext;
 
 /**
  *
- * @author Anderson
+ * @author Kamila
  */
 @Named
 @ViewScoped
-public class CadFuncoesRotinaMB implements Serializable{
-    
+public class CadFuncoesRotinaMB implements Serializable {
+
     @EJB
     private RotinaClienteRepository clienteRepository;
     @EJB
@@ -46,48 +58,106 @@ public class CadFuncoesRotinaMB implements Serializable{
     private AtividadeRepository atividadeRepository;
     @EJB
     private AtividadeUsuarioRepository atividadeUsuarioRepository;
+    @EJB
+    private RotinaDiarioRepository rotinaDiarioRepository;
+    @EJB
+    private RotinaMensalRepository rotinaMensalRepository;
+    @EJB
+    private RotinaSemanalRepository rotinaSemanalRepository;
+    @EJB
+    private RotinaAnualRepository rotinaAnualRepository;
+    @EJB
+    private UsuarioRepository usuarioRepository;
     private List<Usuario> listaUsuario;
     private Usuario usuario;
-    private boolean diario = true;
+    private boolean diario = false;
     private boolean semanal = false;
     private boolean mensal = false;
     private boolean anual = false;
     private boolean semInformacoes = false;
-    private boolean numDiasDiario = true;
-    private boolean todosDiasDiario = false;
-    private boolean numDiasMensal = true;
-    private boolean numDiasMensal2 = false;
-    private boolean numMesAnual = true;
-    private boolean numMesAnual2 = false;
     private boolean terminaNunca = false;
     private boolean terminaApos = false;
-    private boolean terminaRecorrencia = false;
-    private boolean terminaData = false;
+    private boolean datafinal = false;
+    private boolean hora = false;
+    private boolean meta = false;
     private Cliente cliente;
     private Rotinacliente rotinacliente;
     private Rotina rotina;
-    
+    private Rotinadiaria rotinadiaria;
+    private Rotinamensal rotinamensal;
+    private Rotinasemanal rotinasemanal;
+    private Rotinaanual rotinaanual;
+
     @PostConstruct
-    public void init(){
+    public void init() {
         FacesContext fc = FacesContext.getCurrentInstance();
         HttpSession session = (HttpSession) fc.getExternalContext().getSession(false);
         rotina = (Rotina) session.getAttribute("rotina");
         cliente = (Cliente) session.getAttribute("cliente");
         session.removeAttribute("cliente");
         session.removeAttribute("rotina");
-        if(rotina!=null){
-            if(cliente!=null){
+        rotinadiaria = new Rotinadiaria();
+        rotinasemanal = new Rotinasemanal();
+        rotinamensal = new Rotinamensal();
+        rotinaanual = new Rotinaanual();
+        gerarListaUsuario();
+        if (rotina != null) {
+            if (cliente != null) {
                 rotinacliente = clienteRepository.find("select r from Rotinacliente r where"
-                        + " r.rotina.idrotina="+rotina.getIdrotina()
-                        + " and r.cliente.idcliente="+cliente.getIdcliente());
-            }else{
-                rotinacliente= new Rotinacliente();
+                        + " r.rotina.idrotina=" + rotina.getIdrotina()
+                        + " and r.cliente.idcliente=" + cliente.getIdcliente());
+                if (rotinacliente != null) {
+                    if (rotinacliente.getRotinadiaria() != null) {
+                        rotinadiaria = rotinacliente.getRotinadiaria();
+                        diario = true;
+                    } else if (rotinacliente.getRotinasemanal() != null) {
+                        rotinasemanal = rotinacliente.getRotinasemanal();
+                        semanal=true;
+                    } else if (rotinacliente.getRotinamensal() != null) {
+                        rotinamensal = rotinacliente.getRotinamensal();
+                        mensal=true;
+                    } else if (rotinacliente.getRotinaanual() != null) {
+                        rotinaanual = rotinacliente.getRotinaanual();
+                        anual=true;
+                    }
+                    usuario = rotinacliente.getUsuario();
+                    rotinacliente.setDatainicial(Date.from(rotinacliente.getDatainicio().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+                    if (rotinacliente.getHora() != null) {
+                        hora = true;
+                        LocalTime hora = rotinacliente.getHora();
+                        String horaMostrar = "";
+                        int ih = hora.getHour();
+                        int im = hora.getMinute();
+                        if (ih <= 9) {
+                            horaMostrar = "0";
+                        }
+                        horaMostrar = horaMostrar + String.valueOf(ih) + ":";
+                        if (im <= 9) {
+                            horaMostrar = horaMostrar + "0";
+                        }
+                        horaMostrar = horaMostrar + String.valueOf(im); 
+                        rotinacliente.setHorario(horaMostrar);
+                    }
+                    if (rotinacliente.getMeta() != null && rotinacliente.getMeta()>0) {
+                        meta = true;
+                    }
+                    if (rotinacliente.getRecorrencia() != null && rotinacliente.getRecorrencia()>0) {
+                        terminaApos = true;
+                    }
+                    if (rotinacliente.getDatatermino() != null) {
+                        datafinal = true;
+                        rotinacliente.setDatafinal(Date.from(rotinacliente.getDatatermino().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+                    }
+                } else {
+                    rotinacliente = new Rotinacliente();
+                    diario=true;
+                }
+            } else {
+                rotinacliente = new Rotinacliente();
             }
         }
-        listaUsuario = new ArrayList<Usuario>();
     }
 
-    
     public List<Usuario> getListaUsuario() {
         return listaUsuario;
     }
@@ -140,58 +210,8 @@ public class CadFuncoesRotinaMB implements Serializable{
         return semInformacoes;
     }
 
-    public boolean isNumDiasDiario() {
-        return numDiasDiario;
-    }
-
-    public void setNumDiasDiario(boolean numDiasDiario) {
-        this.numDiasDiario = numDiasDiario;
-    }
-
-    public boolean isTodosDiasDiario() {
-        return todosDiasDiario;
-    }
-
-    public void setTodosDiasDiario(boolean todosDiasDiario) {
-        this.todosDiasDiario = todosDiasDiario;
-    }
-    
-    
-
     public void setSemInformacoes(boolean semInformacoes) {
         this.semInformacoes = semInformacoes;
-    }
-
-    public boolean isNumDiasMensal() {
-        return numDiasMensal;
-    }
-
-    public void setNumDiasMensal(boolean numDiasMensal) {
-        this.numDiasMensal = numDiasMensal;
-    }
-
-    public boolean isNumDiasMensal2() {
-        return numDiasMensal2;
-    }
-
-    public void setNumDiasMensal2(boolean numDiasMensal2) {
-        this.numDiasMensal2 = numDiasMensal2;
-    }
-
-    public boolean isNumMesAnual() {
-        return numMesAnual;
-    }
-
-    public void setNumMesAnual(boolean numMesAnual) {
-        this.numMesAnual = numMesAnual;
-    }
-
-    public boolean isNumMesAnual2() {
-        return numMesAnual2;
-    }
-
-    public void setNumMesAnual2(boolean numMesAnual2) {
-        this.numMesAnual2 = numMesAnual2;
     }
 
     public boolean isTerminaNunca() {
@@ -210,20 +230,28 @@ public class CadFuncoesRotinaMB implements Serializable{
         this.terminaApos = terminaApos;
     }
 
-    public boolean isTerminaRecorrencia() {
-        return terminaRecorrencia;
+    public boolean isDatafinal() {
+        return datafinal;
     }
 
-    public void setTerminaRecorrencia(boolean terminaRecorrencia) {
-        this.terminaRecorrencia = terminaRecorrencia;
+    public void setDatafinal(boolean datafinal) {
+        this.datafinal = datafinal;
     }
 
-    public boolean isTerminaData() {
-        return terminaData;
+    public boolean isHora() {
+        return hora;
     }
 
-    public void setTerminaData(boolean terminaData) {
-        this.terminaData = terminaData;
+    public void setHora(boolean hora) {
+        this.hora = hora;
+    }
+
+    public boolean isMeta() {
+        return meta;
+    }
+
+    public void setMeta(boolean meta) {
+        this.meta = meta;
     }
 
     public Rotinacliente getRotinacliente() {
@@ -273,302 +301,537 @@ public class CadFuncoesRotinaMB implements Serializable{
     public void setAtividadeRepository(AtividadeRepository atividadeRepository) {
         this.atividadeRepository = atividadeRepository;
     }
- 
-    public void verificarRecorrenciaDiaria(){
+
+    public AtividadeUsuarioRepository getAtividadeUsuarioRepository() {
+        return atividadeUsuarioRepository;
+    }
+
+    public void setAtividadeUsuarioRepository(AtividadeUsuarioRepository atividadeUsuarioRepository) {
+        this.atividadeUsuarioRepository = atividadeUsuarioRepository;
+    }
+
+    public Rotinadiaria getRotinadiaria() {
+        return rotinadiaria;
+    }
+
+    public void setRotinadiaria(Rotinadiaria rotinadiaria) {
+        this.rotinadiaria = rotinadiaria;
+    }
+
+    public Rotinamensal getRotinamensal() {
+        return rotinamensal;
+    }
+
+    public void setRotinamensal(Rotinamensal rotinamensal) {
+        this.rotinamensal = rotinamensal;
+    }
+
+    public Rotinasemanal getRotinasemanal() {
+        return rotinasemanal;
+    }
+
+    public void setRotinasemanal(Rotinasemanal rotinasemanal) {
+        this.rotinasemanal = rotinasemanal;
+    }
+
+    public Rotinaanual getRotinaanual() {
+        return rotinaanual;
+    }
+
+    public void setRotinaanual(Rotinaanual rotinaanual) {
+        this.rotinaanual = rotinaanual;
+    }
+
+    public RotinaDiarioRepository getRotinaDiarioRepository() {
+        return rotinaDiarioRepository;
+    }
+
+    public void setRotinaDiarioRepository(RotinaDiarioRepository rotinaDiarioRepository) {
+        this.rotinaDiarioRepository = rotinaDiarioRepository;
+    }
+
+    public RotinaMensalRepository getRotinaMensalRepository() {
+        return rotinaMensalRepository;
+    }
+
+    public void setRotinaMensalRepository(RotinaMensalRepository rotinaMensalRepository) {
+        this.rotinaMensalRepository = rotinaMensalRepository;
+    }
+
+    public RotinaSemanalRepository getRotinaSemanalRepository() {
+        return rotinaSemanalRepository;
+    }
+
+    public void setRotinaSemanalRepository(RotinaSemanalRepository rotinaSemanalRepository) {
+        this.rotinaSemanalRepository = rotinaSemanalRepository;
+    }
+
+    public RotinaAnualRepository getRotinaAnualRepository() {
+        return rotinaAnualRepository;
+    }
+
+    public void setRotinaAnualRepository(RotinaAnualRepository rotinaAnualRepository) {
+        this.rotinaAnualRepository = rotinaAnualRepository;
+    }
+
+    public UsuarioRepository getUsuarioRepository() {
+        return usuarioRepository;
+    }
+
+    public void setUsuarioRepository(UsuarioRepository usuarioRepository) {
+        this.usuarioRepository = usuarioRepository;
+    }
+
+    public void verificarRecorrenciaDiaria() {
         if (diario) {
             verificarRecorrencia("diario");
-        }else{
+        } else {
             verificarRecorrencia("desabilitarDiario");
         }
     }
-    
-    public void verificarRecorrenciaSemanal(){
+
+    public void verificarRecorrenciaSemanal() {
         if (semanal) {
             verificarRecorrencia("semanal");
-        }else{
+        } else {
             verificarRecorrencia("desabilitarSemanal");
         }
     }
-    
-    public void verificarRecorrenciaMensal(){
+
+    public void verificarRecorrenciaMensal() {
         if (mensal) {
             verificarRecorrencia("mensal");
-        }else{
+        } else {
             verificarRecorrencia("desabilitarMensal");
         }
     }
-    
-    public void verificarRecorrenciaAnual(){
+
+    public void verificarRecorrenciaAnual() {
         if (anual) {
             verificarRecorrencia("anual");
-        }else{
+        } else {
             verificarRecorrencia("desabilitarAnual");
         }
     }
 
-    
-    public void verificarRecorrencia(String tipoBotao){
+    public void verificarRecorrencia(String tipoBotao) {
         if (tipoBotao.equalsIgnoreCase("diario")) {
             diario = true;
             semanal = false;
             mensal = false;
             anual = false;
-            todosDiasDiario = false;
-            numDiasDiario = true;
-        }else if (tipoBotao.equalsIgnoreCase("desabilitarDiario")) {
+            rotinadiaria.setAcadadia(false);
+            rotinadiaria.setTodosdias(true);
+        } else if (tipoBotao.equalsIgnoreCase("desabilitarDiario")) {
             diario = false;
-            numDiasDiario = false;
-            todosDiasDiario = false;
-        }else{
+            rotinadiaria.setAcadadia(false);
+            rotinadiaria.setTodosdias(false);
+        } else {
             diario = false;
-            numDiasDiario = false;
-            todosDiasDiario = false;
+            rotinadiaria.setAcadadia(false);
+            rotinadiaria.setTodosdias(false);
         }
-        
         if (tipoBotao.equalsIgnoreCase("semanal")) {
             diario = false;
             semanal = true;
             mensal = false;
             anual = false;
             semInformacoes = false;
-        }else if (tipoBotao.equalsIgnoreCase("desabilitarSemanal")) {
+        } else if (tipoBotao.equalsIgnoreCase("desabilitarSemanal")) {
             semanal = false;
-        }else{
+        } else {
             semanal = false;
         }
-        
         if (tipoBotao.equalsIgnoreCase("mensal")) {
             diario = false;
             semanal = false;
             mensal = true;
             anual = false;
             semInformacoes = false;
-        }else if (tipoBotao.equalsIgnoreCase("desabilitarMensal")) {
+        } else if (tipoBotao.equalsIgnoreCase("desabilitarMensal")) {
             mensal = false;
-        }else{
+        } else {
             mensal = false;
         }
-        
         if (tipoBotao.equalsIgnoreCase("anual")) {
             diario = false;
             semanal = false;
             mensal = false;
             anual = true;
             semInformacoes = false;
-        }else if (tipoBotao.equalsIgnoreCase("desabilitarAnual")) {
+        } else if (tipoBotao.equalsIgnoreCase("desabilitarAnual")) {
             anual = false;
-        }else{
+        } else {
             anual = false;
         }
-        
+
         if (!diario && !semanal && !mensal && !anual) {
             semInformacoes = true;
         }
-        
     }
-    
-    
-    public void verificarCheckNumDiasDiario(){
-        if (numDiasDiario) {
+
+    public void verificarCheckNumDiasDiario() {
+        if (rotinadiaria.isAcadadia()) {
             verificarInformacoesDiario("numDias");
-        }else{
+        } else {
             verificarInformacoesDiario("desabilitarNumDias");
         }
-        
     }
-    
-    public void verificarCheckTodosDiasDiario(){
-        if (todosDiasDiario) {
+
+    public void verificarCheckTodosDiasDiario() {
+        if (rotinadiaria.isTodosdias()) {
             verificarInformacoesDiario("todosDias");
-        }else{
+        } else {
             verificarInformacoesDiario("desabilitarTodosDias");
         }
-        
     }
-    
-    public void verificarInformacoesDiario(String tipo){
+
+    public void verificarInformacoesDiario(String tipo) {
         if (tipo.equalsIgnoreCase("numDias")) {
-            todosDiasDiario = false;
-            numDiasDiario = true;
-        }else{
-            numDiasDiario = false;
+            rotinadiaria.setAcadadia(true);
+            rotinadiaria.setTodosdias(false);
+        } else {
+            rotinadiaria.setAcadadia(false);
         }
-        
         if (tipo.equalsIgnoreCase("todosDias")) {
-            numDiasDiario = false;
-            todosDiasDiario = true;
-        }else{
-            todosDiasDiario = false;
+            rotinadiaria.setAcadadia(false);
+            rotinadiaria.setTodosdias(true);
+        } else {
+            rotinadiaria.setTodosdias(false);
         }
-        
     }
-   
-    
-    public void verificarCheckNumDiasMensal(){
-        if (numDiasMensal) {
+
+    public void verificarCheckNumDiasMensal() {
+        if (rotinamensal.isDiacadames()) {
             verificarInformacoesMensal("numDias");
-        }else{
+        } else {
             verificarInformacoesMensal("desabilitarNumDias");
         }
-        
     }
-    
-    public void verificarCheckNumDias2Mensal(){
-        if (numDiasMensal2) {
+
+    public void verificarCheckNumDias2Mensal() {
+        if (rotinamensal.isNocadames()) {
             verificarInformacoesMensal("numDias2");
-        }else{
+        } else {
             verificarInformacoesMensal("desabilitarNumDias2");
         }
-        
     }
-    
-    public void verificarInformacoesMensal(String tipo){
+
+    public void verificarInformacoesMensal(String tipo) {
         if (tipo.equalsIgnoreCase("numDias")) {
-            numDiasMensal2 = false;
-            numDiasMensal = true;
-        }else{
-            numDiasMensal = false;
+            rotinamensal.setNocadames(false);
+            rotinamensal.setDiacadames(true);
+        } else {
+            rotinamensal.setDiacadames(false);
         }
-        
         if (tipo.equalsIgnoreCase("numDias2")) {
-            numDiasMensal = false;
-            numDiasMensal2 = true;
-        }else{
-            numDiasMensal2 = false;
+            rotinamensal.setDiacadames(false);
+            rotinamensal.setNocadames(true);
+        } else {
+            rotinamensal.setNocadames(false);
         }
-        
     }
-    
-    
-    public void verificarCheckNumMesAnual(){
-        if (numMesAnual) {
+
+    public void verificarCheckNumMesAnual() {
+        if (rotinaanual.isEmmesdia()) {
             verificarInformacoesAnual("numMes");
-        }else{
+        } else {
             verificarInformacoesAnual("desabilitarNumMes");
         }
-        
+
     }
-    
-    public void verificarCheckNumMes2Anual(){
-        if (numMesAnual2) {
+
+    public void verificarCheckNumMes2Anual() {
+        if (rotinaanual.isNodiasemanames()) {
             verificarInformacoesAnual("numMes2");
-        }else{
+        } else {
             verificarInformacoesAnual("desabilitarNumMes2");
         }
-        
+
     }
-    
-    public void verificarInformacoesAnual(String tipo){
+
+    public void verificarInformacoesAnual(String tipo) {
         if (tipo.equalsIgnoreCase("numMes")) {
-            numMesAnual2 = false;
-            numMesAnual = true;
-        }else{
-            numMesAnual = false;
+            rotinaanual.setNodiasemanames(false);
+            rotinaanual.setEmmesdia(true);
+        } else {
+            rotinaanual.setEmmesdia(false);
         }
-        
+
         if (tipo.equalsIgnoreCase("numMes2")) {
-            numMesAnual = false;
-            numMesAnual2 = true;
-        }else{
-            numMesAnual2 = false;
+            rotinaanual.setEmmesdia(false);
+            rotinaanual.setNodiasemanames(true);
+        } else {
+            rotinaanual.setNodiasemanames(false);
         }
-        
     }
-    
-    
-    
-     public void verificarCheckTerminaNunca(){
+
+    public void verificarCheckTerminaNunca() {
         if (terminaNunca) {
             verificarInformacoesTermina("terminaNunca");
-        }else{
+        } else {
             verificarInformacoesTermina("desabilitarTerminaNunca");
         }
-        
+
     }
-    
-    public void verificarCheckTerminaApos(){
+
+    public void verificarCheckTerminaApos() {
         if (terminaApos) {
             verificarInformacoesTermina("terminaApos");
-        }else{
+        } else {
             verificarInformacoesTermina("desabilitarTerminaApos");
         }
-        
+
     }
-    
-    public void verificarCheckTerminaData(){
-        if (terminaData) {
+
+    public void verificarCheckTerminaData() {
+        if (datafinal) {
             verificarInformacoesTermina("terminaData");
-        }else{
+        } else {
             verificarInformacoesTermina("desabilitarTerminaData");
         }
-        
+
     }
-    
-    public void verificarInformacoesTermina(String tipo){
+
+    public void verificarInformacoesTermina(String tipo) {
         if (tipo.equalsIgnoreCase("terminaNunca")) {
             terminaApos = false;
             terminaNunca = true;
-            terminaData = false;
-        }else{
+            datafinal = false;
+        } else {
             terminaNunca = false;
         }
-        
+
         if (tipo.equalsIgnoreCase("terminaApos")) {
             terminaApos = true;
             terminaNunca = false;
-            terminaData = false;
-        }else{
+            datafinal = false;
+        } else {
             terminaApos = false;
         }
-        
+
         if (tipo.equalsIgnoreCase("terminaData")) {
             terminaApos = false;
             terminaNunca = false;
-            terminaData = true;
-        }else{
-            terminaData = false;
+            datafinal = true;
+        } else {
+            datafinal = false;
         }
-        
+
     }
-    
-    public String salvar(){
-        boolean novo = false;
-        if(rotinacliente.getIdrotinacliente()==null){
-            novo=true;
-        }
-        rotinacliente.setCliente(cliente);
-        rotinacliente.setRotina(rotina);
-        rotinacliente = clienteRepository.update(rotinacliente);
-        
-        if(novo){
-            Atividade atividade = new Atividade();
-            atividade.setCliente(cliente);
-            atividade.setDataexecucao(Formatacao.converterDateParaLocalDate(rotinacliente.getDatainicio()));
-            atividade.setDatalancamento(LocalDate.now());
-            atividade.setDescricao(rotina.getNome());
-            atividade.setHoraexecucao(rotinacliente.getHora());
-            atividade.setMeta(String.valueOf(rotinacliente.getMeta()));
-            atividade.setPrioridade(rotinacliente.getPrioridade());
-            atividade.setRotina(true);
-            atividade.setSubdepartamento(rotina.getSubdepartamento());
-            atividade.setUsuario(usuario);
-            atividade.setNotificacaohorario(true);
-            atividade = atividadeRepository.update(atividade);
 
-            Atividadeusuario atividadeusuario = new Atividadeusuario();
-            atividadeusuario.setAtividade(atividade);
-            atividadeusuario.setSituacao("Play");
-            atividadeusuario.setUsuario(usuario);
-            atividadeusuario.setTempo("00:00");
-            atividadeUsuarioRepository.update(atividadeusuario);
-
-            Rotinaatividade rotinaatividade = new Rotinaatividade();
-            rotinaatividade.setRotina(rotinacliente);
-            rotinaatividade.setAtividade(atividade);
-            rotinaAtividadeRepository.update(rotinaatividade); 
+    public boolean verificarCampoHora() {
+        if (hora) {
+            return false;
+        } else {
+            return true;
         }
-        RequestContext.getCurrentInstance().closeDialog(null);
-        Mensagem.lancarMensagemInfo("Salvo com sucesso!", "");
+    }
+
+    public boolean verificarCampoMeta() {
+        if (meta) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public boolean verificarCampoDataFinal() {
+        if (datafinal) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public boolean verificarCampoRecorrencia() {
+        if (terminaApos) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public String salvar() {
+        boolean ok = verificarDados();
+        if (ok) {
+            boolean novo = false;
+            if (rotinacliente.getIdrotinacliente() == null) {
+                novo = true;
+            }
+            rotinacliente.setCliente(cliente);
+            rotinacliente.setRotina(rotina);
+            rotinacliente.setUsuario(usuario);
+            rotinacliente.setDatainicio(Formatacao.converterDateParaLocalDate(rotinacliente.getDatainicial()));
+            if (rotinacliente.getDatafinal() != null) {
+                rotinacliente.setDatatermino(Formatacao.converterDateParaLocalDate(rotinacliente.getDatafinal()));
+            }
+            if (rotinacliente.getHorario() != null) {
+                rotinacliente.setHora(Formatacao.converterStringParaLocalTime(rotinacliente.getHorario()));
+            }
+            rotinacliente = clienteRepository.update(rotinacliente);
+            if (novo) {
+                Atividade atividade = new Atividade();
+                atividade.setCliente(cliente);
+                atividade.setDataexecucao(rotinacliente.getDatainicio());
+                atividade.setDatalancamento(LocalDate.now());
+                atividade.setDescricao(rotina.getNome());
+                atividade.setHoraexecucao(rotinacliente.getHora());
+                atividade.setMeta(String.valueOf(rotinacliente.getMeta()));
+                atividade.setPrioridade(rotinacliente.getPrioridade());
+                atividade.setRotina(true);
+                atividade.setSubdepartamento(rotina.getSubdepartamento());
+                atividade.setUsuario(usuario);
+                atividade.setNotificacaohorario(true);
+                atividade = atividadeRepository.update(atividade);
+
+                Atividadeusuario atividadeusuario = new Atividadeusuario();
+                atividadeusuario.setAtividade(atividade);
+                atividadeusuario.setSituacao("Play");
+                atividadeusuario.setUsuario(usuario);
+                atividadeusuario.setTempo("00:00");
+                atividadeUsuarioRepository.update(atividadeusuario);
+
+                Rotinaatividade rotinaatividade = new Rotinaatividade();
+                rotinaatividade.setRotina(rotinacliente);
+                rotinaatividade.setAtividade(atividade);
+                rotinaAtividadeRepository.update(rotinaatividade);
+            } else {
+                if (rotinacliente.getRotinadiaria() != null) {
+                    Rotinadiaria rtndiaria = rotinacliente.getRotinadiaria();
+                    rotinacliente.setRotinadiaria(null);
+                    rotinaDiarioRepository.remove(rtndiaria.getIdrotinadiaria()); 
+                } else if (rotinacliente.getRotinasemanal() != null) {
+                    Rotinasemanal rtnsemanal = rotinacliente.getRotinasemanal();
+                    rotinacliente.setRotinasemanal(null);
+                    rotinaSemanalRepository.remove(rtnsemanal.getIdrotinasemanal()); 
+                } else if (rotinacliente.getRotinamensal() != null) {
+                    Rotinamensal rtnmensal = rotinacliente.getRotinamensal();
+                    rotinacliente.setRotinamensal(null);
+                    rotinaMensalRepository.remove(rtnmensal.getIdrotinamensal()); 
+                } else if (rotinacliente.getRotinaanual() != null) {
+                    Rotinaanual rtnanual = rotinacliente.getRotinaanual();
+                    rotinacliente.setRotinaanual(null);
+                    rotinaAnualRepository.remove(rtnanual.getIdrotinaanual()); 
+                }
+            }
+            if (diario) {
+                rotinadiaria.setRotinacliente(rotinacliente);
+                rotinadiaria = rotinaDiarioRepository.update(rotinadiaria);
+            } else if (semanal) {
+                rotinasemanal.setRotinacliente(rotinacliente);
+                rotinasemanal = rotinaSemanalRepository.update(rotinasemanal);
+            } else if (mensal) {
+                rotinamensal.setRotinacliente(rotinacliente);
+                rotinamensal = rotinaMensalRepository.update(rotinamensal);
+            } else if (anual) {
+                rotinaanual.setRotinacliente(rotinacliente);
+                rotinaanual = rotinaAnualRepository.update(rotinaanual);
+            }
+            RequestContext.getCurrentInstance().closeDialog(null);
+            Mensagem.lancarMensagemInfo("Salvo com sucesso!", "");
+        }
         return "";
+    }
+
+    public void gerarListaUsuario() {
+        listaUsuario = usuarioRepository.list("select u from Usuario u where u.status=TRUE order by u.nome");
+        if (listaUsuario == null) {
+            listaUsuario = new ArrayList<>();
+        }
+    }
+
+    public boolean verificarDados() {
+        if (usuario == null || usuario.getIdusuario() == null) {
+            Mensagem.lancarMensagemErro("Atenção!", "Campo Responsável não preenchido.");
+            return false;
+        }
+        if (rotinacliente.getDatainicial() == null) {
+            Mensagem.lancarMensagemErro("Atenção!", "Campo Data inícial não preenchido.");
+            return false;
+        }
+        if (diario) {
+            if (rotinadiaria.isAcadadia()) {
+                if (rotinadiaria.getNumerodias() == null || rotinadiaria.getNumerodias() == 0) {
+                    Mensagem.lancarMensagemErro("Atenção!", "Campo Número de dias não preenchido.");
+                    return false;
+                }
+            }
+        }
+        if (semanal) {
+            if (rotinasemanal.getNumerosemanas() == null || rotinasemanal.getNumerosemanas() == 0) {
+                Mensagem.lancarMensagemErro("Atenção!", "Campo Número de semanas não preenchido.");
+                return false;
+            }
+        }
+        if (mensal) {
+            if (rotinamensal.isDiacadames()) {
+                if (rotinamensal.getDiames() == null || rotinamensal.getDiames() == 0) {
+                    Mensagem.lancarMensagemErro("Atenção!", "Campo Dia de mês não preenchido.");
+                    return false;
+                }
+                if (rotinamensal.getNumeromesesdia() == null || rotinamensal.getNumeromesesdia() == 0) {
+                    Mensagem.lancarMensagemErro("Atenção!", "Campo Número de meses não preenchido.");
+                    return false;
+                }
+            }
+            if (rotinamensal.isNocadames()) {
+                if (rotinamensal.getNumerosemana() == null || rotinamensal.getNumerosemana().length() == 0) {
+                    Mensagem.lancarMensagemErro("Atenção!", "Campos obrigatórios não preenchido.");
+                    return false;
+                }
+                if (rotinamensal.getDiasemana() == null || rotinamensal.getDiasemana().length() == 0) {
+                    Mensagem.lancarMensagemErro("Atenção!", "Campos obrigatórios não preenchido.");
+                    return false;
+                }
+                if (rotinamensal.getNumeromesesno() == null || rotinamensal.getNumeromesesno() == 0) {
+                    Mensagem.lancarMensagemErro("Atenção!", "Campos obrigatórios não preenchido.");
+                    return false;
+                }
+            }
+        }
+        if (anual) {
+            if (rotinaanual.getNumeroano() == null || rotinaanual.getNumeroano() == 0) {
+                Mensagem.lancarMensagemErro("Atenção!", "Campos número de ano(s) não preenchido.");
+                return false;
+            }
+            if (rotinaanual.isEmmesdia()) {
+                if (rotinaanual.getMesem() == null || rotinaanual.getMesem().length() == 0) {
+                    Mensagem.lancarMensagemErro("Atenção!", "Campos obrigatórios não preenchido.");
+                    return false;
+                }
+                if (rotinaanual.getDiaem() == null || rotinaanual.getDiaem() == 0) {
+                    Mensagem.lancarMensagemErro("Atenção!", "Campos obrigatórios não preenchido.");
+                    return false;
+                }
+            }
+            if (rotinaanual.isNodiasemanames()) {
+                if (rotinaanual.getNumerosemana() == null || rotinaanual.getNumerosemana().length() == 0) {
+                    Mensagem.lancarMensagemErro("Atenção!", "Campos obrigatórios não preenchido.");
+                    return false;
+                }
+                if (rotinaanual.getDiasemana() == null || rotinaanual.getDiasemana().length() == 0) {
+                    Mensagem.lancarMensagemErro("Atenção!", "Campos obrigatórios não preenchido.");
+                    return false;
+                }
+                if (rotinaanual.getMesem() == null || rotinaanual.getMesem().length() == 0) {
+                    Mensagem.lancarMensagemErro("Atenção!", "Campos obrigatórios não preenchido.");
+                    return false;
+                }
+            }
+        }
+        if (terminaApos) {
+            if (rotinacliente.getRecorrencia() == null || rotinacliente.getRecorrencia() == 0) {
+                Mensagem.lancarMensagemErro("Atenção!", "Campos qntd de recorrência(s) não preenchido.");
+                return false;
+            }
+        }
+        if (datafinal) {
+            if (rotinacliente.getDatafinal() == null) {
+                Mensagem.lancarMensagemErro("Atenção!", "Campos Data de termino não preenchido.");
+                return false;
+            }
+        }
+        return true;
     }
 }

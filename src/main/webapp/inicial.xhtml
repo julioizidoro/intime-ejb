@@ -106,17 +106,17 @@
                                         Processos
                                     </span>  
                                 </p:commandLink> 
-                            </li>
+                            </li> 
                             <li class="sub-menu">   
-                                <h:panelGroup rendered="#{menuMB.acessoMenuRotina()}">
-                                    <p:commandLink action="#{menuMB.consRotina()}" >
-                                        <i class="fa fa-rotate-left"></i> 
-                                        <span style="margin-left:2%;font-size:15px;">
-                                            Rotinas
-                                        </span>
-                                    </p:commandLink>   
-                                </h:panelGroup>
-                            </li>    
+                                <a href="javascript:;"  >    
+                                     <i class="fa fa-rotate-left"></i> 
+                                    <span style="margin-left:2%;font-size:15px;">Rotinas</span>
+                                </a>
+                                <ul class="sub">
+                                    <li><p:commandLink value="Consulta de Rotina" action="#{menuMB.consRotina()}" style="font-size: 13px;"/></li>
+                                    <li><p:commandLink value="Agenda de Rotinas" style="font-size: 13px;" action="#{menuMB.agendaRotina()}"/></li> 
+                                </ul> 
+                            </li>  
                             <li class="sub-menu">   
                                 <a href="javascript:;"  >    
                                     <i class="fa fa-suitcase"></i> 

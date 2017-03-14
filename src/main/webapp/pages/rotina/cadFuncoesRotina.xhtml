@@ -22,18 +22,21 @@
                 <p:outputLabel value="Hora" style="font-size: 12px;margin-left: 16%;"/>
                 <p:outputLabel value=""/> 
                 <p:outputLabel value="Meta" style="font-size: 12px;margin-left:29%;"/>
-                <p:selectOneMenu id="usuario"  style="width:200px;" value="#{cadFuncoesRotinaMB.usuario}" 
+                <p:selectOneMenu id="usuario"  style="width:200px;" value="#{cadFuncoesRotinaMB.usuario}" converter="UsuarioConverter"
                                  filter="true" filterMatchMode="contains" panelStyle="width:180px" >
                     <f:selectItem  itemLabel="Selecione" itemValue="0" noSelectionOption="true"/> 
                     <f:selectItems  value="#{cadFuncoesRotinaMB.listaUsuario}" var="u" itemLabel="#{u.nome}" itemValue="#{u}"/>
                     <f:attribute name="listaUsuarios" value="#{cadFuncoesRotinaMB.listaUsuario}"/>
                 </p:selectOneMenu>
-                <p:inputMask id="inicio" mask="99/99/9999" value="#{cadFuncoesRotinaMB.rotinacliente.datainicio}" style="text-align: left;width: 70%; margin-left: 15%;">  
+                <p:inputMask id="inicio" mask="99/99/9999"  placeholder="  /  /" value="#{cadFuncoesRotinaMB.rotinacliente.datainicial}" style="text-align: left;width: 70%; margin-left: 15%;">  
                     <f:convertDateTime   pattern="dd/MM/yyyy" timeZone="America/Sao_Paulo"/>
                 </p:inputMask>
                 <h:panelGroup>
-                    <p:selectBooleanCheckbox value="#" style="background:white !important; color:white !important;"/>
-                    <p:inputMask id="hora" mask="99:99" placeholder="00:00" value="#{cadFuncoesRotinaMB.rotinacliente.hora}" style="margin-left: 3%;width: 50%;"/>
+                    <p:selectBooleanCheckbox value="#{cadFuncoesRotinaMB.hora}" style="background:white !important; color:white !important;">
+                        <p:ajax event="change" update="hora"/>
+                    </p:selectBooleanCheckbox>
+                    <p:inputMask id="hora" mask="99:99" placeholder="00:00"  disabled="#{cadFuncoesRotinaMB.verificarCampoHora()}"
+                                 value="#{cadFuncoesRotinaMB.rotinacliente.horario}" style="margin-left: 3%;width: 50%;"/>
                 </h:panelGroup>
                 <p:selectOneMenu id="prioridade" value="#{cadFuncoesRotinaMB.rotinacliente.prioridade}"  >
                     <f:selectItem  itemLabel="Regular" itemValue="Regular"/>   
@@ -41,8 +44,11 @@
                     <f:selectItem  itemLabel="Urgente" itemValue="Urgente"/>  
                 </p:selectOneMenu>
                 <h:panelGroup style="margin-left: 15%;">
-                    <p:selectBooleanCheckbox id="checkminutos" value="#" style="background:white !important; color:white !important;"/>
-                    <p:inputText id="minutos"  style="margin-left: 3%;width: 35%;" value="#{cadFuncoesRotinaMB.rotinacliente.meta}"/>
+                    <p:selectBooleanCheckbox id="checkminutos" value="#{cadFuncoesRotinaMB.meta}" style="background:white !important; color:white !important;">
+                        <p:ajax event="change" update="minutos"/>
+                    </p:selectBooleanCheckbox>
+                    <p:inputText id="minutos"  style="margin-left: 3%;width: 35%;"  disabled="#{cadFuncoesRotinaMB.verificarCampoMeta()}"
+                                 value="#{cadFuncoesRotinaMB.rotinacliente.meta}"/>
                     <p:outputLabel id="descricaominutos"  style="text-align: center;margin-left:1%" value="min."/>
                 </h:panelGroup>
             </h:panelGrid>    
@@ -83,17 +89,17 @@
                 </h:panelGrid>
                 <h:panelGrid id="panelInformacoesDiaria" columns="1" rendered="#{cadFuncoesRotinaMB.diario}" style="width:300px;font-size: 12px;margin-left: 5%;">
                     <h:panelGroup id="panelInformacoesNumDiasDiario">
-                        <p:selectBooleanCheckbox id="checkNumDiasDiario" value="#{cadFuncoesRotinaMB.numDiasDiario}" style="background:white !important; color:white !important;">
+                        <p:selectBooleanCheckbox id="checkNumDiasDiario" value="#{cadFuncoesRotinaMB.rotinadiaria.acadadia}" style="background:white !important; color:white !important;">
                             <p:ajax event="change" listener="#{cadFuncoesRotinaMB.verificarCheckNumDiasDiario()}" update="panelInformacoesDiaria, panelInformacoesNumDiasDiario,
                                     checkNumDiasDiario, panelInformacoesTodosDiasDiario, checkTodosDiasDiario"/>
                         </p:selectBooleanCheckbox>   
                         <p:outputLabel id="informacaodiario"  style="margin-left: 2%;" value="A cada"/>
-                        <p:inputText id="numerodias"  style="margin-left:2%;width: 10%;text-align: right;" value="#{cadFuncoesRotinaMB.rotinacliente.acadadiarecorrencia}"/>
+                        <p:inputText id="numerodias"  style="margin-left:2%;width: 10%;text-align: right;" value="#{cadFuncoesRotinaMB.rotinadiaria.numerodias}"/>
                         <p:outputLabel id="informacaodiario2"  style="margin-left: 2%;" value="dia(s)"/>
                     </h:panelGroup>     
                     <br/>              
                     <h:panelGroup id="panelInformacoesTodosDiasDiario">
-                        <p:selectBooleanCheckbox id="checkTodosDiasDiario" value="#{cadFuncoesRotinaMB.todosDiasDiario}" style="background:white !important; color:white !important;">
+                        <p:selectBooleanCheckbox id="checkTodosDiasDiario" value="#{cadFuncoesRotinaMB.rotinadiaria.todosdias}" style="background:white !important; color:white !important;">
                             <p:ajax event="change" listener="#{cadFuncoesRotinaMB.verificarCheckTodosDiasDiario()}" update="panelInformacoesDiaria, panelInformacoesNumDiasDiario,
                                     checkNumDiasDiario, panelInformacoesTodosDiasDiario, checkTodosDiasDiario"/>
                         </p:selectBooleanCheckbox>
@@ -104,70 +110,70 @@
                 <h:panelGrid columns="1" rendered="#{cadFuncoesRotinaMB.semanal}" style="width:520px;font-size: 12px;margin-left: 5%;">
                     <h:panelGroup>      
                         <p:outputLabel value="A cada" style="font-size: 12px;"/>
-                        <p:inputText id="numsemana"  style="margin-left:2%;width:10%;text-align: right;" value="#{cadFuncoesRotinaMB.rotinacliente.acadarecorrencia}"/>
+                        <p:inputText id="numsemana"  style="margin-left:2%;width:10%;text-align: right;" value="#{cadFuncoesRotinaMB.rotinasemanal.numerosemanas}"/>
                         <p:outputLabel value="semana(s) no(a):" style="font-size: 12px;margin-left:2%;"/>
                     </h:panelGroup> 
                     <br/> 
                     <h:panelGrid columns="4" columnClasses="tamanho20,tamanho20,tamanho20,tamanho20" style="width: 100%;"> 
                         <h:panelGroup>
-                            <p:selectBooleanCheckbox id="checkSemanalDomingo" value="#{cadFuncoesRotinaMB.rotinacliente.domingo}" style="background:white !important; color:white !important;font-size: 12px;"/>
+                            <p:selectBooleanCheckbox id="checkSemanalDomingo" value="#{cadFuncoesRotinaMB.rotinasemanal.domingo}" style="background:white !important; color:white !important;font-size: 12px;"/>
                             <p:outputLabel value="Domingo" style="font-size: 12px;margin-left: 0.8%;"/>
                         </h:panelGroup>
                         <h:panelGroup>
-                            <p:selectBooleanCheckbox id="checkSemanalSegunda" value="#{cadFuncoesRotinaMB.rotinacliente.segunda}" style="background:white !important; color:white !important;font-size: 12px;"/>
+                            <p:selectBooleanCheckbox id="checkSemanalSegunda" value="#{cadFuncoesRotinaMB.rotinasemanal.segunda}" style="background:white !important; color:white !important;font-size: 12px;"/>
                             <p:outputLabel value="Segunda-feira" style="font-size: 12px;margin-left: 0.8%;"/>
                         </h:panelGroup>
                         <h:panelGroup>
-                            <p:selectBooleanCheckbox id="checkSemanalTerca" value="#{cadFuncoesRotinaMB.rotinacliente.terca}" style="background:white !important; color:white !important;font-size: 12px;"/>
+                            <p:selectBooleanCheckbox id="checkSemanalTerca" value="#{cadFuncoesRotinaMB.rotinasemanal.terca}" style="background:white !important; color:white !important;font-size: 12px;"/>
                             <p:outputLabel value="Terça-feira" style="font-size: 12px;margin-left: 0.8%;"/>
                         </h:panelGroup>
                         <h:panelGroup>
-                            <p:selectBooleanCheckbox id="checkSemanalQuarta" value="#{cadFuncoesRotinaMB.rotinacliente.quarta}" style="background:white !important; color:white !important;font-size: 12px;"/>
+                            <p:selectBooleanCheckbox id="checkSemanalQuarta" value="#{cadFuncoesRotinaMB.rotinasemanal.quarta}" style="background:white !important; color:white !important;font-size: 12px;"/>
                             <p:outputLabel value="Quarta-feira" style="font-size: 12px;margin-left: 0.8%;"/>
                         </h:panelGroup>
                         <h:panelGroup>
-                            <p:selectBooleanCheckbox id="checkSemanalQuinta" value="#{cadFuncoesRotinaMB.rotinacliente.quita}" style="background:white !important; color:white !important;font-size: 12px;"/>
+                            <p:selectBooleanCheckbox id="checkSemanalQuinta" value="#{cadFuncoesRotinaMB.rotinasemanal.quinta}" style="background:white !important; color:white !important;font-size: 12px;"/>
                             <p:outputLabel value="Quinta-feira" style="font-size: 12px;margin-left: 0.8%;"/>
                         </h:panelGroup>
                         <h:panelGroup>
-                            <p:selectBooleanCheckbox id="checkSemanalSexta" value="#{cadFuncoesRotinaMB.rotinacliente.sexta}" style="background:white !important; color:white !important;font-size: 12px;"/>
+                            <p:selectBooleanCheckbox id="checkSemanalSexta" value="#{cadFuncoesRotinaMB.rotinasemanal.sexta}" style="background:white !important; color:white !important;font-size: 12px;"/>
                             <p:outputLabel value="Sexta-feira" style="font-size: 12px;margin-left: 0.8%;"/>
                         </h:panelGroup>
                         <h:panelGroup>
-                            <p:selectBooleanCheckbox id="checkSemanalSabado" value="#{cadFuncoesRotinaMB.rotinacliente.sabado}" style="background:white !important; color:white !important;font-size: 12px;"/>
+                            <p:selectBooleanCheckbox id="checkSemanalSabado" value="#{cadFuncoesRotinaMB.rotinasemanal.sabado}" style="background:white !important; color:white !important;font-size: 12px;"/>
                             <p:outputLabel value="Sábado" style="font-size: 12px;margin-left: 0.8%;"/>
                         </h:panelGroup>
                     </h:panelGrid>   
                 </h:panelGrid>
                 <h:panelGrid id="panelInformacoesMensal" columns="1" rendered="#{cadFuncoesRotinaMB.mensal}" style="width: 97%;font-size: 12px;margin-left: 3%;">
                     <h:panelGroup id="panelInformacoesNumDiasMensal">
-                        <p:selectBooleanCheckbox id="checkNumDiasMensal" value="#{cadFuncoesRotinaMB.numDiasMensal}" style="background:white !important; color:white !important;">
+                        <p:selectBooleanCheckbox id="checkNumDiasMensal" value="#{cadFuncoesRotinaMB.rotinamensal.diacadames}" style="background:white !important; color:white !important;">
                             <p:ajax event="change" listener="#{cadFuncoesRotinaMB.verificarCheckNumDiasMensal()}" update="panelInformacoesMensal, panelInformacoesNumDiasMensal,
                                     checkNumDiasMensal, panelInformacoesNumDiasMensal2, checkNumDiasMensal2"/>
                         </p:selectBooleanCheckbox>
                         <p:outputLabel id="informacaomensal"  style="text-align: center; margin-left:1%;font-size: 12px;" value="Dia"/>
-                        <p:inputText id="numerodiasmensal"  style="margin-left:2%;width: 10%;font-size: 12px;text-align: right;" value="#"/>
+                        <p:inputText id="numerodiasmensal"  style="margin-left:2%;width: 10%;font-size: 12px;text-align: right;" value="#{cadFuncoesRotinaMB.rotinamensal.diames}"/>
                         <p:outputLabel id="informacaomensal2"  style="text-align: center; margin-left:1%;font-size: 12px;" value="de cada"/>
-                        <p:inputText id="numeromes"  style="margin-left:2%;width: 10%;font-size: 12px;text-align: right;" value="#"/>
+                        <p:inputText id="numeromes"  style="margin-left:2%;width: 10%;font-size: 12px;text-align: right;" value="#{cadFuncoesRotinaMB.rotinamensal.numeromesesdia}"/>
                         <p:outputLabel id="informacaomensal3"  style="text-align: center; margin-left:1%;font-size: 12px;" value="mes(meses)"/>
                     </h:panelGroup>
                     <br/>   
-                    <h:panelGrid columns="4" columnClasses="tamanho12,tamanho30,tamanho30,tamanho45" id="panelInformacoesNumDiasMensal2" style="font-size: 12px;width:100%;">
+                    <h:panelGrid columns="4" columnClasses="tamanho12,tamanho25,tamanho25,tamanho55" id="panelInformacoesNumDiasMensal2" style="font-size: 12px;width:100%;">
                         <h:panelGroup>                
-                            <p:selectBooleanCheckbox id="checkNumDiasMensal2" value="#{cadFuncoesRotinaMB.numDiasMensal2}" style="background:white !important; color:white !important;">
+                            <p:selectBooleanCheckbox id="checkNumDiasMensal2" value="#{cadFuncoesRotinaMB.rotinamensal.nocadames}" style="background:white !important; color:white !important;">
                                 <p:ajax event="change" listener="#{cadFuncoesRotinaMB.verificarCheckNumDias2Mensal()}" update="panelInformacoesMensal, panelInformacoesNumDiasMensal,
                                         checkNumDiasMensal, panelInformacoesNumDiasMensal2, checkNumDiasMensal2"/>
                             </p:selectBooleanCheckbox> 
                             <p:outputLabel id="informacaomensal4"  style="font-size: 12px;margin-left:8%;" value="No(a)"/>
                         </h:panelGroup>     
-                        <p:selectOneMenu id="comboNumSemanaMensal"  value="#{cadFuncoesRotinaMB.rotinacliente.numerosemana}"  style="font-size: 12px;">
+                        <p:selectOneMenu id="comboNumSemanaMensal"  value="#{cadFuncoesRotinaMB.rotinamensal.numerosemana}"  style="font-size: 12px;">
                             <f:selectItem  itemLabel="Primeiro(a)" itemValue="primeiro"/>      
                             <f:selectItem  itemLabel="Segundo(a)" itemValue="segundo"/>     
                             <f:selectItem  itemLabel="Terceiro(a)" itemValue="terceiro"/>
                             <f:selectItem  itemLabel="Quarto(a)" itemValue="quarto"/>       
                             <f:selectItem  itemLabel="Quinto(a)" itemValue="quinto"/>     
                         </p:selectOneMenu>
-                        <p:selectOneMenu id="comboDiaSemanaMensal"  value="#{cadFuncoesRotinaMB.rotinacliente.diadasemana}"  style="font-size:12px;">
+                        <p:selectOneMenu id="comboDiaSemanaMensal"  value="#{cadFuncoesRotinaMB.rotinamensal.diasemana}"  style="font-size:12px;">
                             <f:selectItem  itemLabel="Segunda-Feira" itemValue="segunda"/>   
                             <f:selectItem  itemLabel="Terça-Feira" itemValue="terça"/>  
                             <f:selectItem  itemLabel="Quarta-Feira" itemValue="quarta"/>
@@ -178,7 +184,7 @@
                         </p:selectOneMenu>  
                         <h:panelGroup>  
                             <p:outputLabel id="informacaomensal5"  style="font-size: 12px;" value="de cada"/> 
-                            <p:inputText id="numsmes"  style="width:25%;text-align: right;font-size: 12px;margin-left:3%;" value="#{cadFuncoesRotinaMB.rotinacliente.mesano}"/>
+                            <p:inputText id="numsmes"  style="width:25%;text-align: right;font-size: 12px;margin-left:3%;" value="#{cadFuncoesRotinaMB.rotinamensal.numeromesesno}"/>
                             <p:outputLabel id="informacaomensal6"  style="text-align: left;font-size: 12px;margin-left:3%;" value="mês(meses)"/>
                         </h:panelGroup>
                     </h:panelGrid>    
@@ -186,19 +192,19 @@
                 <h:panelGrid columns="1" id="panelInformacoesAnual" rendered="#{cadFuncoesRotinaMB.anual}" style="width:520px;font-size: 12px;margin-left: 2%;">
                     <h:panelGroup>  
                         <p:outputLabel value="A cada " style="font-size: 12px;"/>
-                        <p:inputText id="numsemanaAnual"  style="margin-left:2%;width: 10%;text-align: right;font-size: 12px;" value="#"/>
+                        <p:inputText id="numsemanaAnual"  style="margin-left:2%;width: 10%;text-align: right;font-size: 12px;" value="#{cadFuncoesRotinaMB.rotinaanual.numeroano}"/>
                         <p:outputLabel value="ano(s)" style="font-size: 12px;margin-left:2%;"/>  
                     </h:panelGroup>   
                     <br/>
                     <h:panelGrid id="panelInformacoesNumDiasAnual" columns="3" style="font-size: 12px;width: 80%;">
                         <h:panelGroup id="panelInformacoesCheckMesAnual">   
-                            <p:selectBooleanCheckbox id="checkMesAnual" value="#{cadFuncoesRotinaMB.numMesAnual}" style="background:white !important; color:white !important;">
+                            <p:selectBooleanCheckbox id="checkMesAnual" value="#{cadFuncoesRotinaMB.rotinaanual.emmesdia}" style="background:white !important; color:white !important;">
                                 <p:ajax event="change" listener="#{cadFuncoesRotinaMB.verificarCheckNumMesAnual()}" update="panelInformacoesAnual, panelInformacoesNumDiasAnual,
                                         panelInformacoesCheckMesAnual, checkMesAnual, panelInformacoesNumDiasAnual2, checkNumDiasAnual2"/>
                             </p:selectBooleanCheckbox>
                             <p:outputLabel id="informacaoAnual3"  style=" margin-left:16%;font-size: 12px;" value="Em: "/>
                         </h:panelGroup> 
-                        <p:selectOneMenu id="comboNomeMesAnual"  value="#"  style="margin-left:7%;font-size: 12px;width: 100px;">
+                        <p:selectOneMenu id="comboNomeMesAnual"  value="#{cadFuncoesRotinaMB.rotinaanual.mesem}"  style="margin-left:7%;font-size: 12px;width: 100px;">
                             <f:selectItem  itemLabel="Janeiro" itemValue="Janeiro"/>   
                             <f:selectItem  itemLabel="Fevereiro" itemValue="Fevereiro"/>  
                             <f:selectItem  itemLabel="Março" itemValue="Marco"/>
@@ -212,23 +218,23 @@
                             <f:selectItem  itemLabel="Novembro" itemValue="Novembro"/>   
                             <f:selectItem  itemLabel="Dezembro" itemValue="Dezembro"/>   
                         </p:selectOneMenu>
-                        <p:inputText id="numeroDiasAnual"  style="width:20%;" value="#"/>
+                        <p:inputText id="numeroDiasAnual"  style="width:20%;" value="#{cadFuncoesRotinaMB.rotinaanual.diaem}"/>
                     </h:panelGrid>
                     <br/>            
                     <h:panelGroup id="panelInformacoesNumDiasAnual2" style="font-size: 12px;">
-                        <p:selectBooleanCheckbox id="checkNumDiasAnual2" value="#{cadFuncoesRotinaMB.numMesAnual2}" style="background:white !important; color:white !important;">
+                        <p:selectBooleanCheckbox id="checkNumDiasAnual2" value="#{cadFuncoesRotinaMB.rotinaanual.nodiasemanames}" style="background:white !important; color:white !important;">
                             <p:ajax event="change" listener="#{cadFuncoesRotinaMB.verificarCheckNumMes2Anual()}" update="panelInformacoesAnual, panelInformacoesNumDiasAnual,
                                     panelInformacoesCheckMesAnual, checkMesAnual, panelInformacoesNumDiasAnual2, checkNumDiasAnual2"/>
                         </p:selectBooleanCheckbox>
                         <p:outputLabel id="informacaoAnual4"  style="margin-left:2%;font-size: 12px;" value="No(a): "/>
-                        <p:selectOneMenu id="comboNumSemanaAnual"  value="#{cadFuncoesRotinaMB.rotinacliente.numerosemana}"  style="margin-left:1%;font-size: 12px;">
+                        <p:selectOneMenu id="comboNumSemanaAnual"  value="#{cadFuncoesRotinaMB.rotinaanual.numerosemana}"  style="margin-left:1%;font-size: 12px;">
                             <f:selectItem  itemLabel="Primeiro(a)" itemValue="primeiro"/>   
                             <f:selectItem  itemLabel="Segundo(a)" itemValue="segundo"/>  
                             <f:selectItem  itemLabel="Terceiro(a)" itemValue="terceiro"/>  
                             <f:selectItem  itemLabel="Quarto(a)" itemValue="quarto"/>   
                             <f:selectItem  itemLabel="Quinto(a)" itemValue="quinto"/>      
                         </p:selectOneMenu>
-                        <p:selectOneMenu id="comboDiaSemanaAnual"  value="#{cadFuncoesRotinaMB.rotinacliente.diadasemana}"   style="margin-left:2%;font-size: 12px;">
+                        <p:selectOneMenu id="comboDiaSemanaAnual"  value="#{cadFuncoesRotinaMB.rotinaanual.diasemana}"   style="margin-left:2%;font-size: 12px;">
                             <f:selectItem  itemLabel="Segunda-Feira" itemValue="segunda"/>   
                             <f:selectItem  itemLabel="Terça-Feira" itemValue="terça"/>  
                             <f:selectItem  itemLabel="Quarta-Feira" itemValue="quarta"/>
@@ -238,7 +244,7 @@
                             <f:selectItem  itemLabel="Domingo" itemValue="domingo"/>      
                         </p:selectOneMenu>
                         <p:outputLabel id="informacaoAnual5"  style=" margin-left:2%;font-size: 12px;" value="de "/>
-                        <p:selectOneMenu id="comboNomeMesAnual2"  value="#{cadFuncoesRotinaMB.rotinacliente.mesano}"  style="margin-left:2%;font-size: 12px;">
+                        <p:selectOneMenu id="comboNomeMesAnual2"  value="#{cadFuncoesRotinaMB.rotinaanual.mesno}"  style="margin-left:2%;font-size: 12px;">
                             <f:selectItem  itemLabel="Janeiro" itemValue="Janeiro"/>   
                             <f:selectItem  itemLabel="Fevereiro" itemValue="Fevereiro"/>  
                             <f:selectItem  itemLabel="Março" itemValue="Marco"/>
@@ -272,26 +278,36 @@
                 <h:panelGroup id="panelTerminaCheckApos">
                     <p:selectBooleanCheckbox id="checkApos" value="#{cadFuncoesRotinaMB.terminaApos}" style="background:white !important; color:white !important;">
                         <p:ajax event="change" listener="#{cadFuncoesRotinaMB.verificarCheckTerminaApos()}" update="panelTermina, panelTerminaCheckNunca, checkNunca,
-                                checkApos, panelTerminaCheckApos, panelTerminarCheckData, checkData"/>
+                                checkApos, panelTerminaCheckApos, panelTerminarCheckData, checkData, numRecorrencias"/>
                     </p:selectBooleanCheckbox>
                     <p:outputLabel value="Após" style="font-size: 12px;margin-left: 3%"/>
                 </h:panelGroup> 
                 <h:panelGroup>
-                    <p:inputText id="numRecorrencias"  style="width: 20%;" value="#{cadFuncoesRotinaMB.rotinacliente.recorrencia}"/>   
+                    <p:inputText id="numRecorrencias"  style="width: 20%;" value="#{cadFuncoesRotinaMB.rotinacliente.recorrencia}" disabled="#{cadFuncoesRotinaMB.verificarCampoRecorrencia()}"/>   
                     <p:outputLabel value="recorrências" style="font-size: 12px;margin-left: 3%"/>
                 </h:panelGroup>
                 <h:panelGroup id="panelTerminarCheckData">
-                    <p:selectBooleanCheckbox id="checkData" value="#{cadFuncoesRotinaMB.terminaData}" style="background:white !important; color:white !important;">
+                    <p:selectBooleanCheckbox id="checkData" value="#{cadFuncoesRotinaMB.datafinal}" style="background:white !important; color:white !important;">
                         <p:ajax event="change" listener="#{cadFuncoesRotinaMB.verificarCheckTerminaData()}" update="panelTermina, panelTerminaCheckNunca, checkNunca,
-                                checkApos, panelTerminaCheckApos, panelTerminarCheckData, checkData"/>
+                                checkApos, panelTerminaCheckApos, panelTerminarCheckData, checkData, numRecorrencias"/>
                     </p:selectBooleanCheckbox>
-                    <p:inputMask id="dataTerminar" mask="99/99/9999" value="#{cadFuncoesRotinaMB.rotinacliente.datatermino}"  style="margin-left: 3%;width:60%;">
+                    <p:inputMask id="dataTerminar" mask="99/99/9999" placeholder="  /  /" value="#{cadFuncoesRotinaMB.rotinacliente.datafinal}"  style="margin-left: 3%;width:60%;" disabled="#{cadFuncoesRotinaMB.verificarCampoDataFinal()}">
                         <f:convertDateTime   pattern="dd/MM/yyyy" timeZone="America/Sao_Paulo"/>
                     </p:inputMask>
-                </h:panelGroup>        
-                <p:commandLink id="btnAdicionar" action="#{cadFuncoesRotinaMB.salvar()}" title="Salvar">
+                </h:panelGroup>            
+                <p:commandLink id="btnAdicionar" action="#{cadFuncoesRotinaMB.salvar()}" title="Salvar"
+                               onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()">
                     <i class="fa fa-check" style="color:#DBAF70;font-size:60px;float: right;"/>
                 </p:commandLink>
+
+                <div style="margin-top: 20px; background: #ffffff;"> 
+                    <p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+                              closable="false" resizable="false" showHeader="false">
+                        <p:commandLink>
+                            <img src="../../resources/img/ajax-loader.gif" />
+                        </p:commandLink>
+                    </p:dialog>           
+                </div>
             </h:panelGrid>
         </h:form>
     </h:body>

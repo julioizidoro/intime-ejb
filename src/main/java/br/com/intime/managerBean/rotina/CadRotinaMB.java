@@ -13,12 +13,18 @@ import br.com.intime.model.Rotinacliente;
 import br.com.intime.model.Subdepartamento;
 import br.com.intime.repository.ClienteDepartamentoRepository;
 import br.com.intime.repository.DepartamentoRepository;
+import br.com.intime.repository.RotinaAnualRepository;
 import br.com.intime.repository.RotinaClienteRepository;
+import br.com.intime.repository.RotinaDiarioRepository;
+import br.com.intime.repository.RotinaMensalRepository;
 import br.com.intime.repository.RotinaRepository;
-import br.com.intime.repository.SubDepartamentoRepository;
+import br.com.intime.repository.RotinaSemanalRepository;
+import br.com.intime.repository.SubDepartamentoRepository; 
 import br.com.intime.util.Mensagem;
 import java.io.Serializable;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,6 +53,14 @@ public class CadRotinaMB implements Serializable {
     private ClienteDepartamentoRepository clienteDepartamentoRepository;
     @Inject
     private UsuarioLogadoMB usuarioLogadoMB;
+    @EJB
+    private RotinaDiarioRepository rotinaDiarioRepository;
+    @EJB
+    private RotinaMensalRepository rotinaMensalRepository;
+    @EJB
+    private RotinaSemanalRepository rotinaSemanalRepository;
+    @EJB
+    private RotinaAnualRepository rotinaAnualRepository;
     private List<Departamento> listaDepartamento;
     private Departamento departamento;
     private List<Subdepartamento> listaSubDepartamento;
@@ -159,6 +173,46 @@ public class CadRotinaMB implements Serializable {
         this.listaCliente = listaCliente;
     }
 
+    public RotinaClienteRepository getRotinaClienteRepository() {
+        return rotinaClienteRepository;
+    }
+
+    public void setRotinaClienteRepository(RotinaClienteRepository rotinaClienteRepository) {
+        this.rotinaClienteRepository = rotinaClienteRepository;
+    }
+
+    public RotinaDiarioRepository getRotinaDiarioRepository() {
+        return rotinaDiarioRepository;
+    }
+
+    public void setRotinaDiarioRepository(RotinaDiarioRepository rotinaDiarioRepository) {
+        this.rotinaDiarioRepository = rotinaDiarioRepository;
+    }
+
+    public RotinaMensalRepository getRotinaMensalRepository() {
+        return rotinaMensalRepository;
+    }
+
+    public void setRotinaMensalRepository(RotinaMensalRepository rotinaMensalRepository) {
+        this.rotinaMensalRepository = rotinaMensalRepository;
+    }
+
+    public RotinaSemanalRepository getRotinaSemanalRepository() {
+        return rotinaSemanalRepository;
+    }
+
+    public void setRotinaSemanalRepository(RotinaSemanalRepository rotinaSemanalRepository) {
+        this.rotinaSemanalRepository = rotinaSemanalRepository;
+    }
+
+    public RotinaAnualRepository getRotinaAnualRepository() {
+        return rotinaAnualRepository;
+    }
+
+    public void setRotinaAnualRepository(RotinaAnualRepository rotinaAnualRepository) {
+        this.rotinaAnualRepository = rotinaAnualRepository;
+    }
+
     public void listarSubDepartamento() {
         if (departamento == null) {
             listaSubDepartamento = new ArrayList<>();
@@ -193,7 +247,7 @@ public class CadRotinaMB implements Serializable {
             HttpSession session = (HttpSession) fc.getExternalContext().getSession(false);
             session.setAttribute("rotina", rotina);
             session.setAttribute("cliente", clientedepartamento.getCliente());
-            RequestContext.getCurrentInstance().openDialog("cadRotina", options, null);
+            RequestContext.getCurrentInstance().openDialog("cadFuncoesRotina", options, null);
         } else {
             Mensagem.lancarMensagemWarn("Acesso Negado!", "");
         }
@@ -205,6 +259,18 @@ public class CadRotinaMB implements Serializable {
                 "select r from Rotinacliente r where r.rotina.idrotina="+rotina.getIdrotina()
                 +" and r.cliente.idcliente="+clientedepartamento.getCliente().getIdcliente());
             if(rotinacliente!=null){
+                if(rotinacliente.getRotinadiaria()!=null){
+                    rotinaDiarioRepository.remove(rotinacliente.getRotinadiaria().getIdrotinadiaria());
+                }
+                if(rotinacliente.getRotinasemanal()!=null){
+                    rotinaSemanalRepository.remove(rotinacliente.getRotinasemanal().getIdrotinasemanal());
+                }
+                if(rotinacliente.getRotinamensal()!=null){
+                    rotinaMensalRepository.remove(rotinacliente.getRotinamensal().getIdrotinamensal());
+                }
+                if(rotinacliente.getRotinaanual()!=null){
+                    rotinaAnualRepository.remove(rotinacliente.getRotinaanual().getIdrotinaanual());
+                }
                 rotinaClienteRepository.remove(rotinacliente.getIdrotinacliente());
                 Mensagem.lancarMensagemInfo("Excluído com sucesso.", "");
             }
@@ -252,6 +318,10 @@ public class CadRotinaMB implements Serializable {
                     "select r from Rotinacliente r where r.rotina.idrotina="+rotina.getIdrotina()
                     +" and r.cliente.idcliente="+listaCliente.get(i).getCliente().getIdcliente());
                 if(rotinacliente!=null){
+                    rotinacliente.setDatainicial(Date.from(rotinacliente.getDatainicio().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+                    if(rotinacliente.getDatatermino()!=null){
+                        rotinacliente.setDatafinal(Date.from(rotinacliente.getDatatermino().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+                    }
                     listaCliente.get(i).setRotinacliente(rotinacliente);
                 }else{
                     rotinacliente = new Rotinacliente();
@@ -270,7 +340,7 @@ public class CadRotinaMB implements Serializable {
             if(clientedepartamento.getRotinacliente().getPrioridade().equalsIgnoreCase("Urgente")){
                 return "red";
             }else if(clientedepartamento.getRotinacliente().getPrioridade().equalsIgnoreCase("Importante")){
-                return "yellow";
+                return "#ffdd1d";
             }else{
                 return "transparent";
             }
