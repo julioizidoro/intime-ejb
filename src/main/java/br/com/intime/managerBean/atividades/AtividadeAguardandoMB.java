@@ -1,12 +1,16 @@
 package br.com.intime.managerBean.atividades;
 
+import br.com.intime.model.Atividade;
 import br.com.intime.model.Atividadeaguardando;
+import br.com.intime.model.Atividadecomentario;
 import br.com.intime.model.Atividadeusuario;
 import br.com.intime.model.Motivoatraso;
 import br.com.intime.model.Notificacao;
 import br.com.intime.repository.AtividadeAguardandoRepository;
+import br.com.intime.repository.AtividadeRepository;
 import br.com.intime.repository.AtividadeUsuarioRepository;
 import br.com.intime.repository.AtvidadeAtrasoRepository;
+import br.com.intime.repository.AtvidadeComentarioRepository;
 import br.com.intime.repository.MotivoAtrasoRepository;
 import br.com.intime.repository.NotificacoesRepository;
 import br.com.intime.util.Formatacao;
@@ -15,6 +19,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -36,6 +41,7 @@ public class AtividadeAguardandoMB implements Serializable {
     private Motivoatraso motivoatraso;
     private Atividadeaguardando atividadeaguardando;
     private List<Motivoatraso> listaMotivoAtraso;
+    private Atividadecomentario atividadecomentario;
     @EJB
     private MotivoAtrasoRepository motivoAtrasoRepository;
     @EJB
@@ -44,6 +50,10 @@ public class AtividadeAguardandoMB implements Serializable {
     private AtividadeUsuarioRepository atividadeUsuarioRepository;
      @EJB
     private NotificacoesRepository notificacoesRepository;
+     @EJB
+     private AtvidadeComentarioRepository atvidadeComentarioRepository;
+     @EJB
+     private AtividadeRepository atividadeRepository;
 
     @PostConstruct
     public void init() {
@@ -111,6 +121,16 @@ public class AtividadeAguardandoMB implements Serializable {
         this.atividadeUsuarioRepository = atividadeUsuarioRepository;
     }
 
+    public Atividadecomentario getAtividadecomentario() {
+        return atividadecomentario;
+    }
+
+    public void setAtividadecomentario(Atividadecomentario atividadecomentario) {
+        this.atividadecomentario = atividadecomentario;
+    }
+    
+    
+
     public void salvar() {
         if (motivoatraso != null && motivoatraso.getIdmotivoatraso() != null) {
             atividadeaguardando.setDataretorno(
@@ -128,11 +148,20 @@ public class AtividadeAguardandoMB implements Serializable {
                     + atividadeaguardando.getDescricao());
             notificacao.setUsuario(atividadeusuario.getAtividade().getSubdepartamento().getDepartamento().getUsuario());
             notificacoesRepository.update(notificacao);
+            atividadecomentario = new Atividadecomentario();
+            atividadecomentario.setAtividadeusuario(atividadeusuario);
+            atividadecomentario.setData(LocalDate.now());
+            atividadecomentario.setComentario("Status alterado para aguardando em " + Formatacao.ConvercaoDataPadrao(new Date()) + 
+                    " - Motivo: " + motivoatraso.getDescricao() + " | Descrição: " + atividadeaguardando.getDescricao());
+            atvidadeComentarioRepository.update(atividadecomentario);
+            Atividade atividade = atividadeusuario.getAtividade();
+            atividade.setDataexecucao(atividadeaguardando.getDataretorno());
+            atividadeRepository.update(atividade);
         } else {
             Mensagem.lancarMensagemErro("Atenção! Motivo não selecionado.", "");
-        }
+        }  
     }
-
+  
     public void gerarListaMotivo() {
         listaMotivoAtraso = motivoAtrasoRepository.list("Select m From Motivoatraso m");
         if (listaMotivoAtraso == null) {

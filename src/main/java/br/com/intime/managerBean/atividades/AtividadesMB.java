@@ -4,20 +4,15 @@ import br.com.intime.managerBean.bean.NotificacaoAtividadeConcluidaBean;
 import br.com.intime.managerBean.usuario.UsuarioLogadoMB;
 import br.com.intime.model.Atividade;
 import br.com.intime.model.Atividadeaguardando;
+import br.com.intime.model.Atividadecomentario;
 import br.com.intime.model.Atividadeusuario;
-import br.com.intime.model.Notificacao; 
-import br.com.intime.model.Processoatividade;
-import br.com.intime.model.Processoatividadegatilho;
-import br.com.intime.model.Processogatilho;
+import br.com.intime.model.Notificacao;
 import br.com.intime.model.Usuario;
 import br.com.intime.repository.AtividadeAguardandoRepository;
 import br.com.intime.repository.AtividadeRepository;
 import br.com.intime.repository.AtividadeUsuarioRepository;
+import br.com.intime.repository.AtvidadeComentarioRepository;
 import br.com.intime.repository.NotificacoesRepository;
-import br.com.intime.repository.ProcessoAtividadeGatilhoRepository;
-import br.com.intime.repository.ProcessoAtividadeRepository;
-import br.com.intime.repository.ProcessoGatilhoRepository;
-import br.com.intime.repository.ProcessoSituacaoRepository;
 import br.com.intime.repository.UsuarioRepository;
 import br.com.intime.util.Formatacao;
 import br.com.intime.util.Mensagem;
@@ -61,13 +56,7 @@ public class AtividadesMB implements Serializable {
     @EJB
     private NotificacoesRepository notificacoesRepository;
     @EJB
-    private ProcessoAtividadeRepository processoAtividadeRepository;
-    @EJB
-    private ProcessoGatilhoRepository processoGatilhoRepository;
-    @EJB
-    private ProcessoAtividadeGatilhoRepository processoAtividadeGatilhoRepository;
-    @EJB
-    private ProcessoSituacaoRepository processoSituacaoRepository;
+    private AtvidadeComentarioRepository atividadeComentarioRepository;
     //btn visualizar concluidas
     private String concluidas = "false";
     private String naoconcluidas = "true";
@@ -239,38 +228,6 @@ public class AtividadesMB implements Serializable {
         this.usuarioRepository = usuarioRepository;
     }
 
-    public ProcessoAtividadeRepository getProcessoAtividadeRepository() {
-        return processoAtividadeRepository;
-    }
-
-    public void setProcessoAtividadeRepository(ProcessoAtividadeRepository processoAtividadeRepository) {
-        this.processoAtividadeRepository = processoAtividadeRepository;
-    }
-
-    public ProcessoGatilhoRepository getProcessoGatilhoRepository() {
-        return processoGatilhoRepository;
-    }
-
-    public void setProcessoGatilhoRepository(ProcessoGatilhoRepository processoGatilhoRepository) {
-        this.processoGatilhoRepository = processoGatilhoRepository;
-    }
-
-    public ProcessoAtividadeGatilhoRepository getProcessoAtividadeGatilhoRepository() {
-        return processoAtividadeGatilhoRepository;
-    }
-
-    public void setProcessoAtividadeGatilhoRepository(ProcessoAtividadeGatilhoRepository processoAtividadeGatilhoRepository) {
-        this.processoAtividadeGatilhoRepository = processoAtividadeGatilhoRepository;
-    }
-
-    public ProcessoSituacaoRepository getProcessoSituacaoRepository() {
-        return processoSituacaoRepository;
-    }
-
-    public void setProcessoSituacaoRepository(ProcessoSituacaoRepository processoSituacaoRepository) {
-        this.processoSituacaoRepository = processoSituacaoRepository;
-    }
-
     public void visualizarConcluidas() {
         if (naoconcluidas.equalsIgnoreCase("false")) {
             naoconcluidas = "true";
@@ -289,7 +246,7 @@ public class AtividadesMB implements Serializable {
             concluidas = "true";
             gerarListaAtivadades();
         }
-
+            
     }
 
     public void mudarCoresBotoes(String funcao) {
@@ -405,7 +362,7 @@ public class AtividadesMB implements Serializable {
             buscar = "";
         }
         String sql = "SELECT a FROM Atividadeaguardando a where a.atividadeusuario.usuario.idusuario=" + usuarioLogadoMB.getUsuario().getIdusuario()
-                + " and a.dataretorno>= :dataInicial "
+                + " and a.dataretorno> :dataInicial "
                 + " and a.atividadeusuario.atividade.descricao like '%" + buscar + "%'"
                 + " ORDER BY a.dataretorno ";
         List<Atividadeaguardando> lista = atividadeAguardandoRepository.list(sql, LocalDate.now(), null);
@@ -416,7 +373,9 @@ public class AtividadesMB implements Serializable {
                 LocalDate data = lista.get(i).getDataretorno();
                 String dataMostrar = data.format(formatador);
                 lista.get(i).getAtividadeusuario().setDataRetorno("(Retorno " + dataMostrar + ")");
-                listaAtividade.add(lista.get(i).getAtividadeusuario());
+                if (!lista.get(i).getAtividadeusuario().getSituacao().equalsIgnoreCase("Concluida")) {
+                    listaAtividade.add(lista.get(i).getAtividadeusuario());
+                }
             }
         }
     }
@@ -426,7 +385,7 @@ public class AtividadesMB implements Serializable {
             buscar = "";
         }
         String sql = "SELECT a FROM Atividadeaguardando a where a.atividadeusuario.usuario.idusuario=" + usuarioLogadoMB.getUsuario().getIdusuario()
-                + " and a.dataretorno>= :dataInicial "
+                + " and a.dataretorno> :dataInicial "
                 + " and a.atividadeusuario.atividade.descricao like '%" + buscar + "%'"
                 + " ORDER BY a.dataretorno ";
         List<Atividadeaguardando> lista = atividadeAguardandoRepository.list(sql, LocalDate.now(), null);
@@ -523,21 +482,18 @@ public class AtividadesMB implements Serializable {
                 atividadeusuario.setConcluido(true);
                 atividadeusuario.setSituacao("Concluida");
                 Mensagem.lancarMensagemInfo("Tarefa concluída!", "");
-                verificarProcessoGatilho(atividadeusuario);
                 listaAtividade.remove(atividadeusuario);
-            }
+            } else {
+                Map<String, Object> options = new HashMap<String, Object>();
+                options.put("contentWidth", 425);
+                FacesContext fc = FacesContext.getCurrentInstance();
+                HttpSession session = (HttpSession) fc.getExternalContext().getSession(false);
+                session.setAttribute("atividadeusuario", atividadeusuario);
+                RequestContext.getCurrentInstance().openDialog("motivoAtraso", options, null);
+            }   
         }
-        atividadeUsuarioRepository.update(atividadeusuario);
+        atividadeUsuarioRepository.update(atividadeusuario); 
         return "";
-    }
-
-    public void concluirTarefaAtrasada() {
-        Map<String, Object> options = new HashMap<String, Object>();
-        options.put("contentWidth", 425);
-        FacesContext fc = FacesContext.getCurrentInstance();
-        HttpSession session = (HttpSession) fc.getExternalContext().getSession(false);
-        session.setAttribute("atividadeusuario", atividadeusuario);
-        RequestContext.getCurrentInstance().openDialog("motivoAtraso", options, null);
     }
 
     public boolean mostrarTrianguloUrgente(String prioridade) {
@@ -556,39 +512,35 @@ public class AtividadesMB implements Serializable {
         }
     }
 
-    public boolean mostrarAtrasada(Atividadeusuario atividadeusuario) {
-        LocalTime hora = LocalTime.now();
-        if (atividadeusuario.getAtividade().getDataexecucao().isBefore(LocalDate.now())) {
-            return true;
-        } else {
-            if(atividadeusuario.getAtividade().getHoraexecucao()!=null 
-                && atividadeusuario.getAtividade().getHoraexecucao().isBefore(hora)){
-                return true;
-            }
-            return false;
-        }
-    }
-
-    public boolean mostrarAtividadeEmdia(Atividadeusuario atividadeusuario) {
-        LocalDate data = LocalDate.now();
-        LocalTime hora = LocalTime.now();
-        if (atividadeusuario.getAtividade().getDataexecucao().isAfter(data)) {
-            return true;
-        } else {
-            if(atividadeusuario.getAtividade().getDataexecucao().equals(data)
-                && (atividadeusuario.getAtividade().getHoraexecucao()!=null 
-                && (atividadeusuario.getAtividade().getHoraexecucao().equals(hora)
-                || atividadeusuario.getAtividade().getHoraexecucao().isAfter(hora)))){
-                return true;
-            }
-            return false;
-        }
-    }
-
     public void excluir(Atividadeusuario atividadeusuario) {
+        excluirAtividadesAguardando(atividadeusuario);
+        excluirAtividadesComentario(atividadeusuario);
         atividadeUsuarioRepository.remove(atividadeusuario.getIdatividadeusuario());
-        gerarListaAtivadades();
+        mudarCoresBotoes("hoje");
         Mensagem.lancarMensagemInfo("Tarefa excluída!", "");
+    }  
+    
+    public void excluirAtividadesAguardando(Atividadeusuario atividadeusuario){
+        List<Atividadeaguardando> listaAtividadeAguardando = atividadeAguardandoRepository.list("Select a From Atividadeaguardando a Where "
+                + " a.atividadeusuario.idatividadeusuario=" + atividadeusuario.getIdatividadeusuario());
+        if (listaAtividadeAguardando == null) {
+            listaAtividadeAguardando = new ArrayList<>();
+        }
+        for (int i = 0; i < listaAtividadeAguardando.size(); i++) {
+            atividadeAguardandoRepository.remove(listaAtividadeAguardando.get(i).getIdatividadeaguardando());
+        }
+    }
+    
+    
+    public void excluirAtividadesComentario(Atividadeusuario atividadeusuario){
+        List<Atividadecomentario> listaAtividadeComentario = atividadeComentarioRepository.list("Select a From Atividadecomentario a Where "
+                + " a.atividadeusuario.idatividadeusuario=" + atividadeusuario.getIdatividadeusuario());
+        if (listaAtividadeComentario == null) {
+            listaAtividadeComentario = new ArrayList<>();
+        }
+        for (int i = 0; i < listaAtividadeComentario.size(); i++) {
+            atividadeAguardandoRepository.remove(listaAtividadeComentario.get(i).getIdatividadecomentario());
+        }
     }
 
     public void gerarListaUsuario() {
@@ -612,7 +564,7 @@ public class AtividadesMB implements Serializable {
             atividadeusuario.setAtividade(
                     atividadeRepository.update(atividadeusuario.getAtividade()));
             atividadeUsuarioRepository.update(atividadeusuario);
-            gerarListaAtivadades();
+            mudarCoresBotoes("hoje");
         }
     }
 
@@ -672,6 +624,7 @@ public class AtividadesMB implements Serializable {
         novaAtividade.setPrioridade(atividadeusuario.getAtividade().getPrioridade());
         novaAtividade.setRotina(atividadeusuario.getAtividade().isRotina());
         novaAtividade.setSubdepartamento(atividadeusuario.getAtividade().getSubdepartamento());
+        novaAtividade.setUsuario(atividadeusuario.getUsuario());
         novaAtividade = atividadeRepository.update(novaAtividade);
         Atividadeusuario novaAtividadeUsuario = new Atividadeusuario();
         novaAtividadeUsuario.setAtividade(novaAtividade);
@@ -680,7 +633,7 @@ public class AtividadesMB implements Serializable {
         novaAtividadeUsuario.setTempo("00:00");
         novaAtividadeUsuario.setUsuario(atividadeusuario.getUsuario());
         atividadeUsuarioRepository.update(novaAtividadeUsuario);
-        gerarListaAtivadades();
+        mudarCoresBotoes("hoje");
         Mensagem.lancarMensagemInfo("Tarefa duplicada!", "");
     }
 
@@ -722,7 +675,7 @@ public class AtividadesMB implements Serializable {
                 + " and a.atividade.dataexecucao<= :dataFinal";
         List<Atividadeusuario> lista = atividadeUsuarioRepository.list(sql, dataInicial, dataFinal);
         sql = "SELECT a FROM Atividadeaguardando a where a.atividadeusuario.usuario.idusuario=" + usuarioLogadoMB.getUsuario().getIdusuario()
-                + " and a.dataretorno>= :dataInicial "
+                + " and a.dataretorno> :dataInicial "
                 + " and a.atividadeusuario.atividade.descricao like '%" + buscar + "%'"
                 + " ORDER BY a.dataretorno ";
         List<Atividadeaguardando> listaAguardando = atividadeAguardandoRepository.list(sql, LocalDate.now(), null);
@@ -746,7 +699,7 @@ public class AtividadesMB implements Serializable {
                 + " and a.atividade.dataexecucao<= :dataFinal";
         List<Atividadeusuario> lista = atividadeUsuarioRepository.list(sql, dataInicial, dataFinal);
         sql = "SELECT a FROM Atividadeaguardando a where a.atividadeusuario.usuario.idusuario=" + usuarioLogadoMB.getUsuario().getIdusuario()
-                + " and a.dataretorno>= :dataInicial "
+                + " and a.dataretorno> :dataInicial "
                 + " and a.atividadeusuario.atividade.descricao like '%" + buscar + "%'"
                 + " ORDER BY a.dataretorno ";
         List<Atividadeaguardando> listaAguardando = atividadeAguardandoRepository.list(sql, LocalDate.now(), null);
@@ -770,7 +723,7 @@ public class AtividadesMB implements Serializable {
                 + " and a.atividade.dataexecucao<= :dataFinal";
         List<Atividadeusuario> lista = atividadeUsuarioRepository.list(sql, dataInicial, dataFinal);
         sql = "SELECT a FROM Atividadeaguardando a where a.atividadeusuario.usuario.idusuario=" + usuarioLogadoMB.getUsuario().getIdusuario()
-                + " and a.dataretorno>= :dataInicial "
+                + " and a.dataretorno> :dataInicial "
                 + " and a.atividadeusuario.atividade.descricao like '%" + buscar + "%'"
                 + " ORDER BY a.dataretorno ";
         List<Atividadeaguardando> listaAguardando = atividadeAguardandoRepository.list(sql, LocalDate.now(), null);
@@ -790,7 +743,7 @@ public class AtividadesMB implements Serializable {
                 + " and a.situacao<>'Concluida'";
         List<Atividadeusuario> lista = atividadeUsuarioRepository.list(sql, null, null);
         sql = "SELECT a FROM Atividadeaguardando a where a.atividadeusuario.usuario.idusuario=" + usuarioLogadoMB.getUsuario().getIdusuario()
-                + " and a.dataretorno>= :dataInicial "
+                + " and a.dataretorno> :dataInicial "
                 + " and a.atividadeusuario.atividade.descricao like '%" + buscar + "%'"
                 + " ORDER BY a.dataretorno ";
         List<Atividadeaguardando> listaAguardando = atividadeAguardandoRepository.list(sql, LocalDate.now(), null);
@@ -808,7 +761,7 @@ public class AtividadesMB implements Serializable {
     public String retornarNumeroAguardando() {
         dataInicial = LocalDate.now();
         String sql = "SELECT a FROM Atividadeaguardando a where a.atividadeusuario.usuario.idusuario=" + usuarioLogadoMB.getUsuario().getIdusuario()
-                + " and a.dataretorno>= :dataInicial "
+                + " and a.atividadeusuario.situacao<>'Concluida' and a.dataretorno> :dataInicial "
                 + " and a.atividadeusuario.atividade.descricao like '%" + buscar + "%'"
                 + " ORDER BY a.dataretorno ";
         List<Atividadeaguardando> lista = atividadeAguardandoRepository.list(sql, LocalDate.now(), null);
@@ -818,85 +771,4 @@ public class AtividadesMB implements Serializable {
         return "(0)";
     }
 
-    public void verificarProcessoGatilho(Atividadeusuario atividadeusuario) {
-        Processoatividade processoatividade = processoAtividadeRepository.find("select p from Processoatividade p"
-                + " where p.atividadeusuario.idatividadeusuario=" + atividadeusuario.getIdatividadeusuario());
-        if (processoatividade != null) {
-            Processoatividadegatilho processoatividadegatilho = processoAtividadeGatilhoRepository
-                    .find("select p from Processoatividadegatilho p where p.processoatividade.idprocessoatividade="
-                            + processoatividade.getIdprocessoatividade());
-            if (processoatividadegatilho != null) {
-                processoatividadegatilho.getProcessogatilho().setExecutado(true);
-                processoatividadegatilho.setProcessogatilho(processoGatilhoRepository.update(processoatividadegatilho.getProcessogatilho()));
-                List<Processogatilho> listaGatilho = processoGatilhoRepository
-                        .list("select p from Processogatilho p where p.executado=false and p.atividadeprecedente="+processoatividadegatilho.getProcessogatilho().getNumeroatividade()
-                                + " and p.processosituacao.idprocessosituacao=" + processoatividadegatilho.getProcessogatilho().getProcessosituacao().getIdprocessosituacao());
-                if (listaGatilho != null && listaGatilho.size() > 0) {
-                    salvarAtividadeGatilho(listaGatilho, atividadeusuario);
-                } else {
-                    processoatividadegatilho.getProcessoatividade().getProcessosituacao().setSituacao("Concluído");
-                    processoatividadegatilho.getProcessoatividade().getProcessosituacao().setDatatermino(new Date());
-                    processoatividadegatilho.getProcessoatividade().setProcessosituacao(
-                            processoSituacaoRepository.update(processoatividadegatilho.getProcessoatividade().getProcessosituacao()));
-                }
-            } else {
-                verificarProcessoRegular(processoatividade);
-            }
-        }
-    }
-
-    public void salvarAtividadeGatilho(List<Processogatilho> listaGatilho, Atividadeusuario atividadeusuario) {
-        for (int i = 0; i < listaGatilho.size(); i++) {
-            Atividade atividade = new Atividade();
-            atividade.setCliente(atividadeusuario.getAtividade().getCliente());
-            atividade.setDataexecucao(Formatacao.converterDateParaLocalDate(
-                    listaGatilho.get(i).getProcessosituacao().getDatainicio()));
-            atividade.setDatalancamento(LocalDate.now());
-            LocalTime hora = LocalTime.of(23, 59);
-            atividade.setHoraexecucao(hora);
-            atividade.setDescricao(listaGatilho.get(i).getProcessorotina().getDescricao());
-            atividade.setNotificacaohorario(false);
-            atividade.setPrioridade("Regular");
-            atividade.setRotina(false);
-            atividade.setSubdepartamento(atividadeusuario.getAtividade().getSubdepartamento());
-            atividade.setUsuario(usuarioLogadoMB.getUsuario());
-            atividade = atividadeRepository.update(atividade);
-
-            Atividadeusuario atdusuario = new Atividadeusuario();
-            atdusuario.setAtividade(atividade);
-            atdusuario.setConcluido(false);
-            atdusuario.setSituacao("Play");
-            atdusuario.setTempo("00:00");
-            atdusuario.setUsuario(usuarioLogadoMB.getUsuario());
-            atdusuario = atividadeUsuarioRepository.update(atdusuario);
-
-            Processoatividade procAtividade = new Processoatividade();
-            procAtividade.setAtividadeusuario(atdusuario);
-            procAtividade.setProcessorotina(listaGatilho.get(i).getProcessorotina());
-            procAtividade.setProcessosituacao(listaGatilho.get(i).getProcessosituacao());
-            procAtividade = processoAtividadeRepository.update(procAtividade);
-
-            Processoatividadegatilho procAtividadegatilho = new Processoatividadegatilho();
-            procAtividadegatilho.setProcessoatividade(procAtividade);
-            procAtividadegatilho.setProcessogatilho(listaGatilho.get(i));
-            processoAtividadeGatilhoRepository.update(procAtividadegatilho);
-
-            Mensagem.lancarMensagemInfo("Nova tarefa do Processo '" + listaGatilho.get(i).getProcessorotina().getProcesso().getDescricao() + "' criada.", "");
-            listaAtividade.add(atdusuario);  
-       }
-    }
-
-    public void verificarProcessoRegular(Processoatividade processoatividade) {
-        List<Processoatividade> lista = processoAtividadeRepository.list(
-                "select p from Processoatividade p where p.processosituacao.idprocessosituacao="
-                + processoatividade.getProcessosituacao().getIdprocessosituacao()
-                + " and p.atividadeusuario.situacao<>'Concluida'"
-                + " and p.atividadeusuario.idatividadeusuario<>"+processoatividade.getAtividadeusuario().getIdatividadeusuario());
-        if (lista==null || lista.size()==0) {
-            processoatividade.getProcessosituacao().setSituacao("Concluído");
-            processoatividade.getProcessosituacao().setDatatermino(new Date());
-            processoatividade.setProcessosituacao(
-                    processoSituacaoRepository.update(processoatividade.getProcessosituacao()));
-        } 
-    }
 }
