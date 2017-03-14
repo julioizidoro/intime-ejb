@@ -75,22 +75,19 @@
                                                             <i class="fa fa-pause" style="font-size: 14px;color:#B0B5B9;"></i>   
                                                         </p:commandLink>   
                                                         <div class="task-checkbox" style="margin-left:1%;">  
-                                                            <p:commandLink action="#{atividadesMB.mudarSituacaoAtividade(atividades, 'Concluida')}" update="@all" rendered="#{atividadesMB.mostrarAtividadeEmdia(atividades)}"> 
+                                                            <p:commandLink action="#{atividadesMB.mudarSituacaoAtividade(atividades, 'Concluida')}" update="cbxConcluido"> 
                                                                 <p:selectBooleanCheckbox id="cbxConcluido" class="list-child" value="#{atividades.concluido}"  style="float: left;margin-top:0.6%;margin-left:1.5%;"/> 
-                                                            </p:commandLink>  
-                                                            <p:commandLink action="#{atividadesMB.concluirTarefaAtrasada()}" rendered="#{atividadesMB.mostrarAtrasada(atividades)}"> 
-                                                                <p:selectBooleanCheckbox id="cbxConcluidoAtrasados" class="list-child" value="#{atividades.concluido}"  style="float: left;margin-top:0.6%;margin-left:1.5%;"/> 
-                                                                <p:ajax event="dialogReturn" listener="#{atividadesMB.gerarListaAtivadades()}" update="@form"/> 
-                                                            </p:commandLink>  
-                                                        </div>                         
+                                                                <p:ajax event="dialogReturn" listener="#{atividadesMB.mudarCoresBotoes('hoje')}" update="@form"/>
+                                                            </p:commandLink>      
+                                                        </div>               
                                                         <div class="task-title"> 
                                                             <span id="nome" class="task-title-sp">#{atividades.atividade.descricao}</span> |     
-                                                            <span id="cliente" class="task-title-sp">#{atividades.atividade.cliente.apelido}</span>   
+                                                            <span id="cliente" class="task-title-sp">#{atividades.atividade.cliente.apelido}</span> 
                                                             <h:panelGroup rendered="#{atividadesMB.mostrarComentarios(atividades)}">
                                                                 <span id="comentarios" class="task-title-sp" style="font-weight: bold;" >
                                                                     (   
                                                                     <p:commandLink id="btnComentarios" title="Comentários" value="#{atividadesMB.retornarNumComentarios(atividades)}" action="#{atividadesMB.visualizarComentarios(atividades)}">
-                                                                        <p:ajax event="dialogReturn" listener="#{atividadesMB.gerarListaAtivadades()}" update="@form"/>
+                                                                        <p:ajax event="dialogReturn" listener="#{atividadesMB.mudarCoresBotoes('hoje')}" update="@form"/>
                                                                     </p:commandLink>
                                                                     )      
                                                                 </span>
@@ -133,15 +130,15 @@
                                                                                 <p:outputLabel value="Excluir" style="margin-left: 8%;"/>
                                                                             </i></p:commandLink></li> 
                                                                     <li><p:commandLink action="#{atividadesMB.visualizarComentarios(atividades)}"><i class="fa fa-comments" style="color: #8E9398;font-size: 13px;">
-                                                                                <p:outputLabel value="Comentários" style="margin-left: 8%;"/>
-                                                                                <p:ajax event="dialogReturn" listener="#{atividadesMB.gerarListaAtivadades()}" update="@form"/>
+                                                                                <p:outputLabel value="Comentários" style="margin-left: 8%;"/>  
+                                                                                <p:ajax event="dialogReturn" listener="#{atividadesMB.mudarCoresBotoes('hoje')}" update="@form"/>
                                                                             </i></p:commandLink></li>    
                                                                     <li><p:commandLink action="#{atividadesMB.duplicarAtividade(atividades)}" update="@form"><i class="fa fa-copy" style="color: #8E9398;font-size: 13px;">  
                                                                                 <p:outputLabel value="Duplicar" style="margin-left: 8%;"/>
                                                                             </i></p:commandLink></li> 
                                                                     <li><p:commandLink action="#{atividadesMB.adicionarAtividadeAguardando(atividades)}"><i class="fa fa-clock-o" style="color: #8E9398;font-size: 13px;">  
                                                                                 <p:outputLabel value="Aguardando" style="margin-left: 8%;"/>
-                                                                                <p:ajax event="dialogReturn" listener="#{atividadesMB.gerarListaAtivadades()}" update="@form"/>
+                                                                                <p:ajax event="dialogReturn" listener="#{atividadesMB.mudarCoresBotoes('hoje')}" update="@form"/>
                                                                             </i></p:commandLink></li> 
                                                                 </ul>
                                                             </div>
@@ -226,4 +223,4 @@
             </style>
         </ui:define>
     </ui:composition>
-</html>     
+</html>

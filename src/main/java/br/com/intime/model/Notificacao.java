@@ -31,7 +31,7 @@ public class Notificacao implements Serializable {
     @Basic(optional = false)
     @Column(name = "idnotificacao")
     private Integer idnotificacao;
-    @Size(max = 100)
+    @Size(max = 200)
     @Column(name = "descricao")
     private String descricao;
     @Column(name = "lido")
