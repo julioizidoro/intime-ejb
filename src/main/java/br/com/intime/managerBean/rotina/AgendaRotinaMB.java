@@ -210,37 +210,37 @@ public class AgendaRotinaMB implements Serializable {
                         + " and r.cliente.idcliente=" + listaCliente.get(j).getCliente().getIdcliente();
                 Rotinacliente rotinacliente = rotinaClienteRepository.find(sqlRotinaCliente);
                 if (rotinacliente == null) {
-                    listaRotina.get(i).setImagemcinza(true);
-                    listaRotina.get(i).setImagemverde(false);
-                    listaRotina.get(i).setImagemvermelha(false);
+                    listaCliente.get(j).setImagemcinza(true);
+                    listaCliente.get(j).setImagemverde(false);
+                    listaCliente.get(j).setImagemvermelha(false);
                 } else {
-                    String sqlRotinaAtividade = "select r Rotinaatividade r where r.rotina.idrotina=" + rotinacliente.getRotina().getIdrotina()
+                    String sqlRotinaAtividade = "select r From Rotinaatividade r where r.rotina.idrotinacliente=" + rotinacliente.getIdrotinacliente()
                             + " and r.atividade.cliente.idcliente=" + rotinacliente.getCliente().getIdcliente();
                     Rotinaatividade rotinaatividade = rotinaAtividadeRepository.find(sqlRotinaAtividade);
                     if (rotinaatividade != null) {
-                        String sqlAtividadeUsuario = "select a From Atividadeusuario a where a.atividade.idatividade" + rotinaatividade.getAtividade().getIdatividade()
-                                +" and a.situacao<>Concluida";
+                        String sqlAtividadeUsuario = "select a From Atividadeusuario a where a.atividade.idatividade=" + rotinaatividade.getAtividade().getIdatividade()
+                                +" and a.situacao<>'Concluida'";
                         List<Atividadeusuario> listaAtividades = atividadeUsuarioRepository.list(sqlAtividadeUsuario);
                         if (listaAtividades != null) {
                             boolean ok = verificarAtividadeAtrasada(listaAtividades);
                             if(ok){
-                                listaRotina.get(i).setImagemcinza(false);
-                                listaRotina.get(i).setImagemverde(true);
-                                listaRotina.get(i).setImagemvermelha(false);
+                                listaCliente.get(j).setImagemcinza(false);
+                                listaCliente.get(j).setImagemverde(true);
+                                listaCliente.get(j).setImagemvermelha(false);
                             }else{
-                                listaRotina.get(i).setImagemcinza(false);
-                                listaRotina.get(i).setImagemverde(false);
-                                listaRotina.get(i).setImagemvermelha(true);
+                                listaCliente.get(j).setImagemcinza(false);
+                                listaCliente.get(j).setImagemverde(false);
+                                listaCliente.get(j).setImagemvermelha(true);
                             }
                         } else {
-                            listaRotina.get(i).setImagemcinza(true);
-                            listaRotina.get(i).setImagemverde(false);
-                            listaRotina.get(i).setImagemvermelha(false);
+                            listaCliente.get(j).setImagemcinza(true);
+                            listaCliente.get(j).setImagemverde(false);
+                            listaCliente.get(j).setImagemvermelha(false);
                         }
                     } else {
-                        listaRotina.get(i).setImagemcinza(true);
-                        listaRotina.get(i).setImagemverde(false);
-                        listaRotina.get(i).setImagemvermelha(false);
+                        listaCliente.get(j).setImagemcinza(true);
+                        listaCliente.get(j).setImagemverde(false);
+                        listaCliente.get(j).setImagemvermelha(false);
                     }
                 }
             }

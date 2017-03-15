@@ -56,24 +56,22 @@
                                             <f:facet name="header">
                                                 <h:outputText value="#{cliente.cliente.apelido}" />
                                             </f:facet>
-                                            <p:commandLink id="btnApelido4" title="Rotina em dia" rendered="false" class="hoverTextos">
+                                            <p:commandLink id="btnVerde" title="Rotina em dia" rendered="#{cliente.imagemverde}" class="hoverTextos">
                                                 <i class="fa fa-check-circle" style="font-size:22px;color:green;"/> 
                                             </p:commandLink> 
-                                            <p:commandLink id="btnApelido3" title="Rotina atradada" rendered="true" action="#{agendaRotinaMB.consultarRotinaAtrasada()}"  class="hoverTextos">
+                                            <p:commandLink id="btnVermelho" title="Rotina atradada" rendered="#{cliente.imagemvermelha}" action="#{agendaRotinaMB.consultarRotinaAtrasada()}"  class="hoverTextos">
                                                 <i class="fa fa-times-circle" style="font-size:22px;color:red;"/> 
                                             </p:commandLink>
-                                            <p:commandLink id="btnApelido3" title="Não possui rotina" rendered="false" action="#{agendaRotinaMB.consultarRotinaAtrasada()}"  class="hoverTextos">
+                                            <p:commandLink id="btnCinza" title="Não possui rotina" rendered="#{cliente.imagemcinza}" action="#{agendaRotinaMB.consultarRotinaAtrasada()}"  class="hoverTextos">
                                                 <i class="fa fa-circle" style="font-size:22px;color:#797988;"/> 
                                             </p:commandLink>
                                         </p:columns>   
                                     </p:dataTable>
-                                </div> 
+                                </div>   
                             </div>
                         </section>
-                    </div>
-
-                </div>  
-
+                    </div> 
+                </div>   
             </h:form>  
         </ui:define>
     </ui:composition>
