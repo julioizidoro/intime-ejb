@@ -13,15 +13,13 @@ import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
+import javax.persistence.Entity; 
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne; 
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
+import javax.persistence.OneToMany; 
 import javax.persistence.Table; 
 import javax.persistence.Transient;
 import javax.validation.constraints.Size;  
@@ -69,15 +67,7 @@ public class Rotinacliente implements Serializable {
     @ManyToOne(optional = false)
     private Usuario usuario;  
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "rotina")
-    private List<Rotinaatividade> rotinaatividadeList;
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "rotinacliente")
-    private Rotinadiaria rotinadiaria; 
-    @OneToOne(fetch = FetchType.EAGER,cascade = CascadeType.ALL, mappedBy = "rotinacliente")
-    private Rotinamensal rotinamensal;
-    @OneToOne(fetch = FetchType.EAGER,cascade = CascadeType.ALL, mappedBy = "rotinacliente")
-    private Rotinasemanal rotinasemanal;
-    @OneToOne(fetch = FetchType.EAGER,cascade = CascadeType.ALL, mappedBy = "rotinacliente")
-    private Rotinaanual rotinaanual; 
+    private List<Rotinaatividade> rotinaatividadeList;    
     @Transient
     private Date datainicial;
     @Transient
@@ -196,39 +186,7 @@ public class Rotinacliente implements Serializable {
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
     }
-
-    public Rotinadiaria getRotinadiaria() {
-        return rotinadiaria;
-    }
-
-    public void setRotinadiaria(Rotinadiaria rotinadiaria) {
-        this.rotinadiaria = rotinadiaria;
-    }
-
-    public Rotinamensal getRotinamensal() {
-        return rotinamensal;
-    }
-
-    public void setRotinamensal(Rotinamensal rotinamensal) {
-        this.rotinamensal = rotinamensal;
-    }
-
-    public Rotinasemanal getRotinasemanal() {
-        return rotinasemanal;
-    }
-
-    public void setRotinasemanal(Rotinasemanal rotinasemanal) {
-        this.rotinasemanal = rotinasemanal;
-    }
-
-    public Rotinaanual getRotinaanual() {
-        return rotinaanual;
-    }
-
-    public void setRotinaanual(Rotinaanual rotinaanual) {
-        this.rotinaanual = rotinaanual;
-    }
-
+    
     public Date getDatainicial() {
         return datainicial;
     }

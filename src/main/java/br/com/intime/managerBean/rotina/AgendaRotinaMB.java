@@ -29,8 +29,10 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
+import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import javax.servlet.http.HttpSession;
 import org.primefaces.context.RequestContext;
 
 @Named
@@ -57,6 +59,8 @@ public class AgendaRotinaMB implements Serializable {
     private List<Subdepartamento> listaSubDepartamento;
     private List<Rotina> listaRotina;
     private List<Clientedepartamento> listaCliente;
+    private boolean vermelho=false;
+    private boolean cinza=false;
 
     @PostConstruct
     public void init() {
@@ -167,9 +171,21 @@ public class AgendaRotinaMB implements Serializable {
         this.atividadeUsuarioRepository = atividadeUsuarioRepository;
     }
 
-    public void consultarRotinaAtrasada() {
+    public boolean isVermelho() {
+        return vermelho;
+    }
+
+    public void setVermelho(boolean vermelho) {
+        this.vermelho = vermelho;
+    }
+
+    public void consultarRotinaAtrasada(Rotina rotina, Clientedepartamento clientedepartamento) {
         Map<String, Object> options = new HashMap<String, Object>();
         options.put("contentWidth", 600);
+        FacesContext fc = FacesContext.getCurrentInstance();
+        HttpSession session = (HttpSession) fc.getExternalContext().getSession(false);
+        session.setAttribute("rotina", rotina);
+        session.setAttribute("clientedepartamento", clientedepartamento);
         RequestContext.getCurrentInstance().openDialog("consRotinaAtrasada", options, null);
     }
 
@@ -197,66 +213,74 @@ public class AgendaRotinaMB implements Serializable {
 
             String sqlCliente = "Select c From Clientedepartamento c where c.departamento.iddepartamento=" + departamento.getIddepartamento();
             listaCliente = clienteDepartamentoRepository.list(sqlCliente);
-            verificarImagensRotina();
         } else {
             Mensagem.lancarMensagemErro("Atenção!", "Departamento não informado.");
         }
     }
 
-    public void verificarImagensRotina() {
-        for (int i = 0; i < listaRotina.size(); i++) {
-            for (int j = 0; j < listaCliente.size(); j++) {
-                String sqlRotinaCliente = "select r From Rotinacliente r where r.rotina.idrotina=" + listaRotina.get(i).getIdrotina()
-                        + " and r.cliente.idcliente=" + listaCliente.get(j).getCliente().getIdcliente();
-                Rotinacliente rotinacliente = rotinaClienteRepository.find(sqlRotinaCliente);
-                if (rotinacliente == null) {
-                    listaCliente.get(j).setImagemcinza(true);
-                    listaCliente.get(j).setImagemverde(false);
-                    listaCliente.get(j).setImagemvermelha(false);
-                } else {
-                    String sqlRotinaAtividade = "select r From Rotinaatividade r where r.rotina.idrotinacliente=" + rotinacliente.getIdrotinacliente()
-                            + " and r.atividade.cliente.idcliente=" + rotinacliente.getCliente().getIdcliente();
-                    Rotinaatividade rotinaatividade = rotinaAtividadeRepository.find(sqlRotinaAtividade);
-                    if (rotinaatividade != null) {
-                        String sqlAtividadeUsuario = "select a From Atividadeusuario a where a.atividade.idatividade=" + rotinaatividade.getAtividade().getIdatividade()
-                                +" and a.situacao<>'Concluida'";
-                        List<Atividadeusuario> listaAtividades = atividadeUsuarioRepository.list(sqlAtividadeUsuario);
-                        if (listaAtividades != null) {
-                            boolean ok = verificarAtividadeAtrasada(listaAtividades);
-                            if(ok){
-                                listaCliente.get(j).setImagemcinza(false);
-                                listaCliente.get(j).setImagemverde(true);
-                                listaCliente.get(j).setImagemvermelha(false);
-                            }else{
-                                listaCliente.get(j).setImagemcinza(false);
-                                listaCliente.get(j).setImagemverde(false);
-                                listaCliente.get(j).setImagemvermelha(true);
-                            }
-                        } else {
-                            listaCliente.get(j).setImagemcinza(true);
-                            listaCliente.get(j).setImagemverde(false);
-                            listaCliente.get(j).setImagemvermelha(false);
-                        }
+    public boolean retornarImagemCinza(Clientedepartamento cliente, Rotina rotina) {
+        if(cinza){ 
+            return true;
+        }else return false;
+    }
+
+    public boolean retornarImagemVerde(Clientedepartamento cliente, Rotina rotina) {
+        String sqlRotinaCliente = "select r From Rotinacliente r where r.rotina.idrotina=" + rotina.getIdrotina()
+                + " and r.cliente.idcliente=" + cliente.getCliente().getIdcliente();
+        Rotinacliente rotinacliente = rotinaClienteRepository.find(sqlRotinaCliente);
+        if (rotinacliente == null) {
+            cinza=true;
+            vermelho=false;
+            return false;
+        } else {
+            String sqlRotinaAtividade = "select r From Rotinaatividade r where r.rotina.idrotinacliente=" + rotinacliente.getIdrotinacliente()
+                    + " and r.atividade.cliente.idcliente=" + rotinacliente.getCliente().getIdcliente();
+            Rotinaatividade rotinaatividade = rotinaAtividadeRepository.find(sqlRotinaAtividade);
+            if (rotinaatividade != null) {
+                String sqlAtividadeUsuario = "select a From Atividadeusuario a where a.atividade.idatividade=" + rotinaatividade.getAtividade().getIdatividade()
+                        + " and a.situacao<>'Concluida'";
+                List<Atividadeusuario> listaAtividades = atividadeUsuarioRepository.list(sqlAtividadeUsuario);
+                if (listaAtividades != null && listaAtividades.size()>0) {
+                    boolean ok = verificarAtividadeAtrasada(listaAtividades);
+                    if (ok) {
+                        cinza=false;
+                        vermelho=false;
+                        return true;
                     } else {
-                        listaCliente.get(j).setImagemcinza(true);
-                        listaCliente.get(j).setImagemverde(false);
-                        listaCliente.get(j).setImagemvermelha(false);
+                        vermelho=true;
+                        cinza=false;
+                        return false;
                     }
+                } else {
+                    cinza=true;
+                    vermelho=false;
+                    return false;
                 }
+            } else {
+                cinza=true;
+                vermelho=false;
+                return false;
             }
         }
     }
 
+    public boolean retornarImagemVermelha(Clientedepartamento cliente, Rotina rotina) {
+       if(vermelho){ 
+           return true;
+       }else return false;
+    }
+
     public boolean verificarAtividadeAtrasada(List<Atividadeusuario> lista) {
         for (int i = 0; i < lista.size(); i++) {
-            if(lista.get(i).getAtividade().getDataexecucao().isBefore(LocalDate.now())){
+            if (lista.get(i).getAtividade().getDataexecucao().isBefore(LocalDate.now())) {
                 return false;
-            } else if(lista.get(i).getAtividade().getDataexecucao().equals(LocalDate.now())
-                    && lista.get(i).getAtividade().getHoraexecucao()!=null 
-                    && lista.get(i).getAtividade().getHoraexecucao().isBefore(LocalTime.now())){
-                    return false; 
+            } else if (lista.get(i).getAtividade().getDataexecucao().equals(LocalDate.now())
+                    && lista.get(i).getAtividade().getHoraexecucao() != null
+                    && lista.get(i).getAtividade().getHoraexecucao().isBefore(LocalTime.now())) {
+                return false;
             }
         }
         return true;
     }
+
 }

@@ -259,20 +259,9 @@ public class CadRotinaMB implements Serializable {
                 "select r from Rotinacliente r where r.rotina.idrotina="+rotina.getIdrotina()
                 +" and r.cliente.idcliente="+clientedepartamento.getCliente().getIdcliente());
             if(rotinacliente!=null){
-                if(rotinacliente.getRotinadiaria()!=null){
-                    rotinaDiarioRepository.remove(rotinacliente.getRotinadiaria().getIdrotinadiaria());
-                }
-                if(rotinacliente.getRotinasemanal()!=null){
-                    rotinaSemanalRepository.remove(rotinacliente.getRotinasemanal().getIdrotinasemanal());
-                }
-                if(rotinacliente.getRotinamensal()!=null){
-                    rotinaMensalRepository.remove(rotinacliente.getRotinamensal().getIdrotinamensal());
-                }
-                if(rotinacliente.getRotinaanual()!=null){
-                    rotinaAnualRepository.remove(rotinacliente.getRotinaanual().getIdrotinaanual());
-                }
                 rotinaClienteRepository.remove(rotinacliente.getIdrotinacliente());
                 Mensagem.lancarMensagemInfo("Excluído com sucesso.", "");
+                gerarListaClientes();
             }
         } else {
             Mensagem.lancarMensagemWarn("Acesso Negado!", "");
@@ -348,4 +337,15 @@ public class CadRotinaMB implements Serializable {
         return "transparent";
     }
     
+    public boolean desabilitarEditarExcluir(Clientedepartamento clientedepartamento){
+        if(clientedepartamento.getRotinacliente()!=null && clientedepartamento.getRotinacliente().getIdrotinacliente()!=null){
+            return false;
+        }else return true;
+    }
+    
+    public boolean desabilitarNovo(Clientedepartamento clientedepartamento){
+        if(clientedepartamento.getRotinacliente()!=null && clientedepartamento.getRotinacliente().getIdrotinacliente()!=null){
+            return true;
+        }else return false;
+    }
 }

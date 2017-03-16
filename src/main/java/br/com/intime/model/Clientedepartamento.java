@@ -38,13 +38,7 @@ public class Clientedepartamento implements Serializable {
     @ManyToOne(optional = false)
     private Departamento departamento;
     @Transient
-    private Rotinacliente rotinacliente;
-    @Transient
-    private boolean imagemcinza;
-    @Transient
-    private boolean imagemvermelha;
-    @Transient
-    private boolean imagemverde; 
+    private Rotinacliente rotinacliente; 
 
     public Clientedepartamento() {
     }
@@ -84,31 +78,7 @@ public class Clientedepartamento implements Serializable {
     public void setRotinacliente(Rotinacliente rotinacliente) {
         this.rotinacliente = rotinacliente;
     }
-
-    public boolean isImagemcinza() {
-        return imagemcinza;
-    }
-
-    public void setImagemcinza(boolean imagemcinza) {
-        this.imagemcinza = imagemcinza;
-    }
-
-    public boolean isImagemvermelha() {
-        return imagemvermelha;
-    }
-
-    public void setImagemvermelha(boolean imagemvermelha) {
-        this.imagemvermelha = imagemvermelha;
-    }
-
-    public boolean isImagemverde() {
-        return imagemverde;
-    }
-
-    public void setImagemverde(boolean imagemverde) {
-        this.imagemverde = imagemverde;
-    }
-
+ 
     @Override
     public int hashCode() {
         int hash = 0;

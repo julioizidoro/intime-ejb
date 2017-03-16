@@ -12,32 +12,36 @@
             <title style="background: #cf7000">Atividades Em Atraso</title>
             <br/>
             <p:growl id="growl" showDetail="true" autoUpdate="true"  />
-            <p:dataScroller value="#" var="car" chunkSize="10">
-               
-                <h:panelGrid columns="4" style="width:100%" columnClasses="logo,detail">
-                    <h:panelGrid columns="2" >
-                            <p:commandLink id="btnPlay" title="Iniciar" action="#" class="hoverTextos">
-                                <i class="fa fa-play" style="font-size:20px;color:blue;"/> 
-                            </p:commandLink>
-                        <p:commandLink id="btnStop" title="Parar" style="margin-left: 10%;" action="#" class="hoverTextos">
-                                <i class="fa fa-stop" style="font-size:20px;color:red;"/> 
-                            </p:commandLink>
-                    </h:panelGrid>
-                    <h:panelGrid columns="1" >
-                        <h:outputText value="Rotina Y " />
-                    </h:panelGrid>
-                    <h:panelGrid columns="1" style="border-right: 2px solid;border-color: black;">
-                        <h:outputText value="." />
-                    </h:panelGrid>
-                    <p:outputPanel>
-                        <h:panelGrid columns="2" >
-                            <h:outputText value="Apelido" />
-                            <h:outputText value="25.10" style="font-weight: bold; margin-left: 40%;"/>
-
-                        </h:panelGrid>
-                    </p:outputPanel>
-                </h:panelGrid>
-            </p:dataScroller>
-        </h:form> 
+            <h:panelGroup>
+                <p:dataScroller id="tabelaAtividades" value="#{rotinaAtividadeAtrasadasMB.listaAtividades}" var="atividade" mode="inline" style="border:none !important;" scrollHeight="235">  
+                    <p:outputPanel>      
+                        <h:panelGrid columns="1" style="width:100%;"        
+                                     class="dataScrollerBranco">   
+                            <h:panelGroup id="listaAtividadeCalendario" style="color:#{dashboardMB.retornarCorAtividades(atividade)}"> 
+                                <h:panelGroup id="painelbtnPlay" rendered="#{dashboardMB.mostrarBotaoPlay(atividade.situacao)}" > 
+                                    <p:commandLink id="btnPlay" action="#{dashboardMB.mudarSituacaoAtividade(atividade, 'Pause')}" update="tabelaAtividades" style="float: left;margin-top:0.8%;margin-left:1.5%;">
+                                        <i class="fa fa-play" style="font-size: 14px;color:#B0B5B9;"></i>       
+                                    </p:commandLink>                  
+                                </h:panelGroup>         
+                                <h:panelGroup id="painelbtnPause" rendered="#{dashboardMB.mostrarBotaoPause(atividade.situacao)}">   
+                                    <p:commandLink id="btnPause" action="#{dashboardMB.mudarSituacaoAtividade(atividade, 'Play')}" update="tabelaAtividades" style="float: left;margin-top:0.8%;margin-left:1.5%;">
+                                        <i class="fa fa-pause" style="font-size: 14px;color:#B0B5B9;"></i>            
+                                    </p:commandLink>                                      
+                                </h:panelGroup>          
+                                <p:commandLink actionListener="#{dashboardMB.mudarSituacaoAtividade(atividade, 'Concluida')}" update="tabelaAtividades">  
+                                    <p:selectBooleanCheckbox id="cbxConcluido" class="list-child" value="#{atividade.concluido}"  style="float: left;margin-top:0.6%;margin-left:1.5%;"/> 
+                                </p:commandLink>   
+                                <h:outputLabel id="nome" value="#{atividade.atividade.descricao}" class="task-title-sp" style="margin-left: 2%;"/>       
+                            </h:panelGroup>    
+                        </h:panelGrid>      
+                        <hr/>  
+                    </p:outputPanel>    
+                </p:dataScroller>
+            </h:panelGroup>       
+            <br/>
+            <div align="center">    
+                <p:commandButton id="btnCancelar" class="btn-danger" action="#{rotinaAtividadeAtrasadasMB.fechar()}" value="Fechar" style="font-size:13px;"/>
+            </div> 
+        </h:form>   
     </h:body>
 </html>

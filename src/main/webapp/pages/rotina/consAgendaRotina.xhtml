@@ -21,7 +21,7 @@
                 </h:panelGrid> 
                 <br/> 
                 <p:outputLabel value="Agenda de Rotinas" style="margin-left:0.5%;color:#797979;font-weight: inherit;font-size: 22px;"/>
-                <h:panelGrid id="painelBtn" columns="1" style="width: 100%;font-size: 12px;margin-left:1.5%;" >    
+                <h:panelGrid id="painelBtn" columns="1" style="width: 98%;font-size: 12px;margin-left:1.5%;" >    
                     <h:panelGroup style="text-align: left;">
                         <p:selectOneMenu id="departamento"  style="width:20%;" value="#{agendaRotinaMB.departamento}" converter="DepartamentoConverter"
                                          filter="true" filterMatchMode="contains" panelStyle="width:180px" >
@@ -37,7 +37,8 @@
                             <f:attribute name="listaSubDepartamento" value="#{agendaRotinaMB.listaSubDepartamento}"/>
                         </p:selectOneMenu>
 
-                        <p:commandLink id="btnPesquisar" style="margin-left: 2%;" title="Pesquisar" action="#{agendaRotinaMB.pesquisar()}" class="hoverTextos" update="tabelaRotina, growl">
+                        <p:commandLink id="btnPesquisar" style="margin-left: 2%;" title="Pesquisar" action="#{agendaRotinaMB.pesquisar()}" class="hoverTextos"
+                                       onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" update="tabelaRotina, growl">
                             <i class="fa fa-search" style="font-size:35px;"/>  
                         </p:commandLink>     
                     </h:panelGroup>
@@ -48,7 +49,7 @@
                         <section class="panel tasks-widget" style="width:100%;">
                             <div class="panel-body">
                                 <div class="task-content">
-                                    <p:dataTable id="tabelaRotina" var="rotina" value="#{agendaRotinaMB.listaRotina}" scrollable="true" scrollHeight="150" style="border: none;">
+                                    <p:dataTable id="tabelaRotina" var="rotina" value="#{agendaRotinaMB.listaRotina}" scrollable="true" scrollHeight="150" emptyMessage="" style="border: none;width: 98%;">
                                         <p:column style="border: none;">
                                             <h:outputText value="#{rotina.nome}" />
                                         </p:column>  
@@ -56,17 +57,27 @@
                                             <f:facet name="header">
                                                 <h:outputText value="#{cliente.cliente.apelido}" />
                                             </f:facet>
-                                            <p:commandLink id="btnVerde" title="Rotina em dia" rendered="#{cliente.imagemverde}" class="hoverTextos">
+                                            <p:commandLink id="btnVerde" title="Rotina em dia" rendered="#{agendaRotinaMB.retornarImagemVerde(cliente, rotina)}" class="hoverTextos" style="cursor: inherit;">
                                                 <i class="fa fa-check-circle" style="font-size:22px;color:green;"/> 
                                             </p:commandLink> 
-                                            <p:commandLink id="btnVermelho" title="Rotina atradada" rendered="#{cliente.imagemvermelha}" action="#{agendaRotinaMB.consultarRotinaAtrasada()}"  class="hoverTextos">
+                                            <p:commandLink id="btnVermelho" title="Rotina atradada" rendered="#{agendaRotinaMB.retornarImagemVermelha(cliente, rotina)}" action="#{agendaRotinaMB.consultarRotinaAtrasada(rotina, cliente)}"
+                                                           onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" class="hoverTextos">
                                                 <i class="fa fa-times-circle" style="font-size:22px;color:red;"/> 
-                                            </p:commandLink>
-                                            <p:commandLink id="btnCinza" title="Não possui rotina" rendered="#{cliente.imagemcinza}" action="#{agendaRotinaMB.consultarRotinaAtrasada()}"  class="hoverTextos">
+                                                <p:ajax event="dialogReturn" update=":consRotina:tabelaRotina"/>
+                                            </p:commandLink>  
+                                            <p:commandLink id="btnCinza" title="Não possui rotina" rendered="#{agendaRotinaMB.retornarImagemCinza(cliente, rotina)}" class="hoverTextos" style="cursor: inherit;">
                                                 <i class="fa fa-circle" style="font-size:22px;color:#797988;"/> 
-                                            </p:commandLink>
+                                            </p:commandLink>   
                                         </p:columns>   
                                     </p:dataTable>
+                                    <div style="margin-top: 20px;background: #ffffff;"> 
+                                        <p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+                                                  closable="false" resizable="false" showHeader="false">
+                                            <p:commandLink>
+                                                <img src="../../resources/img/ajax-loader.gif" />
+                                            </p:commandLink>
+                                        </p:dialog>           
+                                    </div>
                                 </div>   
                             </div>
                         </section>

@@ -58,17 +58,18 @@
                                 <div class="task-content">
                                     <p:dataTable id="tabelaRotinaCliente" var="cliente" value="#{cadRotinaMB.listaCliente}" scrollable="true" scrollHeight="180"> 
                                         <p:column headerText="" style="text-align: center;width: 10%;border: none;">
-                                            <p:commandLink id="btnadicionar" title="Adicionar" action="#{cadRotinaMB.cadastrarFuncoesRotina(cliente)}" update=":consRotina:growl" class="hoverTextos">
+                                            <p:commandLink id="btnadicionar" disabled="#{cadRotinaMB.desabilitarNovo(cliente)}" title="Adicionar" action="#{cadRotinaMB.cadastrarFuncoesRotina(cliente)}" update=":consRotina:growl" class="hoverTextos">
                                                 <i class="fa fa-plus" style="font-size:19px;color: #293949;"/>  
+                                                <p:ajax event="dialogReturn" listener="#{cadRotinaMB.gerarListaClientes()}" update=":consRotina:tabelaRotinaCliente"/>
                                             </p:commandLink>  
-                                            <p:commandLink id="btnEditar" title="Editar" action="#{cadRotinaMB.editarRotina(cliente)}" update=":consRotina:growl" class="hoverTextos">
+                                            <p:commandLink id="btnEditar" disabled="#{cadRotinaMB.desabilitarEditarExcluir(cliente)}" title="Editar" action="#{cadRotinaMB.editarRotina(cliente)}" update=":consRotina:growl" class="hoverTextos">
                                                 <i class="fa fa-pencil-square-o" style="font-size:19px;color:#4F4F4F;"/> 
                                                 <p:ajax event="dialogReturn" listener="#{cadRotinaMB.gerarListaClientes()}" update=":consRotina:tabelaRotinaCliente"/>
                                             </p:commandLink> 
-                                            <p:commandLink id="btnExcluir"  title="Excluir" action="#{cadRotinaMB.excluirRotina(cliente)}"  update=":consRotina:growl" class="hoverTextos">
+                                            <p:commandLink id="btnExcluir" disabled="#{cadRotinaMB.desabilitarEditarExcluir(cliente)}" title="Excluir" action="#{cadRotinaMB.excluirRotina(cliente)}"  update=":consRotina:growl, :consRotina:tabelaRotinaCliente" class="hoverTextos">
                                                 <i class="fa fa-trash" style="font-size:19px;color: #C9A471;"/> 
                                             </p:commandLink>    
-                                        </p:column>   
+                                        </p:column>     
                                         <p:column headerText="CLIENTE"  style="width: 25%;border: none;text-align: left;">
                                             <h:outputText value="#{cliente.cliente.apelido}" />
                                         </p:column>
