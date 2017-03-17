@@ -701,15 +701,18 @@ public class CadFuncoesRotinaMB implements Serializable {
                     if (rotinacliente.getRotinadiaria() != null) {
                         rotinaDiarioRepository.remove(rotinacliente.getRotinadiaria().getIdrotinadiaria());
                     }
-                } else if (!semanal) {
+                } 
+                if (!semanal) {
                     if (rotinacliente.getRotinasemanal() != null) {
                         rotinaSemanalRepository.remove(rotinacliente.getRotinasemanal().getIdrotinasemanal());
                     }
-                } else if (!mensal) {
+                } 
+                if (!mensal) {
                     if (rotinacliente.getRotinamensal() != null) {
                         rotinaMensalRepository.remove(rotinacliente.getRotinamensal().getIdrotinamensal());
                     }
-                } else if (!anual) {
+                } 
+                if (!anual) {
                     if (rotinacliente.getRotinaanual() != null) {
                         rotinaAnualRepository.remove(rotinacliente.getRotinaanual().getIdrotinaanual());
                     }
