@@ -106,73 +106,55 @@ public class CadFuncoesRotinaMB implements Serializable {
                 rotinacliente = clienteRepository.find("select r from Rotinacliente r where"
                         + " r.rotina.idrotina=" + rotina.getIdrotina()
                         + " and r.cliente.idcliente=" + cliente.getIdcliente());
-                if (rotinacliente != null) { 
-                    String sql = "Select r From Rotinadiaria r where r.rotinacliente.idrotinacliente="
-                            +rotinacliente.getIdrotinacliente();
-                    Rotinadiaria rotDiaria = rotinaDiarioRepository.find(sql);
-                    if (rotDiaria != null) {
-                        rotinadiaria = rotDiaria;
+                if (rotinacliente != null) {
+                    if (rotinacliente.getRotinadiaria() != null) {
+                        rotinadiaria = rotinacliente.getRotinadiaria();
                         diario = true;
-                    }else{
-                        sql = "Select r From Rotinasemanal r where r.rotinacliente.idrotinacliente="
-                            +rotinacliente.getIdrotinacliente();
-                        Rotinasemanal rotSemanal = rotinaSemanalRepository.find(sql);
-                        if (rotSemanal != null) {
-                            rotinasemanal = rotSemanal;
-                            semanal = true;
-                        }else{
-                            sql = "Select r From Rotinamensal r where r.rotinacliente.idrotinacliente="
-                                +rotinacliente.getIdrotinacliente();
-                            Rotinamensal rotMensal = rotinaMensalRepository.find(sql);
-                            if (rotMensal != null) {
-                                rotinamensal = rotMensal;
-                                mensal = true;
-                            }else{
-                                sql = "Select r From Rotinaanual r where r.rotinacliente.idrotinacliente="
-                                    +rotinacliente.getIdrotinacliente();
-                                Rotinaanual rotAnual = rotinaAnualRepository.find(sql);
-                                if (rotAnual != null) {
-                                    rotinaanual = rotAnual;
-                                    anual = true;
-                                }
-                            }
-                        }
-                    } 
-                    usuario = rotinacliente.getUsuario();
-                    rotinacliente.setDatainicial(Date.from(rotinacliente.getDatainicio().atStartOfDay(ZoneId.systemDefault()).toInstant()));
-                    if (rotinacliente.getHora() != null) {
-                        hora = true;
-                        LocalTime hora = rotinacliente.getHora();
-                        String horaMostrar = "";
-                        int ih = hora.getHour();
-                        int im = hora.getMinute();
-                        if (ih <= 9) {
-                            horaMostrar = "0";
-                        }
-                        horaMostrar = horaMostrar + String.valueOf(ih) + ":";
-                        if (im <= 9) {
-                            horaMostrar = horaMostrar + "0";
-                        }
-                        horaMostrar = horaMostrar + String.valueOf(im); 
-                        rotinacliente.setHorario(horaMostrar);
+                    } else if (rotinacliente.getRotinasemanal() != null) {
+                        rotinasemanal = rotinacliente.getRotinasemanal();
+                        semanal = true;
+                    } else if (rotinacliente.getRotinamensal() != null) {
+                        rotinamensal = rotinacliente.getRotinamensal();
+                        mensal = true;
+                    } else if (rotinacliente.getRotinaanual() != null) {
+                        rotinaanual = rotinacliente.getRotinaanual();
+                        anual = true;
                     }
-                    if (rotinacliente.getMeta() != null && rotinacliente.getMeta()>0) {
-                        meta = true;
+                }
+                usuario = rotinacliente.getUsuario();
+                rotinacliente.setDatainicial(Date.from(rotinacliente.getDatainicio().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+                if (rotinacliente.getHora() != null) {
+                    hora = true;
+                    LocalTime hora = rotinacliente.getHora();
+                    String horaMostrar = "";
+                    int ih = hora.getHour();
+                    int im = hora.getMinute();
+                    if (ih <= 9) {
+                        horaMostrar = "0";
                     }
-                    if (rotinacliente.getRecorrencia() != null && rotinacliente.getRecorrencia()>0) {
-                        terminaApos = true;
+                    horaMostrar = horaMostrar + String.valueOf(ih) + ":";
+                    if (im <= 9) {
+                        horaMostrar = horaMostrar + "0";
                     }
-                    if (rotinacliente.getDatatermino() != null) {
-                        datafinal = true;
-                        rotinacliente.setDatafinal(Date.from(rotinacliente.getDatatermino().atStartOfDay(ZoneId.systemDefault()).toInstant()));
-                    }
-                } else {
-                    rotinacliente = new Rotinacliente();
-                    diario=true;
+                    horaMostrar = horaMostrar + String.valueOf(im);
+                    rotinacliente.setHorario(horaMostrar);
+                }
+                if (rotinacliente.getMeta() != null && rotinacliente.getMeta() > 0) {
+                    meta = true;
+                }
+                if (rotinacliente.getRecorrencia() != null && rotinacliente.getRecorrencia() > 0) {
+                    terminaApos = true;
+                }
+                if (rotinacliente.getDatatermino() != null) {
+                    datafinal = true;
+                    rotinacliente.setDatafinal(Date.from(rotinacliente.getDatatermino().atStartOfDay(ZoneId.systemDefault()).toInstant()));
                 }
             } else {
                 rotinacliente = new Rotinacliente();
+                diario = true;
             }
+        } else {
+            rotinacliente = new Rotinacliente();
         }
     }
 
@@ -714,34 +696,22 @@ public class CadFuncoesRotinaMB implements Serializable {
                 rotinaatividade.setRotina(rotinacliente);
                 rotinaatividade.setAtividade(atividade);
                 rotinaAtividadeRepository.update(rotinaatividade);
-            } else { 
-                if (!diario){ 
-                    if(rotinacliente.getRotinadiaria()!=null){
+            } else {
+                if (!diario) {
+                    if (rotinacliente.getRotinadiaria() != null) {
                         rotinaDiarioRepository.remove(rotinacliente.getRotinadiaria().getIdrotinadiaria());
                     }
-                }  
-                if (!semanal){
-                    String sql = "Select r From Rotinasemanal r where r.rotinacliente.idrotinacliente="
-                        +rotinacliente.getIdrotinacliente();
-                    Rotinasemanal rotSemanal= rotinaSemanalRepository.find(sql);
-                    if(rotSemanal!=null && rotSemanal.getIdrotinasemanal()!=null){
-                        rotinaSemanalRepository.remove(rotSemanal.getIdrotinasemanal());
+                } else if (!semanal) {
+                    if (rotinacliente.getRotinasemanal() != null) {
+                        rotinaSemanalRepository.remove(rotinacliente.getRotinasemanal().getIdrotinasemanal());
                     }
-                }
-                if (!mensal){
-                    String sql = "Select r From Rotinamensal r where r.rotinacliente.idrotinacliente="
-                        +rotinacliente.getIdrotinacliente();
-                    Rotinamensal rotMensal= rotinaMensalRepository.find(sql);
-                    if(rotMensal!=null && rotMensal.getIdrotinamensal()!=null){
-                        rotinaMensalRepository.remove(rotMensal.getIdrotinamensal());
+                } else if (!mensal) {
+                    if (rotinacliente.getRotinamensal() != null) {
+                        rotinaMensalRepository.remove(rotinacliente.getRotinamensal().getIdrotinamensal());
                     }
-                }
-                if (!anual){
-                    String sql = "Select r From Rotinaanual r where r.rotinacliente.idrotinacliente="
-                        +rotinacliente.getIdrotinacliente();
-                    Rotinaanual rotAnual= rotinaAnualRepository.find(sql);
-                    if(rotAnual!=null && rotAnual.getIdrotinaanual()!=null){
-                        rotinaAnualRepository.remove(rotAnual.getIdrotinaanual());
+                } else if (!anual) {
+                    if (rotinacliente.getRotinaanual() != null) {
+                        rotinaAnualRepository.remove(rotinacliente.getRotinaanual().getIdrotinaanual());
                     }
                 }
             }

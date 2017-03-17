@@ -69,9 +69,15 @@ public class Rotinacliente implements Serializable {
     private Usuario usuario;  
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "rotina")
     private List<Rotinaatividade> rotinaatividadeList;    
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "rotinacliente")
+    @OneToOne(mappedBy = "rotinacliente")
     private Rotinadiaria rotinadiaria;    
-    @Transient
+    @OneToOne(mappedBy = "rotinacliente")
+    private Rotinasemanal rotinasemanal;   
+    @OneToOne(mappedBy = "rotinacliente")
+    private Rotinamensal rotinamensal;   
+    @OneToOne(mappedBy = "rotinacliente")
+    private Rotinaanual rotinaanual;   
+    @Transient   
     private Date datainicial;
     @Transient
     private Date datafinal;
@@ -220,6 +226,30 @@ public class Rotinacliente implements Serializable {
 
     public void setRotinadiaria(Rotinadiaria rotinadiaria) {
         this.rotinadiaria = rotinadiaria;
+    }
+
+    public Rotinasemanal getRotinasemanal() {
+        return rotinasemanal;
+    }
+
+    public void setRotinasemanal(Rotinasemanal rotinasemanal) {
+        this.rotinasemanal = rotinasemanal;
+    }
+
+    public Rotinamensal getRotinamensal() {
+        return rotinamensal;
+    }
+
+    public void setRotinamensal(Rotinamensal rotinamensal) {
+        this.rotinamensal = rotinamensal;
+    }
+
+    public Rotinaanual getRotinaanual() {
+        return rotinaanual;
+    }
+
+    public void setRotinaanual(Rotinaanual rotinaanual) {
+        this.rotinaanual = rotinaanual;
     }
  
     @Override
