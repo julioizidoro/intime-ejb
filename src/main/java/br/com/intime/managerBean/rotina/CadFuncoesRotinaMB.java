@@ -120,43 +120,44 @@ public class CadFuncoesRotinaMB implements Serializable {
                         rotinaanual = rotinacliente.getRotinaanual();
                         anual = true;
                     }
-                }
-                usuario = rotinacliente.getUsuario();
-                rotinacliente.setDatainicial(Date.from(rotinacliente.getDatainicio().atStartOfDay(ZoneId.systemDefault()).toInstant()));
-                if (rotinacliente.getHora() != null) {
-                    hora = true;
-                    LocalTime hora = rotinacliente.getHora();
-                    String horaMostrar = "";
-                    int ih = hora.getHour();
-                    int im = hora.getMinute();
-                    if (ih <= 9) {
-                        horaMostrar = "0";
+                    usuario = rotinacliente.getUsuario();
+                    rotinacliente.setDatainicial(Date.from(rotinacliente.getDatainicio().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+                    if (rotinacliente.getHora() != null) {
+                        hora = true;
+                        LocalTime hora = rotinacliente.getHora();
+                        String horaMostrar = "";
+                        int ih = hora.getHour();
+                        int im = hora.getMinute();
+                        if (ih <= 9) {
+                            horaMostrar = "0";
+                        }
+                        horaMostrar = horaMostrar + String.valueOf(ih) + ":";
+                        if (im <= 9) {
+                            horaMostrar = horaMostrar + "0";
+                        }
+                        horaMostrar = horaMostrar + String.valueOf(im);
+                        rotinacliente.setHorario(horaMostrar);
                     }
-                    horaMostrar = horaMostrar + String.valueOf(ih) + ":";
-                    if (im <= 9) {
-                        horaMostrar = horaMostrar + "0";
+                    if (rotinacliente.getMeta() != null && rotinacliente.getMeta() > 0) {
+                        meta = true;
                     }
-                    horaMostrar = horaMostrar + String.valueOf(im);
-                    rotinacliente.setHorario(horaMostrar);
-                }
-                if (rotinacliente.getMeta() != null && rotinacliente.getMeta() > 0) {
-                    meta = true;
-                }
-                if (rotinacliente.getRecorrencia() != null && rotinacliente.getRecorrencia() > 0) {
-                    terminaApos = true;
-                }
-                if (rotinacliente.getDatatermino() != null) {
-                    datafinal = true;
-                    rotinacliente.setDatafinal(Date.from(rotinacliente.getDatatermino().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+                    if (rotinacliente.getRecorrencia() != null && rotinacliente.getRecorrencia() > 0) {
+                        terminaApos = true;
+                    }
+                    if (rotinacliente.getDatatermino() != null) {
+                        datafinal = true;
+                        rotinacliente.setDatafinal(Date.from(rotinacliente.getDatatermino().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+                    }
+                } else {
+                    rotinacliente = new Rotinacliente();
+                    diario = true;
                 }
             } else {
                 rotinacliente = new Rotinacliente();
-                diario = true;
             }
-        } else {
-            rotinacliente = new Rotinacliente();
         }
     }
+    
 
     public List<Usuario> getListaUsuario() {
         return listaUsuario;
@@ -701,17 +702,17 @@ public class CadFuncoesRotinaMB implements Serializable {
                     if (rotinacliente.getRotinadiaria() != null) {
                         rotinaDiarioRepository.remove(rotinacliente.getRotinadiaria().getIdrotinadiaria());
                     }
-                } 
+                }
                 if (!semanal) {
                     if (rotinacliente.getRotinasemanal() != null) {
                         rotinaSemanalRepository.remove(rotinacliente.getRotinasemanal().getIdrotinasemanal());
                     }
-                } 
+                }
                 if (!mensal) {
                     if (rotinacliente.getRotinamensal() != null) {
                         rotinaMensalRepository.remove(rotinacliente.getRotinamensal().getIdrotinamensal());
                     }
-                } 
+                }
                 if (!anual) {
                     if (rotinacliente.getRotinaanual() != null) {
                         rotinaAnualRepository.remove(rotinacliente.getRotinaanual().getIdrotinaanual());
