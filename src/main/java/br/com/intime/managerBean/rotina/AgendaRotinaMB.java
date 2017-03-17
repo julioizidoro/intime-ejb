@@ -5,6 +5,7 @@
  */
 package br.com.intime.managerBean.rotina;
 
+import br.com.intime.model.Atividadeaguardando;
 import br.com.intime.model.Atividadeusuario;
 import br.com.intime.model.Clientedepartamento;
 import br.com.intime.model.Departamento;
@@ -12,6 +13,7 @@ import br.com.intime.model.Rotina;
 import br.com.intime.model.Rotinaatividade;
 import br.com.intime.model.Rotinacliente;
 import br.com.intime.model.Subdepartamento;
+import br.com.intime.repository.AtividadeAguardandoRepository;
 import br.com.intime.repository.AtividadeUsuarioRepository;
 import br.com.intime.repository.ClienteDepartamentoRepository;
 import br.com.intime.repository.DepartamentoRepository;
@@ -53,6 +55,8 @@ public class AgendaRotinaMB implements Serializable {
     private RotinaAtividadeRepository rotinaAtividadeRepository;
     @EJB
     private AtividadeUsuarioRepository atividadeUsuarioRepository;
+    @EJB
+    private AtividadeAguardandoRepository atividadeAguardandoRepository;
     private Departamento departamento;
     private Subdepartamento subDepartamento;
     private List<Departamento> listaDepartamento;
@@ -179,6 +183,22 @@ public class AgendaRotinaMB implements Serializable {
         this.vermelho = vermelho;
     }
 
+    public AtividadeAguardandoRepository getAtividadeAguardandoRepository() {
+        return atividadeAguardandoRepository;
+    }
+
+    public void setAtividadeAguardandoRepository(AtividadeAguardandoRepository atividadeAguardandoRepository) {
+        this.atividadeAguardandoRepository = atividadeAguardandoRepository;
+    }
+
+    public boolean isCinza() {
+        return cinza;
+    }
+
+    public void setCinza(boolean cinza) {
+        this.cinza = cinza;
+    }
+
     public void consultarRotinaAtrasada(Rotina rotina, Clientedepartamento clientedepartamento) {
         Map<String, Object> options = new HashMap<String, Object>();
         options.put("contentWidth", 600);
@@ -243,9 +263,16 @@ public class AgendaRotinaMB implements Serializable {
                 if (listaAtividades != null && listaAtividades.size()>0) {
                     boolean ok = verificarAtividadeAtrasada(listaAtividades);
                     if (ok) {
-                        cinza=false;
-                        vermelho=false;
-                        return true;
+                        boolean aguardando = removerAtivadadesAguardando(listaAtividades);
+                        if(aguardando){
+                            cinza=false;
+                            vermelho=true;
+                            return false;
+                        }else{
+                            cinza=false;
+                            vermelho=false;
+                            return true;
+                        }
                     } else {
                         vermelho=true;
                         cinza=false;
@@ -283,4 +310,16 @@ public class AgendaRotinaMB implements Serializable {
         return true;
     }
 
+    public boolean removerAtivadadesAguardando(List<Atividadeusuario> listaAtividade) { 
+        for (int i = 0; i < listaAtividade.size(); i++) {
+            String sql = "SELECT a FROM Atividadeaguardando a where a.atividadeusuario.idatividadeusuario=" +listaAtividade.get(i).getIdatividadeusuario()
+                    + " and a.dataretorno> :dataInicial ";
+            List<Atividadeaguardando> lista = atividadeAguardandoRepository.list(sql, LocalDate.now(), null);
+            if (lista != null && lista.size()>0) {
+                return false;
+            }
+            return true;
+        }
+        return true;
+    }
 }

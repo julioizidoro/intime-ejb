@@ -715,12 +715,9 @@ public class CadFuncoesRotinaMB implements Serializable {
                 rotinaatividade.setAtividade(atividade);
                 rotinaAtividadeRepository.update(rotinaatividade);
             } else { 
-                if (!diario){
-                    String sql = "Select r From Rotinadiaria r where r.rotinacliente.idrotinacliente="
-                        +rotinacliente.getIdrotinacliente();
-                    Rotinadiaria rotDiaria = rotinaDiarioRepository.find(sql);
-                    if(rotDiaria!=null && rotDiaria.getIdrotinadiaria()!=null){
-                        rotinaDiarioRepository.remove(rotDiaria.getIdrotinadiaria());
+                if (!diario){ 
+                    if(rotinacliente.getRotinadiaria()!=null){
+                        rotinaDiarioRepository.remove(rotinacliente.getRotinadiaria().getIdrotinadiaria());
                     }
                 }  
                 if (!semanal){
@@ -781,6 +778,10 @@ public class CadFuncoesRotinaMB implements Serializable {
         }
         if (rotinacliente.getDatainicial() == null) {
             Mensagem.lancarMensagemErro("Atenção!", "Campo Data inícial não preenchido.");
+            return false;
+        }
+        if (rotinacliente.getDatainicial().before(new Date())) {
+            Mensagem.lancarMensagemErro("Atenção!", "Data de início inválida.");
             return false;
         }
         if (diario) {

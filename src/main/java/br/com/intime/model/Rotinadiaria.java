@@ -13,8 +13,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne; 
-import javax.persistence.Table; 
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 /**
  *
@@ -55,20 +55,20 @@ public class Rotinadiaria implements Serializable {
         this.idrotinadiaria = idrotinadiaria;
     }
 
-    public boolean isAcadadia() {
-        return acadadia;
-    }
-
-    public void setAcadadia(boolean acadadia) {
-        this.acadadia = acadadia;
-    }
-
     public Integer getNumerodias() {
         return numerodias;
     }
 
     public void setNumerodias(Integer numerodias) {
         this.numerodias = numerodias;
+    }
+
+    public boolean isAcadadia() {
+        return acadadia;
+    }
+
+    public void setAcadadia(boolean acadadia) {
+        this.acadadia = acadadia;
     }
 
     public boolean isTodosdias() {
@@ -86,6 +86,7 @@ public class Rotinadiaria implements Serializable {
     public void setRotinacliente(Rotinacliente rotinacliente) {
         this.rotinacliente = rotinacliente;
     }
+
 
     @Override
     public int hashCode() {

@@ -56,7 +56,7 @@
                         <section class="panel tasks-widget" style="width:100%;">
                             <div class="panel-body">
                                 <div class="task-content">
-                                    <p:dataTable id="tabelaRotinaCliente" var="cliente" value="#{cadRotinaMB.listaCliente}" scrollable="true" scrollHeight="180"> 
+                                    <p:dataTable id="tabelaRotinaCliente" var="cliente" value="#{cadRotinaMB.listaCliente}" scrollable="true" scrollHeight="300"> 
                                         <p:column headerText="" style="text-align: center;width: 10%;border: none;">
                                             <p:commandLink id="btnadicionar" disabled="#{cadRotinaMB.desabilitarNovo(cliente)}" title="Adicionar" action="#{cadRotinaMB.cadastrarFuncoesRotina(cliente)}" update=":consRotina:growl" class="hoverTextos">
                                                 <i class="fa fa-plus" style="font-size:19px;color: #293949;"/>  

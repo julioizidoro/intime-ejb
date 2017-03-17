@@ -1,10 +1,12 @@
 package br.com.intime.managerBean.rotina;
 
+import br.com.intime.model.Atividadeaguardando;
 import br.com.intime.model.Atividadeusuario; 
 import br.com.intime.model.Clientedepartamento;
 import br.com.intime.model.Rotina;
 import br.com.intime.model.Rotinaatividade;
 import br.com.intime.model.Rotinacliente;
+import br.com.intime.repository.AtividadeAguardandoRepository;
 import br.com.intime.repository.AtividadeUsuarioRepository;
 import br.com.intime.repository.ClienteDepartamentoRepository;
 import br.com.intime.repository.DepartamentoRepository;
@@ -43,6 +45,8 @@ public class RotinaAtividadeAtrasadasMB implements Serializable {
     private RotinaAtividadeRepository rotinaAtividadeRepository;
     @EJB
     private AtividadeUsuarioRepository atividadeUsuarioRepository;
+    @EJB
+    private AtividadeAguardandoRepository atividadeAguardandoRepository;
     private Rotina rotina;
     private Clientedepartamento clientedepartamento;
     private List<Atividadeusuario> listaAtividades;
@@ -138,6 +142,14 @@ public class RotinaAtividadeAtrasadasMB implements Serializable {
         this.listaAtividades = listaAtividades;
     }
 
+    public AtividadeAguardandoRepository getAtividadeAguardandoRepository() {
+        return atividadeAguardandoRepository;
+    }
+
+    public void setAtividadeAguardandoRepository(AtividadeAguardandoRepository atividadeAguardandoRepository) {
+        this.atividadeAguardandoRepository = atividadeAguardandoRepository;
+    }
+
     public void fechar() { 
         RequestContext.getCurrentInstance().closeDialog(null);
     }
@@ -172,5 +184,19 @@ public class RotinaAtividadeAtrasadasMB implements Serializable {
                 listaAtividades.add(lista.get(i));
             }
         }
+        removerAtivadadesAguardando();
     } 
+    
+    public void removerAtivadadesAguardando() { 
+        for (int i = 0; i < listaAtividades.size(); i++) {
+            String sql = "SELECT a FROM Atividadeaguardando a where a.atividadeusuario.idatividadeusuario=" +listaAtividades.get(i).getIdatividadeusuario()
+                    + " and a.dataretorno> :dataInicial ";
+            List<Atividadeaguardando> lista = atividadeAguardandoRepository.list(sql, LocalDate.now(), null);
+            if (lista != null && lista.size()>0) {
+                for (int j = 0; j < lista.size(); j++) {
+                    listaAtividades.remove(lista.get(j).getAtividadeusuario());
+                }
+            } 
+        } 
+    }
 }

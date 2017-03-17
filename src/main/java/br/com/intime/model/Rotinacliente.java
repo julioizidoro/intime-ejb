@@ -20,6 +20,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne; 
 import javax.persistence.OneToMany; 
+import javax.persistence.OneToOne;
 import javax.persistence.Table; 
 import javax.persistence.Transient;
 import javax.validation.constraints.Size;  
@@ -68,6 +69,8 @@ public class Rotinacliente implements Serializable {
     private Usuario usuario;  
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "rotina")
     private List<Rotinaatividade> rotinaatividadeList;    
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "rotinacliente")
+    private Rotinadiaria rotinadiaria;    
     @Transient
     private Date datainicial;
     @Transient
@@ -75,7 +78,7 @@ public class Rotinacliente implements Serializable {
     @Transient
     private String horario;  
 
-    public Rotinacliente() {
+    public Rotinacliente() {  
     }
 
     public Rotinacliente(Integer idrotinacliente) {
@@ -209,6 +212,14 @@ public class Rotinacliente implements Serializable {
 
     public void setHorario(String horario) {
         this.horario = horario;
+    }
+
+    public Rotinadiaria getRotinadiaria() {
+        return rotinadiaria;
+    }
+
+    public void setRotinadiaria(Rotinadiaria rotinadiaria) {
+        this.rotinadiaria = rotinadiaria;
     }
  
     @Override
