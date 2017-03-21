@@ -77,6 +77,8 @@ public class Rotinacliente implements Serializable {
     private Rotinamensal rotinamensal;   
     @OneToOne(mappedBy = "rotinacliente")
     private Rotinaanual rotinaanual;   
+    @Column(name = "totalrecorrencia")
+    private Integer totalrecorrencia;
     @Transient   
     private Date datainicial;
     @Transient
@@ -250,6 +252,14 @@ public class Rotinacliente implements Serializable {
 
     public void setRotinaanual(Rotinaanual rotinaanual) {
         this.rotinaanual = rotinaanual;
+    }
+
+    public Integer getTotalrecorrencia() {
+        return totalrecorrencia;
+    }
+
+    public void setTotalrecorrencia(Integer totalrecorrencia) {
+        this.totalrecorrencia = totalrecorrencia;
     }
  
     @Override

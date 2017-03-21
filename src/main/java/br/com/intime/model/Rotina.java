@@ -43,6 +43,7 @@ public class Rotina implements Serializable {
     @JoinColumn(name = "subdepartamento_idsubdepartamento", referencedColumnName = "idsubdepartamento")
     @ManyToOne(optional = false)
     private Subdepartamento subdepartamento;
+    
      
 
     public Rotina() {
@@ -83,8 +84,7 @@ public class Rotina implements Serializable {
     public void setSubdepartamento(Subdepartamento subdepartamento) {
         this.subdepartamento = subdepartamento;
     }
- 
-
+    
     @Override
     public int hashCode() {
         int hash = 0;

@@ -17,6 +17,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.Size;
@@ -62,6 +63,8 @@ public class Atividade implements Serializable {
     @JoinColumn(name = "usuario_idusuario", referencedColumnName = "idusuario")
     @ManyToOne(optional = false)
     private Usuario usuario; 
+    @OneToOne(mappedBy = "atividade")
+    private Rotinaatividade rotinaatividade;  
     @Transient
     private String dataMostrar;
     @Transient 
@@ -214,6 +217,14 @@ public class Atividade implements Serializable {
 
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
+    }
+
+    public Rotinaatividade getRotinaatividade() {
+        return rotinaatividade;
+    }
+
+    public void setRotinaatividade(Rotinaatividade rotinaatividade) {
+        this.rotinaatividade = rotinaatividade;
     }
 
     @Override
