@@ -22,7 +22,7 @@ public class RotinaAtividadeBean {
     
     public boolean verificarTerminoRotina(Rotinacliente rotinaCliente){
         if (rotinaCliente.getRecorrencia()>0){
-            if ((rotinaCliente.getTotalrecorrencia()+1)>=rotinaCliente.getRecorrencia()){
+            if ((rotinaCliente.getTotalrecorrencia()+1)>rotinaCliente.getRecorrencia()){
                 return true;
             }else {
                 return false;
@@ -40,12 +40,12 @@ public class RotinaAtividadeBean {
         return false;
     }
     
-    public Atividade gerarProximaAtividadeDiaria(Atividadeusuario atividadeusuario){
+    public Atividade gerarProximaAtividadeDiaria(Atividadeusuario atividadeusuario, int multiplicador){
         int numeroDias=0;
         if (atividadeusuario.getAtividade().getRotinaatividade().getRotina().getRotinadiaria().isAcadadia()){
-            numeroDias =atividadeusuario.getAtividade().getRotinaatividade().getRotina().getRotinadiaria().getNumerodias()  * 7;
+            numeroDias =atividadeusuario.getAtividade().getRotinaatividade().getRotina().getRotinadiaria().getNumerodias()  * multiplicador;
         }else if (atividadeusuario.getAtividade().getRotinaatividade().getRotina().getRotinadiaria().isTodosdias()){
-            numeroDias = 7;
+            numeroDias = multiplicador;
         }
         Atividade novaAtividade = new Atividade();
         novaAtividade.setCliente(atividadeusuario.getAtividade().getCliente());
@@ -63,8 +63,8 @@ public class RotinaAtividadeBean {
         return novaAtividade;
     }
     
-    public Atividade gerarProximaAtividadeSemana(Atividadeusuario atividadeusuario){
-        int numeroSemanas = atividadeusuario.getAtividade().getRotinaatividade().getRotina().getRotinasemanal().getNumerosemanas();        
+    public Atividade gerarProximaAtividadeSemana(Atividadeusuario atividadeusuario, int multiplicador){
+        int numeroSemanas = atividadeusuario.getAtividade().getRotinaatividade().getRotina().getRotinasemanal().getNumerosemanas() * multiplicador;        
         Atividade novaAtividade = new Atividade();
         novaAtividade.setCliente(atividadeusuario.getAtividade().getCliente());
         LocalDate novaData = atividadeusuario.getAtividade().getDataexecucao();
@@ -81,15 +81,15 @@ public class RotinaAtividadeBean {
         return novaAtividade;
     }
     
-    public Atividade gerarProximaAtividadeMensal(Atividadeusuario atividadeusuario){
+    public Atividade gerarProximaAtividadeMensal(Atividadeusuario atividadeusuario, int multiplicador){
         LocalDate dataNovaAtividade = atividadeusuario.getAtividade().getDataexecucao();
         if (atividadeusuario.getAtividade().getRotinaatividade().getRotina().getRotinamensal().isDiacadames()){
-            int numeroMeses =atividadeusuario.getAtividade().getRotinaatividade().getRotina().getRotinamensal().getNumeromesesdia();
+            int numeroMeses =atividadeusuario.getAtividade().getRotinaatividade().getRotina().getRotinamensal().getNumeromesesdia() * multiplicador;
             dataNovaAtividade.plusMonths(numeroMeses);
         }else if (atividadeusuario.getAtividade().getRotinaatividade().getRotina().getRotinamensal().isNocadames()){
             dataNovaAtividade = gearDataDiaSemana(atividadeusuario.getAtividade().getRotinaatividade().getRotina().getRotinamensal().getNumerosemana(),
                     atividadeusuario.getAtividade().getRotinaatividade().getRotina().getRotinamensal().getDiasemana(), 
-                    atividadeusuario.getAtividade().getRotinaatividade().getRotina().getRotinamensal().getNumeromesesno(), 
+                    (atividadeusuario.getAtividade().getRotinaatividade().getRotina().getRotinamensal().getNumeromesesno() * multiplicador), 
                     atividadeusuario.getAtividade().getDataexecucao());
         }
         if (dataNovaAtividade!=null){
@@ -203,11 +203,5 @@ public class RotinaAtividadeBean {
         rotinaatividade.setRotina(rotinaCliente);
         return rotinaatividade;
     }
-    
-    
-    
-    
-    
-    
     
 }
