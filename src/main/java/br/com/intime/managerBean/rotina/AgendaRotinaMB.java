@@ -253,7 +253,7 @@ public class AgendaRotinaMB implements Serializable {
             vermelho=false;
             return false;
         } else {
-            String sqlRotinaAtividade = "select r From Rotinaatividade r where r.rotina.idrotinacliente=" + rotinacliente.getIdrotinacliente()
+            String sqlRotinaAtividade = "select r From Rotinaatividade r where r.rotinacliente.idrotinacliente=" + rotinacliente.getIdrotinacliente()
                     + " and r.atividade.cliente.idcliente=" + rotinacliente.getCliente().getIdcliente();
             Rotinaatividade rotinaatividade = rotinaAtividadeRepository.find(sqlRotinaAtividade);
             if (rotinaatividade != null) {

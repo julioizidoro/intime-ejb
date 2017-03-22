@@ -92,18 +92,18 @@ public class RotinaAtividadeBean {
                     atividadeusuario.getAtividade().getDataexecucao());
         }
         if (dataNovaAtividade!=null){
-        Atividade novaAtividade = new Atividade();
-        novaAtividade.setCliente(atividadeusuario.getAtividade().getCliente());
-        novaAtividade.setDataexecucao(dataNovaAtividade);
-        novaAtividade.setDatalancamento(LocalDate.now());
-        novaAtividade.setDescricao(atividadeusuario.getAtividade().getDescricao());
-        novaAtividade.setHoraexecucao(atividadeusuario.getAtividade().getHoraexecucao());
-        novaAtividade.setNotificacaohorario(atividadeusuario.getAtividade().isNotificacaohorario());
-        novaAtividade.setPrioridade(atividadeusuario.getAtividade().getPrioridade());
-        novaAtividade.setRotina(atividadeusuario.getAtividade().isRotina());
-        novaAtividade.setSubdepartamento(atividadeusuario.getAtividade().getSubdepartamento());
-        novaAtividade.setUsuario(atividadeusuario.getAtividade().getUsuario());
-        return novaAtividade;
+            Atividade novaAtividade = new Atividade();
+            novaAtividade.setCliente(atividadeusuario.getAtividade().getCliente());
+            novaAtividade.setDataexecucao(dataNovaAtividade);
+            novaAtividade.setDatalancamento(LocalDate.now());
+            novaAtividade.setDescricao(atividadeusuario.getAtividade().getDescricao());
+            novaAtividade.setHoraexecucao(atividadeusuario.getAtividade().getHoraexecucao());
+            novaAtividade.setNotificacaohorario(atividadeusuario.getAtividade().isNotificacaohorario());
+            novaAtividade.setPrioridade(atividadeusuario.getAtividade().getPrioridade());
+            novaAtividade.setRotina(atividadeusuario.getAtividade().isRotina());
+            novaAtividade.setSubdepartamento(atividadeusuario.getAtividade().getSubdepartamento());
+            novaAtividade.setUsuario(atividadeusuario.getAtividade().getUsuario());
+            return novaAtividade;
         }
         return null;
     }
@@ -137,7 +137,7 @@ public class RotinaAtividadeBean {
     }
     
     public LocalDate gearDataDiaSemana(String posicaoSemana, String diaSemana, int numeroMeses, LocalDate dataAtividade){
-        dataAtividade.plusMonths(numeroMeses);
+        dataAtividade = dataAtividade.plusMonths(numeroMeses);
         int mes = dataAtividade.getMonthValue();
         int ano = dataAtividade.getYear();
         dataAtividade = LocalDate.of(ano, mes, 1);
@@ -176,7 +176,7 @@ public class RotinaAtividadeBean {
             if (contadorSemana==numeroPosicaoSemana){
                 return dataAtividade;
             }
-            dataAtividade.plusDays(1);
+            dataAtividade = dataAtividade.plusDays(1);
             int mesData = dataAtividade.getMonthValue();
             int anoData = dataAtividade.getYear();
             if ((mesData>mes) || (anoData>ano)){

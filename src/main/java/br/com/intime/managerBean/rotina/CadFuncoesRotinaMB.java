@@ -1018,15 +1018,17 @@ public class CadFuncoesRotinaMB implements Serializable {
             boolean termino = rab.verificarTerminoRotina(rotinacliente);
             if (!termino) {
                 Atividade atividade = rab.gerarProximaAtividadeMensal(atividadeusuario, 1);
-                atividade = atividadeRepository.update(atividade);
-                atividadeusuario = rab.gearAtivadadeUsuario(atividade, usuario);
-                atividadeUsuarioRepository.update(atividadeusuario);
-                Rotinaatividade rotinaatividade = rab.gerarRotinaAtividade(atividade, rotinacliente);
-                rotinaAtividadeRepository.update(rotinaatividade);
-                atividadeusuario.getAtividade().setRotinaatividade(rotinaatividade);
-                rotinacliente.setRotinamensal(rotinamensal);
-                atividadeusuario.getAtividade().getRotinaatividade().setRotinacliente(rotinacliente);
-                rotinacliente.setTotalrecorrencia(rotinacliente.getTotalrecorrencia() + 1);
+                if(atividade!=null){
+                    atividade = atividadeRepository.update(atividade);
+                    atividadeusuario = rab.gearAtivadadeUsuario(atividade, usuario);
+                    atividadeUsuarioRepository.update(atividadeusuario);
+                    Rotinaatividade rotinaatividade = rab.gerarRotinaAtividade(atividade, rotinacliente);
+                    rotinaAtividadeRepository.update(rotinaatividade);
+                    atividadeusuario.getAtividade().setRotinaatividade(rotinaatividade);
+                    rotinacliente.setRotinamensal(rotinamensal);
+                    atividadeusuario.getAtividade().getRotinaatividade().setRotinacliente(rotinacliente);
+                    rotinacliente.setTotalrecorrencia(rotinacliente.getTotalrecorrencia() + 1);
+                }
             }
         }
     }
