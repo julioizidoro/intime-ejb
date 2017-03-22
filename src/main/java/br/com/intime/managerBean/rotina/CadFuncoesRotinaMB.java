@@ -1017,14 +1017,14 @@ public class CadFuncoesRotinaMB implements Serializable {
         for (int i = 0; i < 1; i++) {
             boolean termino = rab.verificarTerminoRotina(rotinacliente);
             if (!termino) {
-                Atividade atividade = rab.gerarProximaAtividadeSemana(atividadeusuario, 1);
+                Atividade atividade = rab.gerarProximaAtividadeMensal(atividadeusuario, 1);
                 atividade = atividadeRepository.update(atividade);
                 atividadeusuario = rab.gearAtivadadeUsuario(atividade, usuario);
                 atividadeUsuarioRepository.update(atividadeusuario);
                 Rotinaatividade rotinaatividade = rab.gerarRotinaAtividade(atividade, rotinacliente);
                 rotinaAtividadeRepository.update(rotinaatividade);
                 atividadeusuario.getAtividade().setRotinaatividade(rotinaatividade);
-                rotinacliente.setRotinasemanal(rotinasemanal);
+                rotinacliente.setRotinamensal(rotinamensal);
                 atividadeusuario.getAtividade().getRotinaatividade().setRotinacliente(rotinacliente);
                 rotinacliente.setTotalrecorrencia(rotinacliente.getTotalrecorrencia() + 1);
             }
