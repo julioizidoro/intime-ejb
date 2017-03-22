@@ -5,6 +5,7 @@
  */
 package br.com.intime.managerBean.rotina;
 
+import br.com.intime.managerBean.bean.RotinaAtividadeBean;
 import br.com.intime.model.Atividade;
 import br.com.intime.model.Atividadeusuario;
 import br.com.intime.model.Cliente;
@@ -87,6 +88,7 @@ public class CadFuncoesRotinaMB implements Serializable {
     private Rotinamensal rotinamensal;
     private Rotinasemanal rotinasemanal;
     private Rotinaanual rotinaanual;
+    private Atividadeusuario atividadeusuario;
 
     @PostConstruct
     public void init() {
@@ -100,6 +102,7 @@ public class CadFuncoesRotinaMB implements Serializable {
         rotinasemanal = new Rotinasemanal();
         rotinamensal = new Rotinamensal();
         rotinaanual = new Rotinaanual();
+        atividadeusuario = new Atividadeusuario();
         gerarListaUsuario();
         if (rotina != null) {
             if (cliente != null) {
@@ -157,7 +160,6 @@ public class CadFuncoesRotinaMB implements Serializable {
             }
         }
     }
-    
 
     public List<Usuario> getListaUsuario() {
         return listaUsuario;
@@ -663,12 +665,15 @@ public class CadFuncoesRotinaMB implements Serializable {
             rotinacliente.setCliente(cliente);
             rotinacliente.setRotina(rotina);
             rotinacliente.setUsuario(usuario);
+            rotinacliente.setTotalrecorrencia(1);
             rotinacliente.setDatainicio(Formatacao.converterDateParaLocalDate(rotinacliente.getDatainicial()));
             if (rotinacliente.getDatafinal() != null) {
                 rotinacliente.setDatatermino(Formatacao.converterDateParaLocalDate(rotinacliente.getDatafinal()));
             }
             if (rotinacliente.getHorario() != null) {
                 rotinacliente.setHora(Formatacao.converterStringParaLocalTime(rotinacliente.getHorario()));
+            } else {
+                rotinacliente.setHora(LocalTime.of(23, 59));
             }
             rotinacliente = clienteRepository.update(rotinacliente);
             if (novo) {
@@ -686,7 +691,7 @@ public class CadFuncoesRotinaMB implements Serializable {
                 atividade.setNotificacaohorario(true);
                 atividade = atividadeRepository.update(atividade);
 
-                Atividadeusuario atividadeusuario = new Atividadeusuario();
+                atividadeusuario = new Atividadeusuario();
                 atividadeusuario.setAtividade(atividade);
                 atividadeusuario.setSituacao("Play");
                 atividadeusuario.setUsuario(usuario);
@@ -694,48 +699,55 @@ public class CadFuncoesRotinaMB implements Serializable {
                 atividadeUsuarioRepository.update(atividadeusuario);
 
                 Rotinaatividade rotinaatividade = new Rotinaatividade();
-                rotinaatividade.setRotina(rotinacliente);
+                rotinaatividade.setRotinacliente(rotinacliente);
                 rotinaatividade.setAtividade(atividade);
                 rotinaAtividadeRepository.update(rotinaatividade);
+                this.atividadeusuario.getAtividade().setRotinaatividade(rotinaatividade);
             } else {
-                if (!diario) {
-                    if (rotinacliente.getRotinadiaria() != null) {
-                        rotinaDiarioRepository.remove(rotinacliente.getRotinadiaria().getIdrotinadiaria());
-                    }
-                }
-                if (!semanal) {
-                    if (rotinacliente.getRotinasemanal() != null) {
-                        rotinaSemanalRepository.remove(rotinacliente.getRotinasemanal().getIdrotinasemanal());
-                    }
-                }
-                if (!mensal) {
-                    if (rotinacliente.getRotinamensal() != null) {
-                        rotinaMensalRepository.remove(rotinacliente.getRotinamensal().getIdrotinamensal());
-                    }
-                }
-                if (!anual) {
-                    if (rotinacliente.getRotinaanual() != null) {
-                        rotinaAnualRepository.remove(rotinacliente.getRotinaanual().getIdrotinaanual());
-                    }
-                }
+                removerRotinasAtividade();
             }
-            if (diario) {
-                rotinadiaria.setRotinacliente(rotinacliente);
-                rotinadiaria = rotinaDiarioRepository.update(rotinadiaria);
-            } else if (semanal) {
-                rotinasemanal.setRotinacliente(rotinacliente);
-                rotinasemanal = rotinaSemanalRepository.update(rotinasemanal);
-            } else if (mensal) {
-                rotinamensal.setRotinacliente(rotinacliente);
-                rotinamensal = rotinaMensalRepository.update(rotinamensal);
-            } else if (anual) {
-                rotinaanual.setRotinacliente(rotinacliente);
-                rotinaanual = rotinaAnualRepository.update(rotinaanual);
-            }
+            salvarProximasAtividades();
             RequestContext.getCurrentInstance().closeDialog(null);
             Mensagem.lancarMensagemInfo("Salvo com sucesso!", "");
         }
         return "";
+    }
+
+    public void salvarProximasAtividades() {
+        if (diario) {
+            salvarRotinaDiaria();
+        } else if (semanal) {
+            salvarRotinaSemanal();
+        } else if (mensal) {
+            salvarRotinaMensal();
+        } else if (anual) {
+            rotinaanual.setRotinacliente(rotinacliente);
+            rotinaanual = rotinaAnualRepository.update(rotinaanual);
+        }
+        rotinacliente = clienteRepository.update(rotinacliente);
+    }
+
+    public void removerRotinasAtividade() {
+        if (!diario) {
+            if (rotinacliente.getRotinadiaria() != null) {
+                rotinaDiarioRepository.remove(rotinacliente.getRotinadiaria().getIdrotinadiaria());
+            }
+        }
+        if (!semanal) {
+            if (rotinacliente.getRotinasemanal() != null) {
+                rotinaSemanalRepository.remove(rotinacliente.getRotinasemanal().getIdrotinasemanal());
+            }
+        }
+        if (!mensal) {
+            if (rotinacliente.getRotinamensal() != null) {
+                rotinaMensalRepository.remove(rotinacliente.getRotinamensal().getIdrotinamensal());
+            }
+        }
+        if (!anual) {
+            if (rotinacliente.getRotinaanual() != null) {
+                rotinaAnualRepository.remove(rotinacliente.getRotinaanual().getIdrotinaanual());
+            }
+        }
     }
 
     public void gerarListaUsuario() {
@@ -769,6 +781,9 @@ public class CadFuncoesRotinaMB implements Serializable {
         if (semanal) {
             if (rotinasemanal.getNumerosemanas() == null || rotinasemanal.getNumerosemanas() == 0) {
                 Mensagem.lancarMensagemErro("Atenção!", "Campo Número de semanas não preenchido.");
+                return false;
+            } else if (rotinasemanal.getNumerosemanas() > 3) {
+                Mensagem.lancarMensagemErro("Atenção!", "Limite campo número de semanas atingido.");
                 return false;
             }
         }
@@ -840,6 +855,179 @@ public class CadFuncoesRotinaMB implements Serializable {
                 return false;
             }
         }
+
         return true;
+    }
+
+    public boolean diasSemanaRotinaSemanal(int numerodia) {
+        LocalDate novadata = rotinacliente.getDatainicio().plusDays(numerodia);
+        if (novadata.getDayOfWeek().name().equalsIgnoreCase("Monday")) {
+            if (rotinasemanal.isSegunda()) {
+                if (novadata.equals(rotinacliente.getDatainicio())
+                        || novadata.isAfter(rotinacliente.getDatainicio())) {
+                    atividadeusuario.getAtividade().setDataexecucao(novadata);
+                    return true;
+                }
+            }
+        } else if (novadata.getDayOfWeek().name().equalsIgnoreCase("Tuesday")) {
+            if (rotinasemanal.isTerca()) {
+                if (novadata.equals(rotinacliente.getDatainicio())
+                        || novadata.isAfter(rotinacliente.getDatainicio())) {
+                    atividadeusuario.getAtividade().setDataexecucao(novadata);
+                    return true;
+                }
+            }
+        } else if (novadata.getDayOfWeek().name().equalsIgnoreCase("Wednesday")) {
+            if (rotinasemanal.isQuarta()) {
+                if (novadata.equals(rotinacliente.getDatainicio())
+                        || novadata.isAfter(rotinacliente.getDatainicio())) {
+                    atividadeusuario.getAtividade().setDataexecucao(novadata);
+                    return true;
+                }
+            }
+        } else if (novadata.getDayOfWeek().name().equalsIgnoreCase("Thursday")) {
+            if (rotinasemanal.isQuinta()) {
+                if (novadata.equals(rotinacliente.getDatainicio())
+                        || novadata.isAfter(rotinacliente.getDatainicio())) {
+                    atividadeusuario.getAtividade().setDataexecucao(novadata);
+                    return true;
+                }
+            }
+        } else if (novadata.getDayOfWeek().name().equalsIgnoreCase("Friday")) {
+            if (rotinasemanal.isSexta()) {
+                if (novadata.equals(rotinacliente.getDatainicio())
+                        || novadata.isAfter(rotinacliente.getDatainicio())) {
+                    atividadeusuario.getAtividade().setDataexecucao(novadata);
+                    return true;
+                }
+            }
+        } else if (novadata.getDayOfWeek().name().equalsIgnoreCase("Saturday")) {
+            if (rotinasemanal.isSabado()) {
+                if (novadata.equals(rotinacliente.getDatainicio())
+                        || novadata.isAfter(rotinacliente.getDatainicio())) {
+                    atividadeusuario.getAtividade().setDataexecucao(novadata);
+                    return true;
+                }
+            }
+        } else if (novadata.getDayOfWeek().name().equalsIgnoreCase("Sunday")) {
+            if (rotinasemanal.isDomingo()) {
+                if (novadata.equals(rotinacliente.getDatainicio())
+                        || novadata.isAfter(rotinacliente.getDatainicio())) {
+                    atividadeusuario.getAtividade().setDataexecucao(novadata);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public void salvarRotinaDiaria() {
+        RotinaAtividadeBean rab = new RotinaAtividadeBean();
+        rotinadiaria.setRotinacliente(rotinacliente);
+        rotinadiaria = rotinaDiarioRepository.update(rotinadiaria);
+        rotinacliente.setRotinadiaria(rotinadiaria);
+        atividadeusuario.getAtividade().getRotinaatividade().setRotinacliente(rotinacliente);
+        for (int i = 0; i < 6; i++) {
+            boolean termino = rab.verificarTerminoRotina(rotinacliente);
+            if (!termino) {
+                Atividade atividade = rab.gerarProximaAtividadeDiaria(atividadeusuario, 1);
+                atividade = atividadeRepository.update(atividade);
+                atividadeusuario = rab.gearAtivadadeUsuario(atividade, usuario);
+                atividadeUsuarioRepository.update(atividadeusuario);
+                Rotinaatividade rotinaatividade = rab.gerarRotinaAtividade(atividade, rotinacliente);
+                rotinaAtividadeRepository.update(rotinaatividade);
+                atividadeusuario.getAtividade().setRotinaatividade(rotinaatividade);
+                rotinacliente.setRotinadiaria(rotinadiaria);
+                atividadeusuario.getAtividade().getRotinaatividade().setRotinacliente(rotinacliente);
+                rotinacliente.setTotalrecorrencia(rotinacliente.getTotalrecorrencia() + 1);
+            }
+        }
+    }
+
+    public void salvarRotinaSemanal() {
+        RotinaAtividadeBean rab = new RotinaAtividadeBean();
+        rotinasemanal.setRotinacliente(rotinacliente);
+        rotinasemanal = rotinaSemanalRepository.update(rotinasemanal);
+        rotinacliente.setRotinasemanal(rotinasemanal);
+        atividadeusuario.getAtividade().getRotinaatividade().setRotinacliente(rotinacliente);
+        boolean primeiraatividade = true;
+        for (int j = 0; j < 7; j++) {
+            boolean termino = rab.verificarTerminoRotina(rotinacliente);
+            if (!termino) {
+                boolean diasemana = diasSemanaRotinaSemanal(j); 
+                if (diasemana) {
+                    if(!primeiraatividade){
+                        Atividade atividade1 = rab.gerarProximaAtividadeSemana(atividadeusuario, 0);
+                        atividade1 = atividadeRepository.update(atividade1);
+                        atividadeusuario = rab.gearAtivadadeUsuario(atividade1, usuario);
+                        atividadeUsuarioRepository.update(atividadeusuario);
+                        Rotinaatividade rotinaatividade1 = rab.gerarRotinaAtividade(atividade1, rotinacliente);
+                        rotinaAtividadeRepository.update(rotinaatividade1);
+                        atividadeusuario.getAtividade().setRotinaatividade(rotinaatividade1);
+                        rotinacliente.setRotinasemanal(rotinasemanal);
+                        atividadeusuario.getAtividade().getRotinaatividade().setRotinacliente(rotinacliente);
+                        rotinacliente.setTotalrecorrencia(rotinacliente.getTotalrecorrencia() + 1);
+                    }
+                    
+                    Atividade atividade2 = rab.gerarProximaAtividadeSemana(atividadeusuario, 1);
+                    atividade2 = atividadeRepository.update(atividade2);
+                    atividadeusuario = rab.gearAtivadadeUsuario(atividade2, usuario);
+                    atividadeUsuarioRepository.update(atividadeusuario);
+                    Rotinaatividade rotinaatividade2 = rab.gerarRotinaAtividade(atividade2, rotinacliente);
+                    rotinaAtividadeRepository.update(rotinaatividade2);
+                    atividadeusuario.getAtividade().setRotinaatividade(rotinaatividade2);
+                    rotinacliente.setRotinasemanal(rotinasemanal);
+                    atividadeusuario.getAtividade().getRotinaatividade().setRotinacliente(rotinacliente);
+                    rotinacliente.setTotalrecorrencia(rotinacliente.getTotalrecorrencia() + 1);
+
+                    Atividade atividade3 = rab.gerarProximaAtividadeSemana(atividadeusuario, 1);
+                    atividade3 = atividadeRepository.update(atividade3);
+                    atividadeusuario = rab.gearAtivadadeUsuario(atividade3, usuario);
+                    atividadeUsuarioRepository.update(atividadeusuario);
+                    Rotinaatividade rotinaatividade3 = rab.gerarRotinaAtividade(atividade3, rotinacliente);
+                    rotinaAtividadeRepository.update(rotinaatividade3);
+                    atividadeusuario.getAtividade().setRotinaatividade(rotinaatividade3);
+                    rotinacliente.setRotinasemanal(rotinasemanal);
+                    atividadeusuario.getAtividade().getRotinaatividade().setRotinacliente(rotinacliente);
+                    rotinacliente.setTotalrecorrencia(rotinacliente.getTotalrecorrencia() + 1);
+
+                    Atividade atividade4 = rab.gerarProximaAtividadeSemana(atividadeusuario, 1);
+                    atividade4 = atividadeRepository.update(atividade4);
+                    atividadeusuario = rab.gearAtivadadeUsuario(atividade4, usuario);
+                    atividadeUsuarioRepository.update(atividadeusuario);
+                    Rotinaatividade rotinaatividade = rab.gerarRotinaAtividade(atividade4, rotinacliente);
+                    rotinaAtividadeRepository.update(rotinaatividade);
+                    atividadeusuario.getAtividade().setRotinaatividade(rotinaatividade);
+                    rotinacliente.setRotinasemanal(rotinasemanal);
+                    atividadeusuario.getAtividade().getRotinaatividade().setRotinacliente(rotinacliente);
+                    rotinacliente.setTotalrecorrencia(rotinacliente.getTotalrecorrencia() + 1);
+                    
+                    primeiraatividade=false;
+                }
+            }
+        }
+    }
+
+    public void salvarRotinaMensal() {
+        RotinaAtividadeBean rab = new RotinaAtividadeBean();
+        rotinamensal.setRotinacliente(rotinacliente);
+        rotinamensal = rotinaMensalRepository.update(rotinamensal);
+        rotinacliente.setRotinamensal(rotinamensal);
+        atividadeusuario.getAtividade().getRotinaatividade().setRotinacliente(rotinacliente);
+        for (int i = 0; i < 1; i++) {
+            boolean termino = rab.verificarTerminoRotina(rotinacliente);
+            if (!termino) {
+                Atividade atividade = rab.gerarProximaAtividadeSemana(atividadeusuario, 1);
+                atividade = atividadeRepository.update(atividade);
+                atividadeusuario = rab.gearAtivadadeUsuario(atividade, usuario);
+                atividadeUsuarioRepository.update(atividadeusuario);
+                Rotinaatividade rotinaatividade = rab.gerarRotinaAtividade(atividade, rotinacliente);
+                rotinaAtividadeRepository.update(rotinaatividade);
+                atividadeusuario.getAtividade().setRotinaatividade(rotinaatividade);
+                rotinacliente.setRotinasemanal(rotinasemanal);
+                atividadeusuario.getAtividade().getRotinaatividade().setRotinacliente(rotinacliente);
+                rotinacliente.setTotalrecorrencia(rotinacliente.getTotalrecorrencia() + 1);
+            }
+        }
     }
 }

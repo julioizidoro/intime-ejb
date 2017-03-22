@@ -29,6 +29,9 @@ import javax.validation.constraints.Size;
 public class Subdepartamento implements Serializable {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "subdepartamento")
+    private List<Rotina> rotinaList;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "subdepartamento")
     private List<Atividade> atividadeList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "subdepartamento")
     private List<Processo> processoList;
@@ -139,6 +142,14 @@ public class Subdepartamento implements Serializable {
 
     public void setProcessoList(List<Processo> processoList) {
         this.processoList = processoList;
+    }
+
+    public List<Rotina> getRotinaList() {
+        return rotinaList;
+    }
+
+    public void setRotinaList(List<Rotina> rotinaList) {
+        this.rotinaList = rotinaList;
     }
 
 }

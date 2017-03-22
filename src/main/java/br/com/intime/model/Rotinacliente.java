@@ -8,20 +8,17 @@ package br.com.intime.model;
 import java.io.Serializable; 
 import java.time.LocalDate;
 import java.time.LocalTime; 
-import java.util.Date;
-import java.util.List;
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
+import java.util.Date; 
+import javax.persistence.Basic; 
 import javax.persistence.Column;
 import javax.persistence.Entity; 
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne; 
-import javax.persistence.OneToMany; 
+import javax.persistence.ManyToOne;  
 import javax.persistence.OneToOne;
-import javax.persistence.Table; 
+import javax.persistence.Table;  
 import javax.persistence.Transient;
 import javax.validation.constraints.Size;  
 
@@ -40,10 +37,6 @@ public class Rotinacliente implements Serializable {
     @Basic(optional = false)
     @Column(name = "idrotinacliente")
     private Integer idrotinacliente;
-    @Column(name = "datainicio") 
-    private LocalDate datainicio;
-    @Column(name = "hora") 
-    private LocalTime hora;
     @Size(max = 7)
     @Column(name = "padraorecorrencia")
     private String padraorecorrencia;
@@ -56,8 +49,6 @@ public class Rotinacliente implements Serializable {
     private String termina; 
     @Column(name = "recorrencia")
     private Integer recorrencia; 
-    @Column(name = "datatermino") 
-    private LocalDate datatermino;  
     @JoinColumn(name = "cliente_idcliente", referencedColumnName = "idcliente")
     @ManyToOne(optional = false)
     private Cliente cliente;
@@ -66,9 +57,7 @@ public class Rotinacliente implements Serializable {
     private Rotina rotina; 
     @JoinColumn(name = "usuario_idusuario", referencedColumnName = "idusuario")
     @ManyToOne(optional = false)
-    private Usuario usuario;  
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "rotina")
-    private List<Rotinaatividade> rotinaatividadeList;    
+    private Usuario usuario;
     @OneToOne(mappedBy = "rotinacliente")
     private Rotinadiaria rotinadiaria;    
     @OneToOne(mappedBy = "rotinacliente")
@@ -79,6 +68,12 @@ public class Rotinacliente implements Serializable {
     private Rotinaanual rotinaanual;   
     @Column(name = "totalrecorrencia")
     private Integer totalrecorrencia;
+    @Column(name = "datainicio") 
+    private LocalDate datainicio;
+    @Column(name = "hora") 
+    private LocalTime hora;
+    @Column(name = "datatermino") 
+    private LocalDate datatermino;
     @Transient   
     private Date datainicial;
     @Transient
@@ -100,16 +95,7 @@ public class Rotinacliente implements Serializable {
     public void setIdrotinacliente(Integer idrotinacliente) {
         this.idrotinacliente = idrotinacliente;
     }
-
-    public LocalDate getDatainicio() {
-        return datainicio;
-    }
-
-    public void setDatainicio(LocalDate datainicio) {
-        this.datainicio = datainicio;
-    }
-
-
+ 
     public String getPrioridade() {
         return prioridade;
     }
@@ -142,13 +128,6 @@ public class Rotinacliente implements Serializable {
         this.termina = termina;
     }
 
-    public LocalDate getDatatermino() {
-        return datatermino;
-    }
-
-    public void setDatatermino(LocalDate datatermino) {
-        this.datatermino = datatermino;
-    }
 
     public Cliente getCliente() {
         return cliente;
@@ -165,23 +144,7 @@ public class Rotinacliente implements Serializable {
     public void setRotina(Rotina rotina) {
         this.rotina = rotina;
     }
- 
-    public List<Rotinaatividade> getRotinaatividadeList() {
-        return rotinaatividadeList;
-    }
-
-    public void setRotinaatividadeList(List<Rotinaatividade> rotinaatividadeList) {
-        this.rotinaatividadeList = rotinaatividadeList;
-    }
     
-    public LocalTime getHora() {
-        return hora;
-    }
-
-    public void setHora(LocalTime hora) {
-        this.hora = hora;
-    }
-
     public String getPadraorecorrencia() {
         return padraorecorrencia;
     }
@@ -261,6 +224,30 @@ public class Rotinacliente implements Serializable {
     public void setTotalrecorrencia(Integer totalrecorrencia) {
         this.totalrecorrencia = totalrecorrencia;
     }
+
+    public LocalDate getDatainicio() {
+        return datainicio;
+    }
+
+    public void setDatainicio(LocalDate datainicio) {
+        this.datainicio = datainicio;
+    }
+
+    public LocalTime getHora() {
+        return hora;
+    }
+
+    public void setHora(LocalTime hora) {
+        this.hora = hora;
+    }
+
+    public LocalDate getDatatermino() {
+        return datatermino;
+    }
+
+    public void setDatatermino(LocalDate datatermino) {
+        this.datatermino = datatermino;
+    }
  
     @Override
     public int hashCode() {
@@ -287,4 +274,5 @@ public class Rotinacliente implements Serializable {
         return "br.com.intime.model.Rotinacliente[ idrotinacliente=" + idrotinacliente + " ]";
     }
 
+     
 }

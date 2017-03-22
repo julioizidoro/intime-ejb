@@ -33,19 +33,19 @@ public class Rotinasemanal implements Serializable {
     @Column(name = "numerosemanas")
     private Integer numerosemanas;
     @Column(name = "domingo")
-    private Boolean domingo;
+    private boolean domingo;
     @Column(name = "segunda")
-    private Boolean segunda;
+    private boolean segunda;
     @Column(name = "terca")
-    private Boolean terca;
+    private boolean terca;
     @Column(name = "quarta")
-    private Boolean quarta;
+    private boolean quarta;
     @Column(name = "quinta")
-    private Boolean quinta;
+    private boolean quinta;
     @Column(name = "sexta")
-    private Boolean sexta;
+    private boolean sexta;
     @Column(name = "sabado")
-    private Boolean sabado;
+    private boolean sabado;
     @JoinColumn(name = "rotinacliente_idrotinacliente", referencedColumnName = "idrotinacliente")
     @ManyToOne(optional = false)
     private Rotinacliente rotinacliente;
@@ -73,61 +73,62 @@ public class Rotinasemanal implements Serializable {
         this.numerosemanas = numerosemanas;
     }
 
-    public Boolean getDomingo() {
+    public boolean isDomingo() {
         return domingo;
     }
 
-    public void setDomingo(Boolean domingo) {
+    public void setDomingo(boolean domingo) {
         this.domingo = domingo;
     }
 
-    public Boolean getSegunda() {
+    public boolean isSegunda() {
         return segunda;
     }
 
-    public void setSegunda(Boolean segunda) {
+    public void setSegunda(boolean segunda) {
         this.segunda = segunda;
     }
 
-    public Boolean getTerca() {
+    public boolean isTerca() {
         return terca;
     }
 
-    public void setTerca(Boolean terca) {
+    public void setTerca(boolean terca) {
         this.terca = terca;
     }
 
-    public Boolean getQuarta() {
+    public boolean isQuarta() {
         return quarta;
     }
 
-    public void setQuarta(Boolean quarta) {
+    public void setQuarta(boolean quarta) {
         this.quarta = quarta;
     }
 
-    public Boolean getQuinta() {
+    public boolean isQuinta() {
         return quinta;
     }
 
-    public void setQuinta(Boolean quinta) {
+    public void setQuinta(boolean quinta) {
         this.quinta = quinta;
     }
 
-    public Boolean getSexta() {
+    public boolean isSexta() {
         return sexta;
     }
 
-    public void setSexta(Boolean sexta) {
+    public void setSexta(boolean sexta) {
         this.sexta = sexta;
     }
 
-    public Boolean getSabado() {
+    public boolean isSabado() {
         return sabado;
     }
 
-    public void setSabado(Boolean sabado) {
+    public void setSabado(boolean sabado) {
         this.sabado = sabado;
     }
+ 
 
     public Rotinacliente getRotinacliente() {
         return rotinacliente;

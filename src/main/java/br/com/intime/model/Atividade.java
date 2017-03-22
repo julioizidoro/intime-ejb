@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Date;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -30,6 +31,8 @@ import javax.validation.constraints.Size;
 @Table(name = "atividade")
 public class Atividade implements Serializable {
 
+    
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,21 +42,9 @@ public class Atividade implements Serializable {
     @Size(max = 100)
     @Column(name = "descricao")
     private String descricao;
-    @Column(name = "datalancamento")
-    private LocalDate datalancamento;
-    @Column(name = "dataexecucao")
-    private LocalDate dataexecucao;
-    @Column(name = "horaexecucao")
-    private LocalTime horaexecucao;
     @Size(max = 15)
     @Column(name = "prioridade")
     private String prioridade;
-    @Column(name = "metatempo")
-    private LocalTime metatempo;
-    @Column(name = "rotina")
-    private boolean rotina;
-    @Column(name = "notificacaohorario")
-    private boolean notificacaohorario;
     @JoinColumn(name = "cliente_idcliente", referencedColumnName = "idcliente")
     @ManyToOne(optional = false)
     private Cliente cliente;
@@ -62,9 +53,17 @@ public class Atividade implements Serializable {
     private Subdepartamento subdepartamento;
     @JoinColumn(name = "usuario_idusuario", referencedColumnName = "idusuario")
     @ManyToOne(optional = false)
-    private Usuario usuario; 
-    @OneToOne(mappedBy = "atividade")
-    private Rotinaatividade rotinaatividade;  
+    private Usuario usuario;
+    @Column(name = "datalancamento")
+    private LocalDate datalancamento;
+    @Column(name = "dataexecucao")
+    private LocalDate dataexecucao;
+    @Column(name = "horaexecucao")
+    private LocalTime horaexecucao;
+    @Column(name = "metatempo")
+    private LocalTime metatempo; 
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "atividade")
+    private Rotinaatividade rotinaatividade;
     @Transient
     private String dataMostrar;
     @Transient 
@@ -75,6 +74,10 @@ public class Atividade implements Serializable {
     private String horario;
     @Transient 
     private String meta;
+    @Column(name = "rotina")
+    private boolean rotina;
+    @Column(name = "notificacaohorario")
+    private boolean notificacaohorario;
     
     public Atividade() {
     }
@@ -99,29 +102,6 @@ public class Atividade implements Serializable {
         this.descricao = descricao;
     }
 
-    public LocalDate getDatalancamento() {
-        return datalancamento;
-    }
-
-    public void setDatalancamento(LocalDate datalancamento) {
-        this.datalancamento = datalancamento;
-    }
-
-    public LocalDate getDataexecucao() {
-        return dataexecucao;
-    }
-
-    public void setDataexecucao(LocalDate dataexecucao) {
-        this.dataexecucao = dataexecucao;
-    }
-
-    public LocalTime getHoraexecucao() {
-        return horaexecucao;
-    }
-
-    public void setHoraexecucao(LocalTime horaexecucao) {
-        this.horaexecucao = horaexecucao;
-    }
  
     public String getPrioridade() {
         return prioridade;
@@ -131,29 +111,6 @@ public class Atividade implements Serializable {
         this.prioridade = prioridade;
     }
 
-    public LocalTime getMetatempo() {
-        return metatempo;
-    }
-
-    public void setMetatempo(LocalTime metatempo) {
-        this.metatempo = metatempo;
-    }
-
-    public boolean isRotina() {
-        return rotina;
-    }
-
-    public void setRotina(boolean rotina) {
-        this.rotina = rotina;
-    } 
-    
-    public boolean isNotificacaohorario() {
-        return notificacaohorario;
-    }
-
-    public void setNotificacaohorario(boolean notificacaohorario) {
-        this.notificacaohorario = notificacaohorario;
-    } 
 
     public Cliente getCliente() {
         return cliente;
@@ -219,6 +176,54 @@ public class Atividade implements Serializable {
         this.usuario = usuario;
     }
 
+    public LocalDate getDatalancamento() {
+        return datalancamento;
+    }
+
+    public void setDatalancamento(LocalDate datalancamento) {
+        this.datalancamento = datalancamento;
+    }
+
+    public LocalDate getDataexecucao() {
+        return dataexecucao;
+    }
+
+    public void setDataexecucao(LocalDate dataexecucao) {
+        this.dataexecucao = dataexecucao;
+    }
+
+    public LocalTime getHoraexecucao() {
+        return horaexecucao;
+    }
+
+    public void setHoraexecucao(LocalTime horaexecucao) {
+        this.horaexecucao = horaexecucao;
+    }
+
+    public LocalTime getMetatempo() {
+        return metatempo;
+    }
+
+    public void setMetatempo(LocalTime metatempo) {
+        this.metatempo = metatempo;
+    } 
+
+    public boolean isRotina() {
+        return rotina;
+    }
+
+    public void setRotina(boolean rotina) {
+        this.rotina = rotina;
+    }
+
+    public boolean isNotificacaohorario() {
+        return notificacaohorario;
+    }
+
+    public void setNotificacaohorario(boolean notificacaohorario) {
+        this.notificacaohorario = notificacaohorario;
+    }
+
     public Rotinaatividade getRotinaatividade() {
         return rotinaatividade;
     }
@@ -226,6 +231,7 @@ public class Atividade implements Serializable {
     public void setRotinaatividade(Rotinaatividade rotinaatividade) {
         this.rotinaatividade = rotinaatividade;
     }
+
 
     @Override
     public int hashCode() {
@@ -251,5 +257,5 @@ public class Atividade implements Serializable {
     public String toString() {
         return "br.com.intime.model.Atividade[ idatividade=" + idatividade + " ]";
     }
-
+ 
 }
