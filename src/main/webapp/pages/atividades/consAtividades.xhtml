@@ -68,16 +68,16 @@
                                                 <p:column>
                                                     <li class="list ui-sortable-handle" style="color:#{atividadesMB.retornarCorAtividades(atividades)}">    
                                                         <i class="fa fa-ellipsis-v" style="font-size: 14px;float: left;margin-top:0.3%;"></i>
-                                                        <p:commandLink id="btnPlay" action="#{atividadesMB.mudarSituacaoAtividade(atividades, 'Pause')}" update="@form" style="float: left;margin-top: -0.2%;margin-left:1%;" rendered="#{atividadesMB.mostrarBotaoPlay(atividades.situacao)}">
+                                                        <p:commandLink id="btnPlay" action="#{atividadesMB.mudarSituacaoAtividade(atividades, 'Pause')}" update=":consAtividades:tabelaAtividades" style="float: left;margin-top: -0.2%;margin-left:1%;" rendered="#{atividadesMB.mostrarBotaoPlay(atividades.situacao)}">
                                                             <i class="fa fa-play" style="font-size: 14px;color:#B0B5B9;"></i>
                                                         </p:commandLink>   
-                                                        <p:commandLink id="btnPause" action="#{atividadesMB.mudarSituacaoAtividade(atividades, 'Play')}" update="@form" style="float: left;margin-top: -0.2%;margin-left:1%;" rendered="#{atividadesMB.mostrarBotaoPause(atividades.situacao)}">
-                                                            <i class="fa fa-pause" style="font-size: 14px;color:#B0B5B9;"></i>   
+                                                        <p:commandLink id="btnPause" action="#{atividadesMB.mudarSituacaoAtividade(atividades, 'Play')}" update=":consAtividades:tabelaAtividades" style="float: left;margin-top: -0.2%;margin-left:1%;" rendered="#{atividadesMB.mostrarBotaoPause(atividades.situacao)}">
+                                                            <i class="fa fa-pause" style="font-size: 14px;color:#B0B5B9;"></i>     
                                                         </p:commandLink>   
                                                         <div class="task-checkbox" style="margin-left:1%;">  
-                                                            <p:commandLink action="#{atividadesMB.mudarSituacaoAtividade(atividades, 'Concluida')}" update=":consAtividades:tabelaAtividades, cbxConcluido"> 
+                                                            <p:commandLink action="#{atividadesMB.mudarSituacaoAtividade(atividades, 'Concluida')}" update="@all"> 
                                                                 <p:selectBooleanCheckbox id="cbxConcluido" class="list-child" value="#{atividades.concluido}"  style="float: left;margin-top:0.6%;margin-left:1.5%;"/> 
-                                                                <p:ajax event="dialogReturn" listener="#{atividadesMB.mudarCoresBotoes('hoje')}" update="consAtividades"/>
+                                                                <p:ajax event="dialogReturn" listener="#{atividadesMB.mudarCoresBotoes('hoje')}" update=":consAtividades:tabelaAtividades"/>
                                                             </p:commandLink>      
                                                         </div>               
                                                         <div class="task-title"> 

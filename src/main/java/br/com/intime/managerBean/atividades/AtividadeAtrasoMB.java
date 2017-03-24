@@ -1,11 +1,17 @@
 package br.com.intime.managerBean.atividades;
 
+import br.com.intime.managerBean.bean.RotinaAtividadeBean;
+import br.com.intime.model.Atividade;
 import br.com.intime.model.Atividadeatraso;
 import br.com.intime.model.Atividadeusuario;
 import br.com.intime.model.Motivoatraso;
+import br.com.intime.model.Rotinaatividade;
+import br.com.intime.repository.AtividadeRepository;
 import br.com.intime.repository.AtividadeUsuarioRepository;
 import br.com.intime.repository.AtvidadeAtrasoRepository;
 import br.com.intime.repository.MotivoAtrasoRepository;
+import br.com.intime.repository.ProcessoSituacaoRepository;
+import br.com.intime.repository.RotinaAtividadeRepository;
 import br.com.intime.util.Mensagem;
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -37,7 +43,13 @@ public class AtividadeAtrasoMB implements Serializable {
     @EJB
     private AtvidadeAtrasoRepository atvidadeAtrasoRepository;
     @EJB
+    private AtividadeRepository atividadeRepository;
+    @EJB
     private AtividadeUsuarioRepository atividadeUsuarioRepository;
+    @EJB
+    private ProcessoSituacaoRepository processoSituacaoRepository;
+    @EJB
+    private RotinaAtividadeRepository rotinaAtividadeRepository;
 
     @PostConstruct
     public void init() {
@@ -105,6 +117,30 @@ public class AtividadeAtrasoMB implements Serializable {
         this.atividadeUsuarioRepository = atividadeUsuarioRepository;
     }
 
+    public AtividadeRepository getAtividadeRepository() {
+        return atividadeRepository;
+    }
+
+    public void setAtividadeRepository(AtividadeRepository atividadeRepository) {
+        this.atividadeRepository = atividadeRepository;
+    }
+
+    public ProcessoSituacaoRepository getProcessoSituacaoRepository() {
+        return processoSituacaoRepository;
+    }
+
+    public void setProcessoSituacaoRepository(ProcessoSituacaoRepository processoSituacaoRepository) {
+        this.processoSituacaoRepository = processoSituacaoRepository;
+    }
+
+    public RotinaAtividadeRepository getRotinaAtividadeRepository() {
+        return rotinaAtividadeRepository;
+    }
+
+    public void setRotinaAtividadeRepository(RotinaAtividadeRepository rotinaAtividadeRepository) {
+        this.rotinaAtividadeRepository = rotinaAtividadeRepository;
+    }
+
     public void salvar() {
         if (motivoatraso != null && motivoatraso.getIdmotivoatraso() != null) {
             atividadeatraso.setMotivoatraso(motivoatraso);
@@ -116,6 +152,17 @@ public class AtividadeAtrasoMB implements Serializable {
             atividadeusuario.setConcluido(true);
             atividadeusuario.setSituacao("Concluida");
             atividadeUsuarioRepository.update(atividadeusuario);
+            if (atividadeusuario.getAtividade().isRotina()) {
+                if (atividadeusuario.getAtividade().getRotinaatividade().getRotinacliente().getRotinadiaria() != null) {
+                    gerarProximaAtividadeDiaria(atividadeusuario);
+                } else if (atividadeusuario.getAtividade().getRotinaatividade().getRotinacliente().getRotinasemanal() != null) {
+                    gerarProximaAtividadeSemanal(atividadeusuario);
+                } else if (atividadeusuario.getAtividade().getRotinaatividade().getRotinacliente().getRotinamensal() != null) {
+                    gerarProximaAtividadeMensal(atividadeusuario);
+                } else if (atividadeusuario.getAtividade().getRotinaatividade().getRotinacliente().getRotinaanual() != null) {
+                    gerarProximaAtividadeAnual(atividadeusuario);
+                }
+            }
             Mensagem.lancarMensagemInfo("Tarefa concluída!", "");
             RequestContext.getCurrentInstance().closeDialog(null);
         } else {
@@ -123,10 +170,70 @@ public class AtividadeAtrasoMB implements Serializable {
         }
     }
 
-    public void gerarListaMotivo(){
+    public void gerarListaMotivo() {
         listaMotivoAtraso = motivoAtrasoRepository.list("Select m From Motivoatraso m");
         if (listaMotivoAtraso == null) {
             listaMotivoAtraso = new ArrayList<Motivoatraso>();
+        }
+    }
+    
+     public void gerarProximaAtividadeDiaria(Atividadeusuario atividadeusuario) {
+        RotinaAtividadeBean rab = new RotinaAtividadeBean();
+        boolean termino = rab.verificarTerminoRotina(atividadeusuario.getAtividade().getRotinaatividade().getRotinacliente());
+        if (!termino) {
+            Atividade atividade = rab.gerarProximaAtividadeDiaria(atividadeusuario, 7);
+            atividade = atividadeRepository.update(atividade);
+            atividadeusuario = rab.gearAtivadadeUsuario(atividade, atividadeusuario.getUsuario());
+            atividadeUsuarioRepository.update(atividadeusuario);
+            Rotinaatividade rotinaatividade = rab.gerarRotinaAtividade(atividade, atividadeusuario.getAtividade().getRotinaatividade().getRotinacliente());
+            rotinaAtividadeRepository.update(rotinaatividade); 
+            atividadeusuario.getAtividade().getRotinaatividade().getRotinacliente().setTotalrecorrencia(
+                    atividadeusuario.getAtividade().getRotinaatividade().getRotinacliente().getTotalrecorrencia() + 1);
+        }
+    }
+    
+    public void gerarProximaAtividadeSemanal(Atividadeusuario atividadeusuario) {
+        RotinaAtividadeBean rab = new RotinaAtividadeBean();
+        boolean termino = rab.verificarTerminoRotina(atividadeusuario.getAtividade().getRotinaatividade().getRotinacliente());
+        if (!termino) {
+            Atividade atividade = rab.gerarProximaAtividadeSemana(atividadeusuario, 4);
+            atividade = atividadeRepository.update(atividade);
+            atividadeusuario = rab.gearAtivadadeUsuario(atividade, atividadeusuario.getUsuario());
+            atividadeUsuarioRepository.update(atividadeusuario);
+            Rotinaatividade rotinaatividade = rab.gerarRotinaAtividade(atividade, atividadeusuario.getAtividade().getRotinaatividade().getRotinacliente());
+            rotinaAtividadeRepository.update(rotinaatividade); 
+            atividadeusuario.getAtividade().getRotinaatividade().getRotinacliente().setTotalrecorrencia(
+                    atividadeusuario.getAtividade().getRotinaatividade().getRotinacliente().getTotalrecorrencia() + 1);
+        }
+    }
+    
+    public void gerarProximaAtividadeMensal(Atividadeusuario atividadeusuario) {
+        RotinaAtividadeBean rab = new RotinaAtividadeBean();
+        boolean termino = rab.verificarTerminoRotina(atividadeusuario.getAtividade().getRotinaatividade().getRotinacliente());
+        if (!termino) {
+            Atividade atividade = rab.gerarProximaAtividadeMensal(atividadeusuario, 2);
+            atividade = atividadeRepository.update(atividade);
+            atividadeusuario = rab.gearAtivadadeUsuario(atividade, atividadeusuario.getUsuario());
+            atividadeUsuarioRepository.update(atividadeusuario);
+            Rotinaatividade rotinaatividade = rab.gerarRotinaAtividade(atividade, atividadeusuario.getAtividade().getRotinaatividade().getRotinacliente());
+            rotinaAtividadeRepository.update(rotinaatividade); 
+            atividadeusuario.getAtividade().getRotinaatividade().getRotinacliente().setTotalrecorrencia(
+                    atividadeusuario.getAtividade().getRotinaatividade().getRotinacliente().getTotalrecorrencia() + 1);
+        }
+    }
+    
+    public void gerarProximaAtividadeAnual(Atividadeusuario atividadeusuario) {
+        RotinaAtividadeBean rab = new RotinaAtividadeBean();
+        boolean termino = rab.verificarTerminoRotina(atividadeusuario.getAtividade().getRotinaatividade().getRotinacliente());
+        if (!termino) {
+            Atividade atividade = rab.gerarProximaAtividadeAnual(atividadeusuario);
+            atividade = atividadeRepository.update(atividade);
+            atividadeusuario = rab.gearAtivadadeUsuario(atividade, atividadeusuario.getUsuario());
+            atividadeUsuarioRepository.update(atividadeusuario);
+            Rotinaatividade rotinaatividade = rab.gerarRotinaAtividade(atividade, atividadeusuario.getAtividade().getRotinaatividade().getRotinacliente());
+            rotinaAtividadeRepository.update(rotinaatividade); 
+            atividadeusuario.getAtividade().getRotinaatividade().getRotinacliente().setTotalrecorrencia(
+                    atividadeusuario.getAtividade().getRotinaatividade().getRotinacliente().getTotalrecorrencia() + 1);
         }
     }
 }

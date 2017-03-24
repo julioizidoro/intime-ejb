@@ -90,6 +90,7 @@ public class AtividadesMB implements Serializable {
     private LocalDate dataInicial;
     private LocalDate dataFinal;
     private String buscar;
+    private String funcao;
 
     @PostConstruct
     public void init() {
@@ -301,7 +302,7 @@ public class AtividadesMB implements Serializable {
             naoconcluidas = "true";
             concluidas = "false";
             if (hoje.equalsIgnoreCase("#cba135")) {
-                mudarCoresBotoes("hoje");
+                mudarCoresBotoes(funcao);
             } else if (amanha.equalsIgnoreCase("#cba135")) {
                 mudarCoresBotoes("amanha");
             } else if (seteDias.equalsIgnoreCase("#cba135")) {
@@ -326,6 +327,7 @@ public class AtividadesMB implements Serializable {
             aguardando = "#E0E0E0";
             dataInicial = LocalDate.MIN;
             dataFinal = LocalDate.now();
+            this.funcao="hoje";
             gerarListaAtivadades();
         } else if (funcao.equalsIgnoreCase("amanha")) {
             hoje = "#E0E0E0";
@@ -336,6 +338,7 @@ public class AtividadesMB implements Serializable {
             LocalDate hoje = LocalDate.now();
             dataInicial = hoje.plusDays(1);
             dataFinal = hoje.plusDays(1);
+            this.funcao="amanha";
             gerarListaAtivadades();
         } else if (funcao.equalsIgnoreCase("seteDias")) {
             hoje = "#E0E0E0";
@@ -346,6 +349,7 @@ public class AtividadesMB implements Serializable {
             LocalDate hoje = LocalDate.now();
             dataInicial = LocalDate.now();
             dataFinal = hoje.plusDays(7);
+            this.funcao="seteDias";
             gerarListaAtivadades();
         } else if (funcao.equalsIgnoreCase("todos")) {
             hoje = "#E0E0E0";
@@ -355,6 +359,7 @@ public class AtividadesMB implements Serializable {
             aguardando = "#E0E0E0";
             dataInicial = null;
             dataFinal = null;
+            this.funcao="todos";
             gerarListaAtivadades();
         } else if (funcao.equalsIgnoreCase("aguardando")) {
             hoje = "#E0E0E0";
@@ -362,6 +367,7 @@ public class AtividadesMB implements Serializable {
             seteDias = "#E0E0E0";
             todos = "#E0E0E0";
             aguardando = "#cba135";
+            this.funcao="aguardando";
             gerarListaAtivadadesAguardando();
         }
     }
@@ -550,6 +556,7 @@ public class AtividadesMB implements Serializable {
                 atividadeusuario.setConcluido(true);
                 atividadeusuario.setSituacao("Concluida");
                 verificarProcessoGatilho(atividadeusuario);
+                atividadeusuario = atividadeUsuarioRepository.update(atividadeusuario);
                 if (atividadeusuario.getAtividade().isRotina()) {
                     if (atividadeusuario.getAtividade().getRotinaatividade().getRotinacliente().getRotinadiaria() != null) {
                         gerarProximaAtividadeDiaria(atividadeusuario);
@@ -596,7 +603,7 @@ public class AtividadesMB implements Serializable {
         excluirAtividadesAguardando(atividadeusuario);
         excluirAtividadesComentario(atividadeusuario);
         atividadeUsuarioRepository.remove(atividadeusuario.getIdatividadeusuario());
-        mudarCoresBotoes("hoje");
+        mudarCoresBotoes(funcao);
         Mensagem.lancarMensagemInfo("Tarefa excluída!", "");
     }
 
@@ -643,7 +650,7 @@ public class AtividadesMB implements Serializable {
             atividadeusuario.setAtividade(
                     atividadeRepository.update(atividadeusuario.getAtividade()));
             atividadeUsuarioRepository.update(atividadeusuario);
-            mudarCoresBotoes("hoje");
+            mudarCoresBotoes(funcao);
         }
     }
 
@@ -712,7 +719,7 @@ public class AtividadesMB implements Serializable {
         novaAtividadeUsuario.setTempo("00:00");
         novaAtividadeUsuario.setUsuario(atividadeusuario.getUsuario());
         atividadeUsuarioRepository.update(novaAtividadeUsuario);
-        mudarCoresBotoes("hoje");
+        mudarCoresBotoes(funcao);
         Mensagem.lancarMensagemInfo("Tarefa duplicada!", "");
     }
 
@@ -938,14 +945,15 @@ public class AtividadesMB implements Serializable {
         boolean termino = rab.verificarTerminoRotina(atividadeusuario.getAtividade().getRotinaatividade().getRotinacliente());
         if (!termino) {
             Atividade atividade = rab.gerarProximaAtividadeDiaria(atividadeusuario, 7);
-            atividade = atividadeRepository.update(atividade);
-            atividadeusuario = rab.gearAtivadadeUsuario(atividade, atividadeusuario.getUsuario());
-            atividadeUsuarioRepository.update(atividadeusuario);
+            atividade = atividadeRepository.update(atividade); 
             Rotinaatividade rotinaatividade = rab.gerarRotinaAtividade(atividade, atividadeusuario.getAtividade().getRotinaatividade().getRotinacliente());
             rotinaAtividadeRepository.update(rotinaatividade); 
+            atividadeusuario = rab.gearAtivadadeUsuario(atividade, atividadeusuario.getUsuario());
+            atividadeUsuarioRepository.update(atividadeusuario);
+            atividadeusuario.getAtividade().setRotinaatividade(rotinaatividade);
             atividadeusuario.getAtividade().getRotinaatividade().getRotinacliente().setTotalrecorrencia(
                     atividadeusuario.getAtividade().getRotinaatividade().getRotinacliente().getTotalrecorrencia() + 1);
-            gerarListaAtivadades();
+            mudarCoresBotoes(funcao);
         }
     }
     
@@ -954,14 +962,15 @@ public class AtividadesMB implements Serializable {
         boolean termino = rab.verificarTerminoRotina(atividadeusuario.getAtividade().getRotinaatividade().getRotinacliente());
         if (!termino) {
             Atividade atividade = rab.gerarProximaAtividadeSemana(atividadeusuario, 4);
-            atividade = atividadeRepository.update(atividade);
-            atividadeusuario = rab.gearAtivadadeUsuario(atividade, atividadeusuario.getUsuario());
-            atividadeUsuarioRepository.update(atividadeusuario);
+            atividade = atividadeRepository.update(atividade); 
             Rotinaatividade rotinaatividade = rab.gerarRotinaAtividade(atividade, atividadeusuario.getAtividade().getRotinaatividade().getRotinacliente());
             rotinaAtividadeRepository.update(rotinaatividade); 
+            atividadeusuario = rab.gearAtivadadeUsuario(atividade, atividadeusuario.getUsuario());
+            atividadeUsuarioRepository.update(atividadeusuario);
+            atividadeusuario.getAtividade().setRotinaatividade(rotinaatividade);
             atividadeusuario.getAtividade().getRotinaatividade().getRotinacliente().setTotalrecorrencia(
                     atividadeusuario.getAtividade().getRotinaatividade().getRotinacliente().getTotalrecorrencia() + 1);
-            gerarListaAtivadades();
+            mudarCoresBotoes(funcao);
         }
     }
     
@@ -970,14 +979,15 @@ public class AtividadesMB implements Serializable {
         boolean termino = rab.verificarTerminoRotina(atividadeusuario.getAtividade().getRotinaatividade().getRotinacliente());
         if (!termino) {
             Atividade atividade = rab.gerarProximaAtividadeMensal(atividadeusuario, 2);
-            atividade = atividadeRepository.update(atividade);
-            atividadeusuario = rab.gearAtivadadeUsuario(atividade, atividadeusuario.getUsuario());
-            atividadeUsuarioRepository.update(atividadeusuario);
+            atividade = atividadeRepository.update(atividade); 
             Rotinaatividade rotinaatividade = rab.gerarRotinaAtividade(atividade, atividadeusuario.getAtividade().getRotinaatividade().getRotinacliente());
             rotinaAtividadeRepository.update(rotinaatividade); 
+            atividadeusuario = rab.gearAtivadadeUsuario(atividade, atividadeusuario.getUsuario());
+            atividadeUsuarioRepository.update(atividadeusuario);
+            atividadeusuario.getAtividade().setRotinaatividade(rotinaatividade);
             atividadeusuario.getAtividade().getRotinaatividade().getRotinacliente().setTotalrecorrencia(
                     atividadeusuario.getAtividade().getRotinaatividade().getRotinacliente().getTotalrecorrencia() + 1);
-            gerarListaAtivadades();
+            mudarCoresBotoes(funcao);
         }
     }
     
@@ -986,14 +996,15 @@ public class AtividadesMB implements Serializable {
         boolean termino = rab.verificarTerminoRotina(atividadeusuario.getAtividade().getRotinaatividade().getRotinacliente());
         if (!termino) {
             Atividade atividade = rab.gerarProximaAtividadeAnual(atividadeusuario);
-            atividade = atividadeRepository.update(atividade);
-            atividadeusuario = rab.gearAtivadadeUsuario(atividade, atividadeusuario.getUsuario());
-            atividadeUsuarioRepository.update(atividadeusuario);
+            atividade = atividadeRepository.update(atividade); 
             Rotinaatividade rotinaatividade = rab.gerarRotinaAtividade(atividade, atividadeusuario.getAtividade().getRotinaatividade().getRotinacliente());
             rotinaAtividadeRepository.update(rotinaatividade); 
+            atividadeusuario = rab.gearAtivadadeUsuario(atividade, atividadeusuario.getUsuario());
+            atividadeUsuarioRepository.update(atividadeusuario);
+            atividadeusuario.getAtividade().setRotinaatividade(rotinaatividade);
             atividadeusuario.getAtividade().getRotinaatividade().getRotinacliente().setTotalrecorrencia(
                     atividadeusuario.getAtividade().getRotinaatividade().getRotinacliente().getTotalrecorrencia() + 1);
-            gerarListaAtivadades();
+            mudarCoresBotoes(funcao);
         }
     }
 }
