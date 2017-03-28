@@ -101,9 +101,14 @@
         <h:form id="formHorario">
             <p:dialog id="dialog_horario"  header="ADICIONAR HORÁRIO" widgetVar="horario" resizable="false" >
                 <div align="center">
-                    <p:inputMask id="horario" value="#{cadAtividadeMB.atividadeusuario.atividade.horario}" mask="99:99" placeholder="00:00" style="text-align: center;">    
-                        <p:ajax event="blur" update=":cadTarefas:painelBotoes"/>
+                    <p:inputMask id="horario" value="#{cadAtividadeMB.atividadeusuario.atividade.horario}"  mask="99:99" placeholder="00:00" style="text-align: center;">    
+                          
                     </p:inputMask>
+                    <p:commandLink  id="btnAdicionarHorario"  oncomplete="PF('horario').hide()" title="Adicionar" update=":cadTarefas:painelBotoes"
+                        >  
+                        <p:ajax  update=":cadTarefas:painelBotoes"/>
+                        <img src="../../resources/img/confirmar.PNG" width="20"/>
+                    </p:commandLink >
                 </div>     
             </p:dialog>
         </h:form>
@@ -114,9 +119,9 @@
                         <f:selectItem  itemLabel="Regular" itemValue="Regular"/>   
                         <f:selectItem  itemLabel="Importante" itemValue="Importante"/>  
                         <f:selectItem  itemLabel="Urgente" itemValue="Urgente"/>  
-                        <p:ajax event="change" update=":cadTarefas:painelBotoes"/>
+                        <p:ajax event="change" update=":cadTarefas:painelBotoes" oncomplete="PF('prioridade').hide()"/>
                     </p:selectOneMenu>  
-                </div>
+                </div>    
             </p:dialog>
         </h:form>
         <h:form id="formExecutor">
@@ -149,9 +154,14 @@
             <p:dialog id="dialog_meta"  header="ADICIONAR META" widgetVar="meta" resizable="false" >
                 <div align="center">
                     <p:inputMask id="horario" value="#{cadAtividadeMB.atividadeusuario.atividade.meta}" mask="99:99" placeholder="00:00" style="text-align: center;">    
-                        <p:ajax event="blur" update=":cadTarefas:painelBotoes"/>
+                        
                     </p:inputMask>
-                </div>     
+                    <p:commandLink  id="btnAdicionarMeta"  oncomplete="PF('meta').hide()" title="Adicionar" update=":cadTarefas:painelBotoes"
+                        >  
+                        <p:ajax update=":cadTarefas:painelBotoes"/>
+                        <img src="../../resources/img/confirmar.PNG" width="20"/>
+                    </p:commandLink >     
+                </div>        
             </p:dialog>
         </h:form>
     </h:body>

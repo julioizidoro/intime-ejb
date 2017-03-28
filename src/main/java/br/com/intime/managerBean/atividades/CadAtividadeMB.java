@@ -525,4 +525,14 @@ public class CadAtividadeMB implements Serializable {
             }
         }
     }
+    
+    
+    public void salvarHorario(){
+        RequestContext.getCurrentInstance().closeDialog(null);
+    }
+    
+    
+    public String retornoValor(){
+        return "";
+    }
 }
