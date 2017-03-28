@@ -83,6 +83,13 @@ public class CadUsuarioMB implements Serializable{
             empresa = usuario.getEmpresa();
             departamento = usuario.getSubdepartamento().getDepartamento();
             subdepartamento = usuario.getSubdepartamento();
+            if (usuario.getStatus()) {
+                status = "ativo";
+            }else{
+                status = "inativo";
+            }
+            nivel = usuario.getNivel();
+            gerarListaSubDepartamento();
         } 
     }
 
@@ -234,7 +241,7 @@ public class CadUsuarioMB implements Serializable{
     }
     
     public void cancelar(){
-        RequestContext.getCurrentInstance().closeDialog(null);
+        RequestContext.getCurrentInstance().closeDialog(new Usuario());
     }
     
     public String validarDados(){
