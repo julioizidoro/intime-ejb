@@ -422,6 +422,7 @@ public class AtividadesMB implements Serializable {
             sqlOrderBy = " ORDER BY a.dataconclusao";
         }
         sql = sql + sqlConcluida + sqlData + sqlOrderBy;
+        listaAtividade = new ArrayList<>();
         listaAtividade = atividadeUsuarioRepository.list(sql, dataInicial, dataFinal);
         removerAtivadadesAguardando();
         if ((naoconcluidas.equalsIgnoreCase("true")) && (concluidas.equalsIgnoreCase("false"))) {
@@ -569,7 +570,7 @@ public class AtividadesMB implements Serializable {
                     }
                 }
                 Mensagem.lancarMensagemInfo("Tarefa concluída!", "");
-                listaAtividade.remove(atividadeusuario);
+                listaAtividade.remove(atividadeusuario); 
             } else {
                 Map<String, Object> options = new HashMap<String, Object>();
                 options.put("contentWidth", 425);
@@ -1006,5 +1007,31 @@ public class AtividadesMB implements Serializable {
                     atividadeusuario.getAtividade().getRotinaatividade().getRotinacliente().getTotalrecorrencia() + 1);
             mudarCoresBotoes(funcao);
         }
+    }
+    
+    
+     public boolean retornarSituacaoAtrasado(Atividadeusuario atividadeusuario) {
+        LocalDate data = LocalDate.now();
+        boolean emdia = false;
+        if (((atividadeusuario.getAtividade().getDataexecucao().equals(data)
+                && atividadeusuario.getAtividade().getHoraexecucao().isBefore(LocalTime.now()))
+                || (atividadeusuario.getAtividade().getDataexecucao().isBefore(data)))
+                && !atividadeusuario.getSituacao().equalsIgnoreCase("Concluida")) {
+            emdia = true;
+        }
+        return emdia;
+    }
+     
+     
+     public boolean retornarSituacaoEmDia(Atividadeusuario atividadeusuario) {
+        LocalDate data = LocalDate.now();
+        boolean emdia = true;
+        if (((atividadeusuario.getAtividade().getDataexecucao().equals(data)
+                && atividadeusuario.getAtividade().getHoraexecucao().isBefore(LocalTime.now()))
+                || (atividadeusuario.getAtividade().getDataexecucao().isBefore(data)))
+                && !atividadeusuario.getSituacao().equalsIgnoreCase("Concluida")) {
+            emdia = false;
+        }
+        return emdia;
     }
 }

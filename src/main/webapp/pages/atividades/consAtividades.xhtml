@@ -75,7 +75,7 @@
                                                             <i class="fa fa-pause" style="font-size: 14px;color:#B0B5B9;"></i>     
                                                         </p:commandLink>   
                                                         <div class="task-checkbox" style="margin-left:1%;">  
-                                                            <p:commandLink action="#{atividadesMB.mudarSituacaoAtividade(atividades, 'Concluida')}" update="@all"> 
+                                                            <p:commandLink action="#{atividadesMB.mudarSituacaoAtividade(atividades, 'Concluida')}" update="consAtividades"> 
                                                                 <p:selectBooleanCheckbox id="cbxConcluido" class="list-child" value="#{atividades.concluido}"  style="float: left;margin-top:0.6%;margin-left:1.5%;"/> 
                                                                 <p:ajax event="dialogReturn" listener="#{atividadesMB.mudarCoresBotoes('hoje')}" update=":consAtividades:tabelaAtividades"/>
                                                             </p:commandLink>      
