@@ -292,7 +292,7 @@ public class CadAtividadeMB implements Serializable {
                 if (atividadeusuario.getUsuario() != usuarioLogadoMB.getUsuario()) {
                     notificacao = new Notificacao();
                     notificacao.setLido(false);
-                    notificacao.setUsuario(usuario);
+                    notificacao.setUsuario(atividadeusuario.getUsuario());
                     notificacao.setDescricao(usuarioLogadoMB.getUsuario().getNome() + " lhe encaminhou a tarefa '"
                             + atividadeusuario.getAtividade().getDescricao() + "'.");
                     notificacoesRepository.update(notificacao);

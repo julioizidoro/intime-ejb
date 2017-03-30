@@ -132,7 +132,7 @@
                         <f:selectItem  itemLabel="EXECUTOR" itemValue="0" noSelectionOption="true"/>    
                         <f:selectItems  value="#{cadAtividadeMB.listaUsuario}" var="usuarioselecionado" itemLabel="#{usuarioselecionado.nome}" itemValue="#{usuarioselecionado}"/>
                         <f:attribute name="listaUsuarios" value="#{cadAtividadeMB.listaUsuario}"/>
-                        <p:ajax event="change" update=":cadTarefas:painelBotoes"/>
+                        <p:ajax event="change" update=":cadTarefas:painelBotoes" oncomplete="PF('executor').hide()"/>
                     </p:selectOneMenu> 
                 </div>  
             </p:dialog>
