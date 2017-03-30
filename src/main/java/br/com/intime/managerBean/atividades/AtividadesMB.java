@@ -373,6 +373,10 @@ public class AtividadesMB implements Serializable {
     }
 
     public String adicionarAtividades() {
+        FacesContext fc = FacesContext.getCurrentInstance();
+        HttpSession session = (HttpSession) fc.getExternalContext().getSession(false);
+        atividadeusuario = null;
+        session.setAttribute("atividadeusuario", atividadeusuario);
         Map<String, Object> options = new HashMap<String, Object>();
         options.put("contentWidth", 500);
         RequestContext.getCurrentInstance().openDialog("cadAtividades", options, null);

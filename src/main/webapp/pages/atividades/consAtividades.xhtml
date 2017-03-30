@@ -42,10 +42,10 @@
                             <p:commandButton id="btnNaoVisualizarConcluidas" rendered="#{atividadesMB.naoconcluidas}" action="#{atividadesMB.visualizarConcluidas()}" value="VISUALIZAR CONCLUÍDAS" icon="fa fa-fw fa-toggle-off" style="border: transparent;background: transparent;font-size: 14px;top: -40%;font-weight: unset;color: #2A3542;" update="painelBtn,tabelaAtividades"/>
                             <p:commandButton id="btnVisualizarConcluidas" rendered="#{atividadesMB.concluidas}" action="#{atividadesMB.visualizarConcluidas()}" value="VISUALIZAR CONCLUÍDAS" icon="fa fa-fw fa-toggle-on" style="border: transparent;background: transparent;font-size: 14px;top: -40%;font-weight: unset;color: #2A3542;" update="painelBtn,tabelaAtividades"/>  
                         </span>     
-                        <span style="margin-left: 2%;">   
+                        <span style="margin-left: 2%;">      
                             <p:inputText id="inputbuscar" class="form-control search-consultas" placeholder="Buscar" value="#{atividadesMB.buscar}">
                                 <p:ajax event="blur" listener="#{atividadesMB.mudarCoresBotoes('todos')}" update="painelBtn,tabelaAtividades"/>
-                            </p:inputText>
+                            </p:inputText>  
                             <h:commandButton id="btnPesquisar" style="background: transparent;border: none;" />  
                         </span>
                     </h:panelGroup>
@@ -75,11 +75,15 @@
                                                             <i class="fa fa-pause" style="font-size: 14px;color:#B0B5B9;"></i>     
                                                         </p:commandLink>   
                                                         <div class="task-checkbox" style="margin-left:1%;">  
-                                                            <p:commandLink action="#{atividadesMB.mudarSituacaoAtividade(atividades, 'Concluida')}" update="consAtividades"> 
+                                                            <p:commandLink rendered="#{atividadesMB.retornarSituacaoEmDia(atividades)}" action="#{atividadesMB.mudarSituacaoAtividade(atividades, 'Concluida')}" update="@all"> 
                                                                 <p:selectBooleanCheckbox id="cbxConcluido" class="list-child" value="#{atividades.concluido}"  style="float: left;margin-top:0.6%;margin-left:1.5%;"/> 
-                                                                <p:ajax event="dialogReturn" listener="#{atividadesMB.mudarCoresBotoes('hoje')}" update=":consAtividades:tabelaAtividades"/>
                                                             </p:commandLink>      
-                                                        </div>               
+                                                            
+                                                            <p:commandLink rendered="#{atividadesMB.retornarSituacaoAtrasado(atividades)}" action="#{atividadesMB.mudarCoresBotoes('hoje')}" actionListener="#{atividadesMB.mudarSituacaoAtividade(atividades, 'Concluida')}" update="consAtividades"> 
+                                                                <p:selectBooleanCheckbox id="cbxConcluidoAtrasado" class="list-child" value="#{atividades.concluido}"  style="float: left;margin-top:0.6%;margin-left:1.5%;"/> 
+                                                                <p:ajax event="dialogReturn" listener="#{atividadesMB.mudarCoresBotoes('hoje')}" update=":consAtividades:tabelaAtividades, :consAtividades:painelBtn"/>
+                                                            </p:commandLink>  
+                                                        </div>                 
                                                         <div class="task-title"> 
                                                             <span id="nome" class="task-title-sp">#{atividades.atividade.descricao}</span> |     
                                                             <span id="cliente" class="task-title-sp">#{atividades.atividade.cliente.apelido}</span> 
