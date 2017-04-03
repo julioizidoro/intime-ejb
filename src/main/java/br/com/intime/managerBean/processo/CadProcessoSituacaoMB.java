@@ -350,13 +350,14 @@ public class CadProcessoSituacaoMB implements Serializable {
 
     public void gerarListaProcessoRotina() {
         listaProcessoRotina = processoRotinaRepository.list("Select p from Processorotina p where p.processo.idprocesso="
-                + processo.getIdprocesso() + " order by p.descricao");
+                + processo.getIdprocesso() + " order by p.idprocessorotina");
         if (listaProcessoRotina == null) {
             listaProcessoRotina = new ArrayList<Processorotina>();
         }
         listaNumeroAtividades = new ArrayList<String>();
         int numeroAtividade=1;
         for (int i = 0; i < listaProcessoRotina.size(); i++) {
+            listaProcessoRotina.get(i).setSelecionado(true);
             listaProcessoRotina.get(i).setUsuario(usuarioLogadoMB.getUsuario());
             LocalDate data = LocalDate.now();
             if (listaProcessoRotina.get(i).getDiasuteis() > 0) {

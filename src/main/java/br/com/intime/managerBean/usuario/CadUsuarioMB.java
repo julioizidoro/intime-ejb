@@ -39,11 +39,10 @@ import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
 
-
 @Named
 @ViewScoped
-public class CadUsuarioMB implements Serializable{
-    
+public class CadUsuarioMB implements Serializable {
+
     private Usuario usuario;
     private List<Usuario> listaUsuario;
     @EJB
@@ -66,10 +65,11 @@ public class CadUsuarioMB implements Serializable{
     @EJB
     private SubDepartamentoRepository subDepartamentoRepository;
     private String status;
-    
-    
+    private String notivicacaoAtraso;
+    private String notificacaoConclusao;
+
     @PostConstruct
-    public void init(){
+    public void init() {
         FacesContext fc = FacesContext.getCurrentInstance();
         HttpSession session = (HttpSession) fc.getExternalContext().getSession(false);
         usuario = (Usuario) session.getAttribute("usuario");
@@ -85,12 +85,14 @@ public class CadUsuarioMB implements Serializable{
             subdepartamento = usuario.getSubdepartamento();
             if (usuario.getStatus()) {
                 status = "ativo";
-            }else{
+            } else {
                 status = "inativo";
             }
             nivel = usuario.getNivel();
+            notificacaoConclusao = usuario.getNotificacaoconclusao();
+            notivicacaoAtraso = usuario.getNotificacaoatraso();
             gerarListaSubDepartamento();
-        } 
+        }
     }
 
     public Usuario getUsuario() {
@@ -140,7 +142,6 @@ public class CadUsuarioMB implements Serializable{
     public void setEmpresaRepository(EmpresaRepository empresaRepository) {
         this.empresaRepository = empresaRepository;
     }
-
 
     public UploadedFile getFile() {
         return file;
@@ -229,66 +230,97 @@ public class CadUsuarioMB implements Serializable{
     public void setStatus(String status) {
         this.status = status;
     }
+
+    public String getNotivicacaoAtraso() {
+        return notivicacaoAtraso;
+    }
+
+    public void setNotivicacaoAtraso(String notivicacaoAtraso) {
+        this.notivicacaoAtraso = notivicacaoAtraso;
+    }
+
+    public String getNotificacaoConclusao() {
+        return notificacaoConclusao;
+    }
+
+    public void setNotificacaoConclusao(String notificacaoConclusao) {
+        this.notificacaoConclusao = notificacaoConclusao;
+    }
     
     
-    
-    
+
     public void gerarListaEmpresa() {
         listaEmpresa = empresaRepository.list("Select e from Empresa e");
         if (listaEmpresa == null) {
             listaEmpresa = new ArrayList<Empresa>();
         }
     }
-    
-    public void cancelar(){
+
+    public void cancelar() {
         RequestContext.getCurrentInstance().closeDialog(new Usuario());
     }
-    
-    public String validarDados(){
+
+    public String validarDados() {
         String msg = "";
         if (empresa == null) {
-            msg = msg + "Empresa Não selecionada \r\n";
+            msg = msg + "Empresa Não selecionada; \r\n";
         }
         if (usuario.getNome().length() == 0) {
-            msg = msg + "Nome do Usuário não informado \r\n";
+            msg = msg + "Nome do Usuário não informado; \r\n";
         }
-        if (nivel.length() == 0) {
-             msg = msg + "Nivel de usuario não informado \r\n";
+        if (nivel == null) {
+            msg = msg + "Nivel de usuario não informado; \r\n";
         }
-        if (status.length() == 0) {
-            msg = msg + "Status do usuario não informado \r\n";
+        if (status == null) {
+            msg = msg + "Status do usuario não informado; \r\n";
         }
         if (subdepartamento == null) {
-            msg = msg + "Sub-Departamento não informado \r\n";
+            msg = msg + "Sub-Departamento não informado; \r\n";
+        }
+        if (notificacaoConclusao == null) {
+            msg = msg + "Notificação de conclusão não informado; \r\n";
+        }
+        if (notivicacaoAtraso == null) {
+            msg = msg + "Notificação de atraso não informado; \r\n";
         }
         return msg;
     }
-    
-    public void salvar(){
-        List<Usuario> listaUsuario = usuarioRepository.list("Select u from Usuario u where u.login='" + usuario.getLogin() + "' and u.status=true");
-        if (listaUsuario == null || listaUsuario.isEmpty()) {
-            String senha = "senha";
-            try {
-                usuario.setSenha(Criptografia.encript(senha));
-            } catch (NoSuchAlgorithmException ex) {
-                Logger.getLogger(CadUsuarioMB.class.getName()).log(Level.SEVERE, null, ex);
+
+    public void salvar() {
+        usuario.setNotificacaoatraso(notivicacaoAtraso);
+        usuario.setNotificacaoconclusao(notificacaoConclusao);
+        usuario.setEmpresa(empresa);
+        usuario.setSubdepartamento(subdepartamento);
+        usuario.setNivel(nivel);
+        String mensagem = validarDados();
+        if (mensagem.length() < 1) {
+            if (status.equalsIgnoreCase("ativo")) {
+                usuario.setStatus(true);
+            } else {
+                usuario.setStatus(false);
             }
-            usuario.setStatus(true);
-            String mensagem = validarDados();
-            if (mensagem.length() < 1) {
-                usuario.setEmpresa(empresa);
-                usuario.setSubdepartamento(subdepartamento);
+
+            List<Usuario> listaUsuario = usuarioRepository.list("Select u from Usuario u where u.login='" + usuario.getLogin() + "' and u.status=true");
+            if (listaUsuario == null || listaUsuario.isEmpty()) {
+                String senha = "senha";
+                try {
+                    usuario.setSenha(Criptografia.encript(senha));
+                } catch (NoSuchAlgorithmException ex) {
+                    Logger.getLogger(CadUsuarioMB.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 usuario = usuarioRepository.update(usuario);
                 RequestContext.getCurrentInstance().closeDialog(usuario);
+            } else if (usuario.getIdusuario() != null) {
+                usuario = usuarioRepository.update(usuario);
+                RequestContext.getCurrentInstance().closeDialog(usuario);
+            } else {
+                Mensagem.lancarMensagemErro("Atenção", "Este login possuí uma conta ativa!");
             }
-        } else if (usuario.getIdusuario() != null) {
-            usuario = usuarioRepository.update(usuario);
-            RequestContext.getCurrentInstance().closeDialog(usuario);
         } else {
-            Mensagem.lancarMensagemErro("Atenção", "Este login possuí uma conta ativa!");
+            Mensagem.lancarMensagemErro(mensagem, "");
         }
     }
-    
+
     public boolean salvarArquivoFTP() {
         String msg = "";
         Ftpdados dadosFTP = null;
@@ -313,8 +345,8 @@ public class CadUsuarioMB implements Serializable{
                 Subdepartamento subdepartamento = subDepartamentoRepository.find(1);
                 usuario.setSubdepartamento(subdepartamento);
                 usuario = usuarioRepository.update(usuario);
-            }else{
-                if (usuario.getNomefoto() != null && usuario.getNomefoto().length() >0) {
+            } else {
+                if (usuario.getNomefoto() != null && usuario.getNomefoto().length() > 0) {
                     excluirArquivoFTP();
                 }
             }
@@ -335,7 +367,7 @@ public class CadUsuarioMB implements Serializable{
         }
         return false;
     }
-    
+
     public boolean excluirArquivoFTP() {
         String msg = "";
         Ftpdados dadosFTP = null;
@@ -383,19 +415,18 @@ public class CadUsuarioMB implements Serializable{
             e1.printStackTrace();
         }
     }
-    
-    
-    public void gerarListaDepartamentos(){
+
+    public void gerarListaDepartamentos() {
         listaDepartamento = departamentoRepository.list("Select d From Departamento d");
         if (listaDepartamento == null || listaDepartamento.isEmpty()) {
             listaDepartamento = new ArrayList<>();
         }
     }
-    
-    public void gerarListaSubDepartamento(){
+
+    public void gerarListaSubDepartamento() {
         if (departamento == null) {
             listaSubDepartamento = new ArrayList<>();
-        }else{
+        } else {
             listaSubDepartamento = departamento.getSubdepartamentoList();
         }
     }
