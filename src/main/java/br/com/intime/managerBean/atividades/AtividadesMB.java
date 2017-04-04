@@ -890,7 +890,7 @@ public class AtividadesMB implements Serializable {
             }
         }
     }
-
+  
     public void salvarAtividadeGatilho(List<Processogatilho> listaGatilho, Atividadeusuario atividadeusuario) {
         for (int i = 0; i < listaGatilho.size(); i++) {
             Atividade atividade = new Atividade();
