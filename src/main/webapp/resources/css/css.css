@@ -72,9 +72,12 @@ body{
 }
 
 .tamanho45{
-    width:45%;
+    width:45%;   
 }   
 
+.tamanho35{
+    width:35%;
+} 
 .tamanho60{    
     width:60%;
 }
@@ -108,3 +111,24 @@ body{
     background: transparent;
     border: transparent;
 } 
+
+.imagemusuarioeditar{
+    width: 100px;
+    height: 100px;        
+    border-radius: 50em;
+    -moz-border-radius: 50em;
+    -webkit-border-radius: 50em;
+    animation: fadeInRotate .9s ease;
+    -webkit-animation: fadeInRotate .9s ease;
+    -moz-animation: fadeInRotate .9s ease;
+    -ms-animation: fadeInRotate .9s ease;
+    -o-animation: fadeInRotate .9s ease;
+}    
+
+.alterarImagem{
+    text-decoration: none;
+}
+
+.alterarImagem:hover{
+    background: transparent !important;
+}

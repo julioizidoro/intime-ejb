@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <link href="resources/css/bootstrap.min.css" rel="stylesheet"/>  
+        <link href="resources/css/style.css" rel="stylesheet"/>  
+        <link href="resources/css/css.css" rel="stylesheet"/> 
+        <title>ALTERAR IMAGEM</title>
+    </h:head>
+    <h:body>  
+        <h:form id="idEditarImagem" 
+                style="font-size: 11px; background-color:#F1F2F7;">
+            <p:ajaxStatus onstart="PF('statusDialog').show()"
+                          onsuccess="PF('statusDialog').hide()" />
+            <p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+                      closable="false" resizable="false" showHeader="false">
+            </p:dialog>
+            <div align="center">
+                <h:panelGroup  id="imagem"> 
+                    <img src="http://#{dashboardMB.ftpdados.hostdonwload}:82/ftproot/intime/fotos/usuario/#{usuarioLogadoMB.usuario.nomefoto}"
+                         class="imagemusuarioeditar" />
+                </h:panelGroup>  <br></br> <br />         
+                <p:fileUpload multiple="true"  dragDropSupport="false" fileLimit="1" style="font-size:12px; width:85%;" label="Anexar" fileUploadListener="#{editarImagemUsuarioMB.fileUploadListener}" value="#{editarImagemUsuarioMB.file}"  mode="advanced" 
+                              allowTypes="/(\.|\/)(jpe?g|png)$/" sizeLimit="52428800">
+                </p:fileUpload> 
+                <br></br> <br />
+
+                <div align="center">
+                    <p:commandButton id="btnConfirmar" action="#{editarImagemUsuarioMB.fechar()}" class="btn btn-success" value="Confirmar"  />
+                    <p:commandButton id="btnCancelar" action="#{editarImagemUsuarioMB.fechar()}" class="btn btn-danger" value="Cancelar"/>
+                </div>  
+            </div>
+        </h:form>
+    </h:body>
+</html>

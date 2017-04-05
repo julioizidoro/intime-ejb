@@ -30,7 +30,7 @@
 
     <h:body style="background: #fff;">
         <h:form id="telaInicial">
-            
+
             <p:poll interval="120" listener="#{dashboardMB.gerarListas()}" update="colunaTodoList, calendarioAtividades, colunaNumTarefas, colunaFeed, btnVisualizarNotificacoes"/>
             <p:growl id="growl" showDetail="true" sticky="true" />  
             <section id="container" >    
@@ -67,9 +67,11 @@
                                     </p:commandLink>
                                     <p:commandLink title="Sair" action="#{usuarioLogadoMB.deslogar()}" >
                                         <i class="fa fa-power-off"></i>
-                                    </p:commandLink>  
+                                    </p:commandLink>      
                                 </h:panelGrid>
-                                <img src="http://#{dashboardMB.ftpdados.hostdonwload}:82/ftproot/intime/fotos/usuario/#{usuarioLogadoMB.usuario.nomefoto}"  class="imagemusuario" />  
+                                <p:commandLink action="#{usuarioLogadoMB.alterarImagem()}" title="Alterar Imagem" class="alterarImagem">
+                                    <img src="http://#{dashboardMB.ftpdados.hostdonwload}:82/ftproot/intime/fotos/usuario/#{usuarioLogadoMB.usuario.nomefoto}"  class="imagemusuario" />  
+                                </p:commandLink>
                                 <h:panelGrid columns="1">  
                                     <p:outputLabel value="#{usuarioLogadoMB.usuario.nome}"
                                                    style="font-size:11.7px;color:#ffffff;margin: 1px 7px;font-weight:bold;" />
@@ -109,7 +111,7 @@
                             </li> 
                             <li class="sub-menu">   
                                 <a href="javascript:;"  >    
-                                     <i class="fa fa-rotate-left"></i> 
+                                    <i class="fa fa-rotate-left"></i> 
                                     <span style="margin-left:2%;font-size:15px;">Rotinas</span>
                                 </a>
                                 <ul class="sub">
@@ -408,7 +410,7 @@
                     </section>            
                 </section>       
             </section>                
-<div style="margin-top: 20px; background: #ffffff;">
+            <div style="margin-top: 20px; background: #ffffff;">
                 <p:ajaxStatus onstart="PF('statusDialog').show()"
                               onsuccess="PF('statusDialog').hide()" />      
                 <p:dialog widgetVar="statusDialog" modal="true" draggable="false"

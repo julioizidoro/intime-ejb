@@ -3,7 +3,7 @@
         xmlns:h="http://java.sun.com/jsf/html"
         xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
         xmlns:f="http://xmlns.jcp.org/jsf/core">
-    
+
 
     <div id="overlay" class="transparent"></div>
     <p:poll interval="120" listener="#{dashboardMB.gerarListas()}" update="notificacoes"/>
@@ -42,7 +42,9 @@
                             <i class="fa fa-power-off"></i>
                         </p:commandLink>  
                     </h:panelGrid>
-                    <img src="http://#{dashboardMB.ftpdados.hostupload}:82/ftproot/intime/fotos/usuario/#{usuarioLogadoMB.usuario.nomefoto}"  class="imagemusuario" />  
+                    <p:commandLink action="#{usuarioLogadoMB.alterarImagem()}" title="Alterar Imagem" class="alterarImagem">
+                        <img src="http://#{dashboardMB.ftpdados.hostdonwload}:82/ftproot/intime/fotos/usuario/#{usuarioLogadoMB.usuario.nomefoto}"  class="imagemusuario" />  
+                    </p:commandLink>
                     <h:panelGrid columns="1">  
                         <p:outputLabel value="#{usuarioLogadoMB.usuario.nome}"
                                        style="font-size:11.7px;color:#ffffff;margin: 1px 7px;font-weight:bold;" />
@@ -82,7 +84,7 @@
                 </li>
                 <li class="sub-menu">   
                     <a href="javascript:;"  >    
-                         <i class="fa fa-rotate-left"></i> 
+                        <i class="fa fa-rotate-left"></i> 
                         <span style="margin-left:2%;font-size:15px;">Rotinas</span>
                     </a>
                     <ul class="sub">
@@ -132,7 +134,7 @@
             </ul> 
         </div>
     </aside> 
-   
+
     <script class="include" type="text/javascript" src="../../resources/js/jquery.dcjqaccordion.2.7.js"></script>
     <script src="../../resources/js/jquery.scrollTo.min.js"></script> 
     <script src="../../resources/js/jquery.nicescroll.js" type="text/javascript"></script> 

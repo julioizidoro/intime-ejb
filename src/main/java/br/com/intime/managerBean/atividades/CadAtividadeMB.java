@@ -78,6 +78,7 @@ public class CadAtividadeMB implements Serializable {
         atividadeusuario = (Atividadeusuario) session.getAttribute("atividadeusuario");
         session.removeAttribute("atividadeusuario");
         gerarListaUsuario();
+        gerarListaCliente();
         if (atividadeusuario == null) {
             atividadeusuario = new Atividadeusuario();
             atividadeusuario.setAtividade(new Atividade());
@@ -332,12 +333,7 @@ public class CadAtividadeMB implements Serializable {
         }
         return true;
     }
-
-    public void selecionarCliente(Cliente cliente) {
-        this.cliente = cliente;
-        nomeCliente = cliente.getNomefantasia();
-        gerarListaDepartamento();
-    }
+ 
 
     public void gerarListaCliente() {
         listaCliente = clienteRepository.list("Select c from Cliente c where c.nomefantasia like '%" + nomeCliente + "%' and c.status=1 order by c.nomefantasia");

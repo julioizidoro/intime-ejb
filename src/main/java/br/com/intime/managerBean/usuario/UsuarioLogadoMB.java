@@ -183,4 +183,15 @@ public class UsuarioLogadoMB implements Serializable {
         }
         return "";
     }
+    
+    public void alterarImagem() {
+        if (usuario == null) {
+            Mensagem.lancarMensagemErro("Error!", "Acesso Negado.");
+        } else {
+            Map<String, Object> options = new HashMap<String, Object>();
+            options.put("contentWidth", 360);
+            options.put("closable", false);
+            RequestContext.getCurrentInstance().openDialog("editarImagemUsuario", options, null);
+        }
+    }
 }

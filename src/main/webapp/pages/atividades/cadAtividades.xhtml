@@ -7,11 +7,12 @@
         <link href="../../resources/css/bootstrap.min.css" rel="stylesheet"/>  
         <link href="../../resources/css/style.css" rel="stylesheet"/> 
         <script src="../../resources/js/calendario.js" /> 
+        <link href="../../resources/css/css.css" rel="stylesheet"/>  
     </h:head>     
     <h:body style="background:#FFFFFF;" > 
         <h:form id="cadTarefas"  style="font-size: 11px;width:95%;margin-left:3%;" enctype="multipart/form-data"> 
             <title style="background: #cf7000">
-                ADICIONAR TAREFA
+                ADICIONAR TAREFA 
             </title>
             <br/>
             <p:growl id="growl" showDetail="true" autoUpdate="true"  />
@@ -19,34 +20,22 @@
                 <p:inputText id="titulo" value="#{cadAtividadeMB.atividadeusuario.atividade.descricao}" placeholder="Título" style="width:99%;"/> 
             </h:panelGrid>
             <br/>     
-            <h:panelGrid columns="2" columnClasses="tamanho20, tamanho30" style="width: 100%;font-size: 12px;">
+            <h:panelGrid columns="2" columnClasses="tamanho45, tamanho45" style="width: 100%;font-size: 12px;">
                 <p:calendar id="dataTarefa" value="#{cadAtividadeMB.atividadeusuario.atividade.dataexecutar}" pattern="dd/MM/yyyy" locale="pt" size="12" style="margin-top: 5px;">
                     <f:convertDateTime   pattern="dd/MM/yyyy" timeZone="America/Sao_Paulo"/>
-                </p:calendar>
-                <p:inputText id="buscarCliente" value="#{cadAtividadeMB.nomeCliente}" placeholder="BUSCAR CLIENTE" style="width:99%;"> 
-                    <p:ajax event="keyup" listener="#{cadAtividadeMB.gerarListaCliente()}" update="tabelaCliente" />
-                </p:inputText>
-
-                <p:overlayPanel id="painelAdicionar" for="buscarCliente"
-                                hideEffect="fade" style="width:340px;background:#fff;">
-                    <p:dataScroller id="tabelaCliente" var="cliente"
-                                    value="#{cadAtividadeMB.listaCliente}" chunkSize="10" mode="inline"
-                                    scrollHeight="110">
-                        <p:outputPanel>   
-                            <h:panelGrid columns="3" style="width:100%;"
-                                         columnClasses="tamanhoavisos2, tamanho8, tamanho6">
-                                <h:outputLabel value="#{cliente.nomefantasia}"
-                                               style="margin-left:1.5%;font-size: 13px;color:#4C4C4C;font-weight: 500;" /> 
-                                <p:commandLink id="btnSelecionarCliente"
-                                               action="#{cadAtividadeMB.selecionarCliente(cliente)}"
-                                               style="float:right;" title="Selecionar Cliente" update="@form">
-                                    <i class="fa fa-check" style="color:#008B00;font-size:16px;"/>   
-                                </p:commandLink>
-                            </h:panelGrid>
-                        </p:outputPanel>
-                    </p:dataScroller>
-
-                </p:overlayPanel>
+                </p:calendar>  
+                <p:selectOneMenu id="cliente" value="#{cadAtividadeMB.cliente}"   
+                                 style="width:95%;" converter="ClienteConverter"
+                                 filter="true" filterMatchMode="startsWith"
+                                 panelStyle="width:180px">
+                    <f:selectItem itemLabel="Cliente" itemValue="0"
+                                  noSelectionOption="true" /> 
+                    <f:selectItems id="idpais" value="#{cadAtividadeMB.listaCliente}"
+                                   var="ccliente" itemLabel="#{ccliente.apelido}"
+                                   itemValue="#{ccliente}" />
+                    <f:attribute name="listaCliente" value="#{cadAtividadeMB.listaCliente}" />
+                    <p:ajax event="change" listener="#{cadAtividadeMB.gerarListaDepartamento()}"  update="painelDepartamento" />
+                </p:selectOneMenu> 
             </h:panelGrid>
             <br/>
             <h:panelGrid id="painelDepartamento" columns="2" columnClasses="tamanho30, tamanho30" style="width: 100%;font-size: 12px;">
@@ -63,7 +52,7 @@
                     <f:selectItems  value="#{cadAtividadeMB.listaSubdepartamento}" var="subdepartamentoselecionado" itemLabel="#{subdepartamentoselecionado.nome}" itemValue="#{subdepartamentoselecionado}"/>
                     <f:attribute name="listaSubDepartamento" value="#{cadAtividadeMB.listaSubdepartamento}"/>
                 </p:selectOneMenu>
-            </h:panelGrid>
+            </h:panelGrid> 
             <br/>         
             <h:panelGrid columns="2" columnClasses="tamanho70, tamanho30rigth" style="width:99%;"> 
                 <h:panelGroup id="painelBotoes">
@@ -94,7 +83,7 @@
                 </h:panelGroup>
 
                 <h:commandButton id="btnAdicionar" action="#{cadAtividadeMB.salvar()}" title="Adicionar"
-                    image="../../resources/img/confirmar.PNG">   
+                                 image="../../resources/img/confirmar.PNG">   
                 </h:commandButton>
             </h:panelGrid>   
         </h:form> 
@@ -102,10 +91,10 @@
             <p:dialog id="dialog_horario"  header="ADICIONAR HORÁRIO" widgetVar="horario" resizable="false" >
                 <div align="center">
                     <p:inputMask id="horario" value="#{cadAtividadeMB.atividadeusuario.atividade.horario}"  mask="99:99" placeholder="00:00" style="text-align: center;">    
-                          
+
                     </p:inputMask>
                     <p:commandLink  id="btnAdicionarHorario"  oncomplete="PF('horario').hide()" title="Adicionar" update=":cadTarefas:painelBotoes"
-                        >  
+                                    >  
                         <p:ajax  update=":cadTarefas:painelBotoes"/>
                         <img src="../../resources/img/confirmar.PNG" width="20"/>
                     </p:commandLink >
@@ -154,10 +143,10 @@
             <p:dialog id="dialog_meta"  header="ADICIONAR META" widgetVar="meta" resizable="false" >
                 <div align="center">
                     <p:inputMask id="horario" value="#{cadAtividadeMB.atividadeusuario.atividade.meta}" mask="99:99" placeholder="00:00" style="text-align: center;">    
-                        
+
                     </p:inputMask>
                     <p:commandLink  id="btnAdicionarMeta"  oncomplete="PF('meta').hide()" title="Adicionar" update=":cadTarefas:painelBotoes"
-                        >  
+                                    >  
                         <p:ajax update=":cadTarefas:painelBotoes"/>
                         <img src="../../resources/img/confirmar.PNG" width="20"/>
                     </p:commandLink >     
