@@ -62,14 +62,14 @@
                         <ul class="sidebar-menu" id="nav-accordion">    
                             <li>
                                 <h:panelGrid columns="2" columnClasses="tamanho50, tamanho50rigth" style="width:100%;"> 
-                                    <p:commandLink title="Alterar Senha" action="#{usuarioLogadoMB.alterarSenha()}">
+                                    <p:commandLink title="Alterar Senha" action="#{usuarioLogadoMB.alterarSenha()}" >
                                         <i class="fa fa-gears"></i>  
                                     </p:commandLink>
-                                    <p:commandLink title="Sair" action="#{usuarioLogadoMB.deslogar()}">
+                                    <p:commandLink title="Sair" action="#{usuarioLogadoMB.deslogar()}" >
                                         <i class="fa fa-power-off"></i>
                                     </p:commandLink>  
                                 </h:panelGrid>
-                                <img src="http://#{dashboardMB.ftpdados.hostupload}:82/ftproot/intime/fotos/usuario/#{usuarioLogadoMB.usuario.nomefoto}"  class="imagemusuario" />  
+                                <img src="http://#{dashboardMB.ftpdados.hostdonwload}:82/ftproot/intime/fotos/usuario/#{usuarioLogadoMB.usuario.nomefoto}"  class="imagemusuario" />  
                                 <h:panelGrid columns="1">  
                                     <p:outputLabel value="#{usuarioLogadoMB.usuario.nome}"
                                                    style="font-size:11.7px;color:#ffffff;margin: 1px 7px;font-weight:bold;" />

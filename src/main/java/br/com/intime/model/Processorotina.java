@@ -62,7 +62,7 @@ public class Processorotina implements Serializable {
     @Transient
     private int numeroatividade; 
 
-    public Processorotina() {
+    public Processorotina() { 
     }
 
     public Processorotina(Integer idprocessorotina) {
@@ -157,13 +157,14 @@ public class Processorotina implements Serializable {
         this.numeroatividade = numeroatividade;
     }
 
-    public int getAtividadeprecedente() {
+    public Integer getAtividadeprecedente() {
         return atividadeprecedente;
     }
 
-    public void setAtividadeprecedente(int atividadeprecedente) {
+    public void setAtividadeprecedente(Integer atividadeprecedente) {
         this.atividadeprecedente = atividadeprecedente;
     }
+ 
 
     @Override
     public int hashCode() {

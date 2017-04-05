@@ -34,17 +34,7 @@ import javax.validation.constraints.Size;
 @Table(name = "usuario")
 @NamedQueries({
     @NamedQuery(name = "Usuario.findAll", query = "SELECT u FROM Usuario u")})
-public class Usuario implements Serializable {
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuario")
-    private List<Rotinacliente> rotinaclienteList;
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuario")
-    private List<Atividade> atividadeList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuario")
-    private List<Processosituacao> processosituacaoList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuario")
-    private List<Atividadeusuario> atividadeusuarioList;
+public class Usuario implements Serializable { 
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -88,10 +78,10 @@ public class Usuario implements Serializable {
     private String nomefoto;
     @Column(name = "alterarprazorotina")
     private Boolean alterarprazorotina;
-    @Size(max = 10)
+    @Size(max = 20)
     @Column(name = "notificacaoconclusao")
     private String notificacaoconclusao;
-    @Size(max = 10)
+    @Size(max = 20)
     @Column(name = "notificacaoatraso")
     private String notificacaoatraso;
     @Column(name = "cadastroclinte")
@@ -107,7 +97,7 @@ public class Usuario implements Serializable {
     private Empresa empresa;
     @JoinColumn(name = "subdepartamento_idsubdepartamento", referencedColumnName = "idsubdepartamento")
     @ManyToOne(optional = false)
-    private Subdepartamento subdepartamento;
+    private Subdepartamento subdepartamento; 
 
     public Usuario() {
     }
@@ -288,7 +278,7 @@ public class Usuario implements Serializable {
     public void setSubdepartamento(Subdepartamento subdepartamento) {
         this.subdepartamento = subdepartamento;
     }
-
+     
     @Override
     public int hashCode() {
         int hash = 0;
@@ -312,38 +302,5 @@ public class Usuario implements Serializable {
     @Override
     public String toString() {
         return "br.com.intime.model.Usuario[ idusuario=" + idusuario + " ]";
-    }
-
-    public List<Atividade> getAtividadeList() {
-        return atividadeList;
-    }
-
-    public void setAtividadeList(List<Atividade> atividadeList) {
-        this.atividadeList = atividadeList;
-    }
-
-    public List<Processosituacao> getProcessosituacaoList() {
-        return processosituacaoList;
-    }
-
-    public void setProcessosituacaoList(List<Processosituacao> processosituacaoList) {
-        this.processosituacaoList = processosituacaoList;
-    }
-
-    public List<Atividadeusuario> getAtividadeusuarioList() {
-        return atividadeusuarioList;
-    }
-
-    public void setAtividadeusuarioList(List<Atividadeusuario> atividadeusuarioList) {
-        this.atividadeusuarioList = atividadeusuarioList;
-    }
-
-    public List<Rotinacliente> getRotinaclienteList() {
-        return rotinaclienteList;
-    }
-
-    public void setRotinaclienteList(List<Rotinacliente> rotinaclienteList) {
-        this.rotinaclienteList = rotinaclienteList;
-    }
-    
+    } 
 }
