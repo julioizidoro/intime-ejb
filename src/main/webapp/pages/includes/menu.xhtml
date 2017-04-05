@@ -42,10 +42,8 @@
                             <i class="fa fa-power-off"></i>
                         </p:commandLink>  
                     </h:panelGrid>
-                    <p:commandLink action="#{usuarioLogadoMB.alterarImagem()}" title="Alterar Imagem" class="alterarImagem">
-                        <img src="http://#{dashboardMB.ftpdados.hostdonwload}:82/ftproot/intime/fotos/usuario/#{usuarioLogadoMB.usuario.nomefoto}"  class="imagemusuario" />  
-                    </p:commandLink>
-                    <h:panelGrid columns="1">  
+                    <img src="http://#{dashboardMB.ftpdados.hostdonwload}:82/ftproot/intime/fotos/usuario/#{usuarioLogadoMB.usuario.nomefoto}"  class="imagemusuario" />  
+                   <h:panelGrid columns="1">    
                         <p:outputLabel value="#{usuarioLogadoMB.usuario.nome}"
                                        style="font-size:11.7px;color:#ffffff;margin: 1px 7px;font-weight:bold;" />
                         <p:outputLabel
