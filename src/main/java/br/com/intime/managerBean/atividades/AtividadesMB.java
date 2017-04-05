@@ -873,17 +873,21 @@ public class AtividadesMB implements Serializable {
                 processoatividadegatilho.getProcessogatilho().setExecutado(true);
                 processoatividadegatilho.setProcessogatilho(processoGatilhoRepository.update(processoatividadegatilho.getProcessogatilho()));
                 List<Processogatilho> listaGatilho = processoGatilhoRepository
-                        .list("select p from Processogatilho p where p.processorotina.idprocessorotina="
-                                + processoatividadegatilho.getProcessogatilho().getProcessorotina().getIdprocessorotina()
+                        .list("select p from Processogatilho p where p.executado=false"
                                 + " and p.atividadeprecedente=" + processoatividadegatilho.getProcessogatilho().getNumeroatividade()
                                 + " and p.processosituacao.idprocessosituacao=" + processoatividadegatilho.getProcessogatilho().getProcessosituacao().getIdprocessosituacao());
                 if (listaGatilho != null && listaGatilho.size() > 0) {
                     salvarAtividadeGatilho(listaGatilho, atividadeusuario);
                 } else {
-                    processoatividadegatilho.getProcessoatividade().getProcessosituacao().setSituacao("Concluído");
-                    processoatividadegatilho.getProcessoatividade().getProcessosituacao().setDatatermino(new Date());
-                    processoatividadegatilho.getProcessoatividade().setProcessosituacao(
-                            processoSituacaoRepository.update(processoatividadegatilho.getProcessoatividade().getProcessosituacao()));
+                    List<Processogatilho> listaTodosGatilho = processoGatilhoRepository
+                        .list("select p from Processogatilho p where p.executado=false"
+                                + " and p.processosituacao.idprocessosituacao=" + processoatividadegatilho.getProcessogatilho().getProcessosituacao().getIdprocessosituacao());
+                    if(listaTodosGatilho==null || listaTodosGatilho.size()==0){
+                        processoatividadegatilho.getProcessoatividade().getProcessosituacao().setSituacao("Concluído");
+                        processoatividadegatilho.getProcessoatividade().getProcessosituacao().setDatatermino(new Date());
+                        processoatividadegatilho.getProcessoatividade().setProcessosituacao(
+                                processoSituacaoRepository.update(processoatividadegatilho.getProcessoatividade().getProcessosituacao()));
+                    }
                 }
             } else {
                 verificarProcessoRegular(processoatividade);
@@ -895,8 +899,7 @@ public class AtividadesMB implements Serializable {
         for (int i = 0; i < listaGatilho.size(); i++) {
             Atividade atividade = new Atividade();
             atividade.setCliente(atividadeusuario.getAtividade().getCliente());
-            atividade.setDataexecucao(Formatacao.converterDateParaLocalDate(
-                    listaGatilho.get(i).getProcessosituacao().getDatainicio()));
+            atividade.setDataexecucao(LocalDate.now());
             atividade.setDatalancamento(LocalDate.now());
             LocalTime hora = LocalTime.of(23, 59);
             atividade.setHoraexecucao(hora);

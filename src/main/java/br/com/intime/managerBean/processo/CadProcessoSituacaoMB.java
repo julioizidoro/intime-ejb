@@ -73,6 +73,7 @@ public class CadProcessoSituacaoMB implements Serializable {
     private List<Usuario> listaUsuario;
     private List<String> listaNumeroAtividades;
     private boolean habilitarGatilho=false;
+    private boolean habilitarRegular=true;
 
     @PostConstruct
     public void init() {
@@ -86,6 +87,7 @@ public class CadProcessoSituacaoMB implements Serializable {
             gerarListaProcessoRotina();
             if(processo.getTipoprocesso().equalsIgnoreCase("Gatilho")){
                 habilitarGatilho=true;
+                habilitarRegular=false;
             }
         }
         gerarListaCliente();
@@ -244,6 +246,14 @@ public class CadProcessoSituacaoMB implements Serializable {
         this.habilitarGatilho = habilitarGatilho;
     }
 
+    public boolean isHabilitarRegular() {
+        return habilitarRegular;
+    }
+
+    public void setHabilitarRegular(boolean habilitarRegular) {
+        this.habilitarRegular = habilitarRegular;
+    }
+
     public void fechar() {
         RequestContext.getCurrentInstance().closeDialog(null);
     }
@@ -271,7 +281,7 @@ public class CadProcessoSituacaoMB implements Serializable {
                             Atividade atividade = new Atividade();
                             atividade.setCliente(cliente);
                             atividade.setDataexecucao(
-                                    Formatacao.converterDateParaLocalDate(listaProcessoRotina.get(i).getDatamostrar()));
+                                    Formatacao.converterDateParaLocalDate(processosituacao.getDatainicio()));
                             atividade.setDatalancamento(LocalDate.now());
                             LocalTime hora = LocalTime.of(23, 59);
                             atividade.setHoraexecucao(hora);

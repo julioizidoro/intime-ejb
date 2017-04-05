@@ -42,6 +42,8 @@ public class Processorotina implements Serializable {
     private String descricao;
     @Column(name = "diasuteis")
     private Integer diasuteis;
+    @Column(name = "atividadeprecedente")
+    private Integer atividadeprecedente;
     @JoinColumn(name = "processo_idprocesso", referencedColumnName = "idprocesso")
     @ManyToOne(optional = false)
     private Processo processo;
@@ -58,9 +60,7 @@ public class Processorotina implements Serializable {
     @Transient
     private boolean selecionado;
     @Transient
-    private int numeroatividade;
-    @Transient
-    private int atividadeprecedente;
+    private int numeroatividade; 
 
     public Processorotina() {
     }

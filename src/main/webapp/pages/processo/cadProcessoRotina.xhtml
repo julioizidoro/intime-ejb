@@ -16,12 +16,22 @@
             <br/><br/>
             <p:growl id="growl" showDetail="true" autoUpdate="true"  />
   
-            <h:panelGrid columns="2" columnClasses="tamanho70, tamanho30" style="width: 100%;font-size: 12px;">
+            <h:panelGrid columns="2" columnClasses="tamanho70, tamanho30" style="width: 100%;font-size: 12px;" rendered="#{cadProcessoRotinaMB.habilitarRegular}">
                 <p:outputLabel for="descricao" value="Descrição"/>
                 <p:outputLabel for="diasUteis" value="Dias Úteis"/>  
 
                 <p:inputText id="descricao" value="#{cadProcessoRotinaMB.processorotina.descricao}" style="width: 95%;"/>
                 <p:inputText id="diasUteis" value="#{cadProcessoRotinaMB.processorotina.diasuteis}" style="width: 95%;"/>   
+            </h:panelGrid>
+            
+            <h:panelGrid columns="3" columnClasses="tamanho50, tamanho25, tamanho25" style="width: 100%;font-size: 12px;" rendered="#{cadProcessoRotinaMB.habilitarGatilho}">
+                <p:outputLabel for="descricaoGatilho" value="Descrição"/>
+                <p:outputLabel for="diasUteisGatilho" value="Dias Úteis"/>  
+                <p:outputLabel for="atividadePrecedente" value="Nº Precedente"/> 
+
+                <p:inputText id="descricaoGatilho" value="#{cadProcessoRotinaMB.processorotina.descricao}" style="width: 95%;"/>
+                <p:inputText id="diasUteisGatilho" value="#{cadProcessoRotinaMB.processorotina.diasuteis}" style="width: 95%;"/>   
+                <p:inputText id="atividadePrecedente" value="#{cadProcessoRotinaMB.processorotina.atividadeprecedente}" style="width: 95%;"/>   
             </h:panelGrid>
             <br/>  
             <div align="center">    

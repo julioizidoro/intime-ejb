@@ -79,7 +79,7 @@
                                                                 <p:selectBooleanCheckbox id="cbxConcluido" class="list-child" value="#{atividades.concluido}"  style="float: left;margin-top:0.6%;margin-left:1.5%;"/> 
                                                             </p:commandLink>      
                                                             
-                                                            <p:commandLink rendered="#{atividadesMB.retornarSituacaoAtrasado(atividades)}" action="#{atividadesMB.mudarCoresBotoes('hoje')}" actionListener="#{atividadesMB.mudarSituacaoAtividade(atividades, 'Concluida')}" update="consAtividades, :consAtividades:growl"> 
+                                                            <p:commandLink rendered="#{atividadesMB.retornarSituacaoAtrasado(atividades)}" action="#{atividadesMB.mudarCoresBotoes('hoje')}" actionListener="#{atividadesMB.mudarSituacaoAtividade(atividades, 'Concluida')}" update=":consAtividades:growl"> 
                                                                 <p:selectBooleanCheckbox id="cbxConcluidoAtrasado" class="list-child" value="#{atividades.concluido}"  style="float: left;margin-top:0.6%;margin-left:1.5%;"/> 
                                                                 <p:ajax event="dialogReturn" listener="#{atividadesMB.mudarCoresBotoes('hoje')}" update=":consAtividades:tabelaAtividades, :consAtividades:painelBtn, :consAtividades:growl"/>   
                                                             </p:commandLink>  

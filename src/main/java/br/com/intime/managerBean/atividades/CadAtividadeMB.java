@@ -340,7 +340,7 @@ public class CadAtividadeMB implements Serializable {
     }
 
     public void gerarListaCliente() {
-        listaCliente = clienteRepository.list("Select c from Cliente c where c.nomefantasia like '" + nomeCliente + "%' and c.status=1 order by c.nomefantasia");
+        listaCliente = clienteRepository.list("Select c from Cliente c where c.nomefantasia like '%" + nomeCliente + "%' and c.status=1 order by c.nomefantasia");
         if (listaCliente == null) {
             listaCliente = new ArrayList<Cliente>();
         }
