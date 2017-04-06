@@ -281,6 +281,7 @@ public class CadAtividadeMB implements Serializable {
                         atividadeUsuarioSelecionados.setAtividade(atividadeusuario.getAtividade());
                         atividadeUsuarioSelecionados.setUsuario(listaUsuarioSelecionado.get(i));
                         atividadeUsuarioSelecionados.setTempo("00:00");
+                        atividadeUsuarioSelecionados.setSituacao("Play");  
                         atividadeUsuarioRepository.update(atividadeUsuarioSelecionados);
                         notificacao = new Notificacao();
                         notificacao.setLido(false);
