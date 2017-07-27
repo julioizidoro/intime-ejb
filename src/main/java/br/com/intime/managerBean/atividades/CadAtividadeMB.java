@@ -51,7 +51,7 @@ public class CadAtividadeMB implements Serializable {
     private List<Cliente> listaCliente;
     private List<Clientedepartamento> listaClientedepartamentos;
     private List<Subdepartamento> listaSubdepartamento;
-    private String nomeCliente;
+    private String nomeCliente="";
     private Usuario usuario;
     private List<Usuario> listaUsuario;
     private List<Usuario> listaUsuarioSelecionado;
@@ -78,6 +78,7 @@ public class CadAtividadeMB implements Serializable {
         atividadeusuario = (Atividadeusuario) session.getAttribute("atividadeusuario");
         session.removeAttribute("atividadeusuario");
         gerarListaUsuario();
+        nomeCliente = "";
         gerarListaCliente();
         if (atividadeusuario == null) {
             atividadeusuario = new Atividadeusuario();

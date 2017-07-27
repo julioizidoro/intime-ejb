@@ -630,10 +630,10 @@ public class AtividadesMB implements Serializable {
             listaAtividadeComentario = new ArrayList<>();
         }
         for (int i = 0; i < listaAtividadeComentario.size(); i++) {
-            atividadeAguardandoRepository.remove(listaAtividadeComentario.get(i).getIdatividadecomentario());
+            atividadeComentarioRepository.remove(listaAtividadeComentario.get(i).getIdatividadecomentario());
         }
     }
-
+  
     public void gerarListaUsuario() {
         listaUsuario = usuarioRepository.list("select u from Usuario u where u.status=TRUE order by u.nome");
         if (listaUsuario == null) {
