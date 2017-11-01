@@ -6,6 +6,7 @@ import br.com.intime.managerBean.usuario.UsuarioLogadoMB;
 import br.com.intime.model.Atividade;
 import br.com.intime.model.Atividadeaguardando;
 import br.com.intime.model.Atividadecomentario;
+import br.com.intime.model.Atividadeerro;
 import br.com.intime.model.Atividadeusuario;
 import br.com.intime.model.Notificacao;
 import br.com.intime.model.Processoatividade;
@@ -14,6 +15,7 @@ import br.com.intime.model.Processogatilho;
 import br.com.intime.model.Rotinaatividade;
 import br.com.intime.model.Usuario;
 import br.com.intime.repository.AtividadeAguardandoRepository;
+import br.com.intime.repository.AtividadeErroRepository;
 import br.com.intime.repository.AtividadeRepository;
 import br.com.intime.repository.AtividadeUsuarioRepository;
 import br.com.intime.repository.AtvidadeComentarioRepository;
@@ -77,6 +79,8 @@ public class AtividadesMB implements Serializable {
     private ProcessoSituacaoRepository processoSituacaoRepository;
     @EJB
     private RotinaAtividadeRepository rotinaAtividadeRepository;
+    @EJB
+    private AtividadeErroRepository atividadeErroRepository;
     //btn visualizar concluidas
     private String concluidas = "false";
     private String naoconcluidas = "true";
@@ -91,6 +95,8 @@ public class AtividadesMB implements Serializable {
     private LocalDate dataFinal;
     private String buscar;
     private String funcao;
+    private String descricaoErro;
+    private String tipoErro;
 
     @PostConstruct
     public void init() {
@@ -295,6 +301,30 @@ public class AtividadesMB implements Serializable {
 
     public void setRotinaAtividadeRepository(RotinaAtividadeRepository rotinaAtividadeRepository) {
         this.rotinaAtividadeRepository = rotinaAtividadeRepository;
+    }
+
+    public String getFuncao() {
+        return funcao;
+    }
+
+    public void setFuncao(String funcao) {
+        this.funcao = funcao;
+    }
+
+    public String getDescricaoErro() {
+        return descricaoErro;
+    }
+
+    public void setDescricaoErro(String descricaoErro) {
+        this.descricaoErro = descricaoErro;
+    }
+
+    public String getTipoErro() {
+        return tipoErro;
+    }
+
+    public void setTipoErro(String tipoErro) {
+        this.tipoErro = tipoErro;
     }
 
     public void visualizarConcluidas() {
@@ -573,6 +603,7 @@ public class AtividadesMB implements Serializable {
                         gerarProximaAtividadeAnual(atividadeusuario);
                     }
                 }
+                salvarAtividadeErro();
                 Mensagem.lancarMensagemInfo("Tarefa concluída!", "");
                 listaAtividade.remove(atividadeusuario); 
             } else {
@@ -586,6 +617,15 @@ public class AtividadesMB implements Serializable {
         }
         atividadeUsuarioRepository.update(atividadeusuario);
         return "";
+    }
+    
+    
+    public void salvarAtividadeErro(){
+        Atividadeerro atividadeerro = new Atividadeerro();
+        atividadeerro.setDescricao(descricaoErro);
+        atividadeerro.setTipoerro(tipoErro);
+        atividadeerro.setAtividadeusuario(atividadeusuario);
+        atividadeErroRepository.update(atividadeerro);
     }
 
     public boolean mostrarTrianguloUrgente(String prioridade) {
@@ -1040,5 +1080,63 @@ public class AtividadesMB implements Serializable {
             emdia = false;
         }
         return emdia;
+    }
+     
+     
+    public String mudarSituacaoAtividadeErro(String situacao) {
+        if (situacao.equalsIgnoreCase("Pause")) {
+            Long inicio = new Date().getTime();
+            atividadeusuario.setInicio(BigInteger.valueOf(inicio));
+            atividadeusuario.setSituacao(situacao);
+        } else if (situacao.equalsIgnoreCase("Play")) {
+            Long termino = new Date().getTime();
+            BigInteger valorInicio = atividadeusuario.getInicio();
+            Long inicio = valorInicio.longValue();
+            Long resultado = termino - inicio;
+            resultado = resultado / 1000;
+            resultado = resultado / 60;
+            int tempo = resultado.intValue();
+            int tempoAtual = atividadeusuario.getTempoatual();
+            tempo = tempo + tempoAtual;
+            atividadeusuario.setTempoatual(tempo);
+            String sHora = Formatacao.calcularHorasTotal(tempo);
+            atividadeusuario.setTempo(sHora);
+            atividadeusuario.setSituacao(situacao);
+        } else if (situacao.equalsIgnoreCase("Concluida")) {
+            LocalDate data = LocalDate.now();
+            if (atividadeusuario.getAtividade().getDataexecucao().equals(data)
+                    || atividadeusuario.getAtividade().getDataexecucao().isAfter(data)) {
+                LocalTime hora = LocalTime.of(23, 59, 00);
+                atividadeusuario.setHoraconclusao(hora);
+                atividadeusuario.setDataconclusao(LocalDate.now());
+                atividadeusuario.setConcluido(true);
+                atividadeusuario.setSituacao("Concluida");
+                verificarProcessoGatilho(atividadeusuario);
+                atividadeusuario = atividadeUsuarioRepository.update(atividadeusuario);
+                if (atividadeusuario.getAtividade().isRotina()) {
+                    if (atividadeusuario.getAtividade().getRotinaatividade().getRotinacliente().getRotinadiaria() != null) {
+                        gerarProximaAtividadeDiaria(atividadeusuario);
+                    } else if (atividadeusuario.getAtividade().getRotinaatividade().getRotinacliente().getRotinasemanal() != null) {
+                        gerarProximaAtividadeSemanal(atividadeusuario);
+                    } else if (atividadeusuario.getAtividade().getRotinaatividade().getRotinacliente().getRotinamensal() != null) {
+                        gerarProximaAtividadeMensal(atividadeusuario);
+                    } else if (atividadeusuario.getAtividade().getRotinaatividade().getRotinacliente().getRotinaanual() != null) {
+                        gerarProximaAtividadeAnual(atividadeusuario);
+                    }
+                }
+                salvarAtividadeErro();
+                Mensagem.lancarMensagemInfo("Tarefa concluída!", "");
+                listaAtividade.remove(atividadeusuario); 
+            } else {
+                Map<String, Object> options = new HashMap<String, Object>();
+                options.put("contentWidth", 425);
+                FacesContext fc = FacesContext.getCurrentInstance();
+                HttpSession session = (HttpSession) fc.getExternalContext().getSession(false);
+                session.setAttribute("atividadeusuario", atividadeusuario);
+                RequestContext.getCurrentInstance().openDialog("motivoAtraso", options, null);
+            }
+        }
+        atividadeUsuarioRepository.update(atividadeusuario);
+        return "";
     }
 }

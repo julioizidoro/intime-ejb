@@ -21,41 +21,96 @@
                 </h:panelGrid>   
                 <br/> 
                 <p:outputLabel value="Do It!" style="margin-left:0.5%;color:#797979;font-weight: inherit;font-size: 22px;"/>
-                <h:panelGrid id="painelBtn" columns="2" style="width: 100%;" columnClasses="tamanho75,tamanho">   
-                    <h:panelGroup style="text-align: left;">    
-                        <p:commandLink id="btnhoje" action="#{atividadesMB.mudarCoresBotoes('hoje')}" style="margin-left:2%;" update="painelBtn, tabelaAtividades">
-                            <span class="badge badge-sm label-radio" style="background:#{atividadesMB.hoje};">HOJE #{atividadesMB.retornarNumeroHoje()}</span>
-                        </p:commandLink>
-                        <p:commandLink id="btnamanha" action="#{atividadesMB.mudarCoresBotoes('amanha')}" style="margin-left:0.5%;" update="painelBtn, tabelaAtividades"> 
-                            <span class="badge badge-sm label-radio" style="background:#{atividadesMB.amanha};">AMANHÃ #{atividadesMB.retornarNumeroAmanha()}</span>
-                        </p:commandLink>
-                        <p:commandLink id="btn7dias" action="#{atividadesMB.mudarCoresBotoes('seteDias')}" style="margin-left:0.5%;" update="painelBtn, tabelaAtividades">   
-                            <span class="badge badge-sm label-radio" style="background:#{atividadesMB.seteDias};">7 DIAS #{atividadesMB.retornarNumeroProx7()}</span>
-                        </p:commandLink>
-                        <p:commandLink id="btntodos" action="#{atividadesMB.mudarCoresBotoes('todos')}" style="margin-left:0.5%;" update="painelBtn, tabelaAtividades">     
-                            <span class="badge badge-sm label-radio" style="background:#{atividadesMB.todos};">TODOS #{atividadesMB.retornarNumeroTodos()}</span>   
-                        </p:commandLink>      
-                        <p:commandLink id="btnaguardando" action="#{atividadesMB.mudarCoresBotoes('aguardando')}" style="margin-left:0.5%;" update="consAtividades">
-                            <span class="badge badge-sm label-radio" style="background:#{atividadesMB.aguardando};">AGUARDANDO #{atividadesMB.retornarNumeroAguardando()}</span>
-                        </p:commandLink> 
-                        <span id="visualizarConcluidas" class="badge badge-sm label-radio" style="margin-left:0.5%;height: 20px;">   
-                            <p:commandButton id="btnNaoVisualizarConcluidas" rendered="#{atividadesMB.naoconcluidas}" action="#{atividadesMB.visualizarConcluidas()}" value="VISUALIZAR CONCLUÍDAS" icon="fa fa-fw fa-toggle-off" style="border: transparent;background: transparent;font-size: 14px;top: -40%;font-weight: unset;color: #2A3542;" update="painelBtn,tabelaAtividades"/>
-                            <p:commandButton id="btnVisualizarConcluidas" rendered="#{atividadesMB.concluidas}" action="#{atividadesMB.visualizarConcluidas()}" value="VISUALIZAR CONCLUÍDAS" icon="fa fa-fw fa-toggle-on" style="border: transparent;background: transparent;font-size: 14px;top: -40%;font-weight: unset;color: #2A3542;" update="painelBtn,tabelaAtividades"/>  
-                        </span>     
-                        <span style="margin-left: 2%;">      
-                            <p:inputText id="inputbuscar" class="form-control search-consultas" placeholder="Buscar" value="#{atividadesMB.buscar}">
-                                <p:ajax event="blur" listener="#{atividadesMB.mudarCoresBotoes('todos')}" update="painelBtn,tabelaAtividades"/>
-                            </p:inputText>  
-                            <h:commandButton id="btnPesquisar" style="background: transparent;border: none;" />  
-                        </span>
+                <div class="row state-overview">
+                    <h:panelGroup id="colunaNumTarefas">
+                        <div class="col-lg-3 col-sm-6">     
+                            <section class="panel" style="background: #C9A471;">
+                                <p:commandLink action="#">
+                                    <div class="symbol terques" style="background: #C9A471;">
+                                        <i class="fa fa-clock-o" style=""></i> 
+                                    </div>
+                                    <div class="value" style="padding-right: 8px;">       
+                                        <h1><p:outputLabel value="#{dashboardMB.retornarAtividadesAtrasadas()}"/></h1>    
+                                        <br/><br/><br/> <br/>        
+                                        <p>TAREFAS</p><br/> 
+                                        <p>EM ATRASO</p>    
+                                    </div> 
+                                </p:commandLink>      
+                            </section>  
+                        </div>
+                        <div class="col-lg-3 col-sm-6">
+                            <section class="panel" style="background: #006D4D;margin-left:8%;">
+                                <p:commandLink action="#{menuMB.atividades()}">
+                                    <div class="symbol terques" style="background: #006D4D;">
+                                        <i class="fa fa-calendar" style=""></i> 
+                                    </div>  
+                                    <div class="value" style="padding-right: 8px;">       
+                                        <h1><p:outputLabel value="#{dashboardMB.retornarAtividadesHoje()}"/></h1>    
+                                        <br/><br/><br/>     
+                                        <p>TAREFAS</p> <br/>      
+                                        <p>PARA HOJE</p>  
+                                    </div> 
+                                </p:commandLink>
+                            </section>
+                        </div>   
+                        <div class="col-lg-3 col-sm-6">
+                            <section class="panel" style="background: #005552;float: right;">
+                                <div class="symbol terques" style="background: #005552;">
+                                    <i class="fa fa-check-circle-o" style=""></i> 
+                                </div>
+                                <div class="value" style="padding-right: 8px;">       
+                                    <h1><p:outputLabel value="#{dashboardMB.retornarAtividadesSemana()}"/></h1>    
+                                    <br/><br/><br/>   <br/>      
+                                    <p>CONCLUÍDAS</p><br/> 
+                                    <p>NA SEMANA</p>     
+                                </div> 
+                            </section>  
+                        </div> 
                     </h:panelGroup>
-                    <h:panelGroup style="text-align: right;">    
-                        <p:commandLink id="btnadicionar" title="Adicionar" action="#{atividadesMB.adicionarAtividades()}" class="hoverTextos">
-                            <i class="fa fa-plus" style="font-size:35px;"/>
-                            <p:ajax event="dialogReturn" listener="#{atividadesMB.mudarCoresBotoes('hoje')}" update="@form"/>   
-                        </p:commandLink>  
-                    </h:panelGroup>
-                </h:panelGrid>
+                    <div  class="col-lg-3 col-sm-6">         
+                        <p:poll interval="20" update="colunaHorario"/>
+                        <h:panelGroup id="colunaHorario">
+                            <section class="panel" style="background: #E3DFC2;width: 100%;">
+                                <div  class="symbol" style="background: #E3DFC2;width: 100%;padding:1px;">     
+                                    <h1 style="font-size:50px;color:#2E3828;margin-top: 2px;">#{dashboardMB.retornarHora()}</h1>                   
+                                    <p style="font-size:14px;color:#2E3828;">
+                                        <p:outputLabel value="#{dashboardMB.retornarDataPorExtenso()}"/>
+                                    </p>           
+                                </div>       
+                                <div class="symbol" style="background:#D5D0B3;width: 100%;padding:1px;"> 
+                                    <div style="width:99%;padding:5px;text-align: right;"> 
+                                        <p:commandLink id="btnNovaTarefa" action="#{menuMB.adicionarAtividades()}" title="Adicionar Tarefa" style="padding:5px;">
+                                            <i class="fa fa-plus" style="font-size:21px;color:#313D30;"/>   
+                                            <p:ajax event="dialogReturn" listener="#{dashboardMB.gerarListas()}" update="@all"/>
+                                        </p:commandLink>     
+                                        <p:commandLink id="btnMenuRigth" title="Menu" class="dropdown-toggle">
+                                            <i class="fa fa-reorder" style="font-size:21px;color:#313D30;"/>   
+                                            <b class="caret"></b>    
+                                        </p:commandLink>   
+                                        <p:overlayPanel id="painelMenuRigth" for="btnMenuRigth"
+                                                        hideEffect="fade" style="background:#fff;width:200px;text-align:left !important;" >
+                                            <p:commandLink action="#{menuMB.atividades()}">
+                                                <i class="fa fa-calendar"  style="color: #8E9398;font-size: 14px;"/>
+                                                <p:outputLabel value="Tarefas" style="margin-left: 1%;"/>
+                                            </p:commandLink><br/><br/>
+                                            <p:commandLink action="#{dashboardMB.visualizarNotificacoes()}">
+                                                <i class="fa fa-bell" style="color:#8E9398;font-size: 14px;"/>
+                                                <p:outputLabel value="Notificações" style="margin-left: 1%;"/>
+                                                <p:ajax event="dialogReturn" listener="#{dashboardMB.gerarListaNotificacoes()}" update=":telaInicial:btnVisualizarNotificacoes"/>
+                                            </p:commandLink> <br/><br/>
+                                            <h:panelGroup rendered="#{menuMB.acessoMenuCliente()}">
+                                                <p:commandLink action="#{menuMB.cliente()}">  
+                                                    <i class="fa fa-user" style="color: #8E9398;font-size: 14px;"/>
+                                                    <p:outputLabel value="Cadastro de Clientes" style="margin-left: 1%;"/>
+                                                </p:commandLink>
+                                            </h:panelGroup>
+                                        </p:overlayPanel>  
+                                    </div>
+                                </div>      
+                            </section> 
+                        </h:panelGroup>
+                    </div>
+                </div>
                 <h:panelGroup id="tabelaAtividades">  
                     <div class="row" >  
                         <div class="col-md-12"> 
@@ -75,7 +130,7 @@
                                                             <i class="fa fa-pause" style="font-size: 14px;color:#B0B5B9;"></i>     
                                                         </p:commandLink>   
                                                         <div class="task-checkbox" style="margin-left:1%;">  
-                                                            <p:commandLink rendered="#{atividadesMB.retornarSituacaoEmDia(atividades)}" oncomplete="PF('errosprocesso').show()" update=":formErroProcesso:dialog_processo" actionListener="#{atividadesMB.selecionarAtividade(atividades)}"> 
+                                                            <p:commandLink  oncomplete="PF('errosprocesso').show()" update=":formErroProcesso:dialog_processo" actionListener="#{atividadesMB.selecionarAtividade(atividades)}"> 
                                                                 <p:selectBooleanCheckbox id="cbxConcluido" class="list-child" value="#{atividades.concluido}"  style="float: left;margin-top:0.6%;margin-left:1.5%;"/> 
                                                             </p:commandLink>      
                                                             
@@ -158,94 +213,6 @@
                     </div>     
                 </h:panelGroup> 
             </h:form>  
-            <h:form id="formDialogData">
-                <p:dialog id="dialog_alterarData"  header="ALTERAR DATA" widgetVar="alterarData" >
-                    <div align="center">
-                        <p:calendar id="dataTarefa" pattern="dd/MM/yyyy" value="#{atividadesMB.atividadeusuario.atividade.dataexecutar}" locale="pt" size="18" style="margin-top: 5px;">
-                            <f:convertDateTime   pattern="dd/MM/yyyy" timeZone="America/Sao_Paulo"/>
-                        </p:calendar>
-                        <div align="right">  
-                            <p:commandLink id="btnAdicionar" action="#{atividadesMB.salvarAlteracaoData()}" title="Adicionar" update="@form, consAtividades">
-                                <i class="fa fa-check" style="color:#008B00;font-size:35px;"/>  
-                            </p:commandLink>
-                        </div>
-                    </div>
-                </p:dialog> 
-            </h:form>
-            <h:form id="formDialogEncaminhar">     
-                <p:dialog id="dialog_encaminhar"  header="ENCAMINHAR TAREFA" widgetVar="encaminharTarefa" >
-                    <div align="left">
-                        <p:selectOneMenu id="executor"  value="#{atividadesMB.atividadeusuario.usuario}"  converter="UsuarioConverter"
-                                         filter="true" filterMatchMode="contains" panelStyle="width:180px" style="width: 165px;">
-                            <f:selectItem  itemLabel="EXECUTOR" itemValue="0" noSelectionOption="true"/>    
-                            <f:selectItems  value="#{atividadesMB.listaUsuario}" var="usuarioselecionado" itemLabel="#{usuarioselecionado.nome}" itemValue="#{usuarioselecionado}"/>
-                            <f:attribute name="listaUsuarios" value="#{atividadesMB.listaUsuario}"/>
-                            <p:ajax event="change"/>
-                        </p:selectOneMenu>   
-                        <div align="right">   
-                            <p:commandLink id="btnEncaminhaTarefa" action="#{atividadesMB.salvarEncaminharAtividade()}" title="Adicionar" update="@form, consAtividades">
-                                <i class="fa fa-check" style="color:#008B00;font-size:35px;"/>
-                            </p:commandLink>
-                        </div>
-                    </div>
-                </p:dialog> 
-            </h:form> 
-             <h:form id="formErroProcesso">     
-                 <p:dialog id="dialog_processo" width="400" header="Erros Indentificados No Processo" widgetVar="errosprocesso" >
-                    <div align="left">
-                        <p:inputTextarea value="#{atividadesMB.descricaoErro}" style="width:100%" rows="3"></p:inputTextarea>
-                        <br/><br/>
-                        <p:selectOneRadio id="tipo"
-                                          value="#{atividadesMB.tipoErro}"
-                                          style="width:85%;margin-left: 14%;">
-                            <f:selectItem itemLabel="Erro Interno" itemValue="interno"
-                                          class="loginButtonn" />
-                            <f:selectItem itemLabel="Erro Externo" itemValue="externo"
-                                          class="loginButtonn" />
-                        </p:selectOneRadio>
-                        <br/>
-                        <div align="center">    
-                            <p:commandButton id="btnConfirmar" action="#{atividadesMB.mudarSituacaoAtividadeErro('Concluida')}" style="background:green;color:white;" class="btn btn-success" update="@form, consAtividades" value="Finalizar"/>
-                            <p:commandButton id="btnFechar"  class="btn btn-danger" style="background:red;color:white;" value="Fechar"/>
-                        </div>
-                    </div>
-                </p:dialog> 
-            </h:form> 
-            <script src="../../resources/js/bootstrap.min.js"></script>   
-
-            <script class="include" type="text/javascript" src="../../resources/js/jquery.dcjqaccordion.2.7.js"></script>
-            <script src="../../resources/js/jquery.nicescroll.js" type="text/javascript"></script>
-            <script src="../../resources/js/jquery.scrollTo.min.js"></script> 
-
-            <script src="../../resources/js/slidebars.min.js"></script>  
-            <script src="../../resources/js/tasks.js"></script> 
-            <link href="../../resources/css/tasks.css" rel="stylesheet"/>    
-            <link href="../../resources/js/calendario.js" type="text/javascript"/> 
-
-            <script>
-                jQuery(document).ready(function () {
-                    TaskList.initTaskWidget();
-                });
-
-                $(function () {
-                    $("#sortable").sortable();
-                    $("#sortable").disableSelection();
-                });
-
-            </script>  
-            <style>
-                .ui-widget-content {
-                    border: 1px solid #fff; 
-                    color: #4f4f4f;
-                }
-
-                .ui-datatable thead th, .ui-datatable tbody td, .ui-datatable tfoot td, .ui-datatable tfoot th {
-                    padding: 4px 10px;
-                    overflow: hidden;
-                    border: 1px #fff;
-                    background: transparent;
-                }
-            </style>
         </ui:define>
     </ui:composition>
 </html>
