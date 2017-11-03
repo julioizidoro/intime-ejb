@@ -104,4 +104,9 @@ public class MenuMB implements Serializable {
             return false;
         }
     }
+    
+    
+    public String relatoriosAtividadeConcluida() {
+        return "relatoriosAtividadeConcluida";
+    }
 }

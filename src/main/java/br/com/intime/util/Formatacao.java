@@ -109,6 +109,12 @@ public class Formatacao {
     public static String formatarLogString(long valor) {
         return String.valueOf(valor);
     }
+    
+    public static int getUltimoDiaMes(int ano, int mes, int dia) {
+        GregorianCalendar calendar = new GregorianCalendar();
+        Calendar c = new GregorianCalendar(ano, mes, dia);
+        return c.getMaximum(calendar.DAY_OF_MONTH);
+    }
 
     public static Date SomarDiasData(Date data, int dias) {
         SimpleDateFormat sd = new SimpleDateFormat("dd/MM/yyyy");
@@ -949,6 +955,12 @@ public class Formatacao {
             }
         }
         return sTempo;
+    }
+    
+    public static String converterMinutosHora(int minuto){
+        int inteira = minuto / 60;
+        int resto = minuto % 60;
+        return inteira + ":" + resto; 
     }
 
 }
