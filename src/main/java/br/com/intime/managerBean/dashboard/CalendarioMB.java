@@ -16,10 +16,13 @@ import java.util.Date;
 import java.util.List;
 import javax.annotation.PostConstruct; 
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped; 
 import javax.faces.event.ActionEvent;
 import javax.inject.Inject;
+import org.primefaces.event.ScheduleEntryMoveEvent;
+import org.primefaces.event.ScheduleEntryResizeEvent;
   
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.DefaultScheduleEvent;
@@ -139,8 +142,8 @@ public class CalendarioMB implements Serializable {
         LocalDate dataInicial = LocalDate.of(data.getYear(), data.getMonth(), 1);
         LocalDate dataFinal = dataInicial.plusDays(30);
         String sql = "SELECT a FROM Atividadeusuario a where a.usuario.idusuario=" + usuarioLogadoMB.getUsuario().getIdusuario()
-            + " and a.atividade.dataexecucao>= :dataInicial and a.atividade.dataexecucao<= :dataFinal order by a.atividade.dataexecucao";
-        List<Atividadeusuario> listaAtividades = atividadeUsuarioRepository.list(sql, dataInicial, dataFinal);
+            + " order by a.atividade.dataexecucao";
+        List<Atividadeusuario> listaAtividades = atividadeUsuarioRepository.list(sql);
         
         String sqlAguardando = "SELECT a FROM Atividadeaguardando a where a.atividadeusuario.usuario.idusuario=" + usuarioLogadoMB.getUsuario().getIdusuario()
                 + " and a.dataretorno>= :dataInicial"
@@ -164,5 +167,16 @@ public class CalendarioMB implements Serializable {
                 }
             }  
         }
+    }
+    
+    
+    public void onEventMove(ScheduleEntryMoveEvent event) {
+        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Event moved", "Day delta:" + event.getDayDelta() + ", Minute delta:" + event.getMinuteDelta());
+         
+    }
+     
+    public void onEventResize(ScheduleEntryResizeEvent event) {
+        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Event resized", "Day delta:" + event.getDayDelta() + ", Minute delta:" + event.getMinuteDelta());
+         
     }
 }

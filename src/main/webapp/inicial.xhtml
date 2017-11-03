@@ -265,12 +265,15 @@
                                     <h:panelGroup id="calendarioAtividades">
                                         <aside class="col-lg-9">   
                                             <section class="panel" style="width: 100%;">       
-                                                <div>            
-                                                    <p:schedule id="schedule" value="#{calendarioMB.eventModel}" locale="pt" 
-                                                                leftHeaderTemplate="mes"  rightHeaderTemplate="mes">     
+                                                <div>  
+                                                    <p:schedule id="schedule" value="#{calendarioMB.eventModel}"   locale="pt" rightHeaderTemplate="mes"  widgetVar="myschedule" timeZone="GMT+2">
+ 
                                                         <p:ajax event="dateSelect" listener="#{calendarioMB.onDateSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
                                                         <p:ajax event="eventSelect" listener="#{calendarioMB.onEventSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
-                                                    </p:schedule>     
+                                                        <p:ajax event="eventMove" listener="#{calendarioMB.onEventMove}"/>
+                                                        <p:ajax event="eventResize" listener="#{calendarioMB.onEventResize}" />
+
+                                                    </p:schedule>       
                                                     <p:dialog id="eventDetails" widgetVar="eventDialog" header="ATIVIDADES" width="40%">   
                                                         <h:panelGroup>
                                                             <p:dataScroller id="tabelaAtividadesCalendario" value="#{calendarioMB.listaAtividade}" var="atividadeCalendario" mode="inline" style="border:none !important;" scrollHeight="235">  

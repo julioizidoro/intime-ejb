@@ -64,6 +64,10 @@ public class RelatoriosAtividadeConcluidaMB implements Serializable{
     private UsuarioRepository usuarioRepository;
     private int tempoUtilizado;
     private String mostrarTempoUtilizado;
+    private String nomeMes;
+    private int ano;
+    private String mesAno;
+    private int mes;
     
     
     @PostConstruct
@@ -192,17 +196,53 @@ public class RelatoriosAtividadeConcluidaMB implements Serializable{
     public void setMostrarTempoUtilizado(String mostrarTempoUtilizado) {
         this.mostrarTempoUtilizado = mostrarTempoUtilizado;
     }
+
+    public String getNomeMes() {
+        return nomeMes;
+    }
+
+    public void setNomeMes(String nomeMes) {
+        this.nomeMes = nomeMes;
+    }
+
+    public int getAno() {
+        return ano;
+    }
+
+    public void setAno(int ano) {
+        this.ano = ano;
+    }
+
+    public String getMesAno() {
+        return mesAno;
+    }
+
+    public void setMesAno(String mesAno) {
+        this.mesAno = mesAno;
+    }
+
+    public int getMes() {
+        return mes;
+    }
+
+    public void setMes(int mes) {
+        this.mes = mes;
+    }
     
     
     
      public void gerarListaAtivadades() {
         LocalDate hoje = LocalDate.now();
-        dataInicial = hoje.plusDays(-30);
-        dataFinal = hoje.plusDays(1);
+        dataInicial = LocalDate.of(hoje.getYear(), hoje.getMonth(), 1);
+        dataFinal = hoje.plusDays(30);
+        mes = hoje.getMonthValue();
+        nomeMes = Formatacao.nomeMes(hoje.getMonthValue());
+        ano = hoje.getYear(); 
+        mesAno = nomeMes + " | " + ano;
         String sql = "SELECT a FROM Atividadeusuario a where a.usuario.idusuario=" + usuarioLogadoMB.getUsuario().getIdusuario()
-                + " and a.situacao='Concluida'";
+                + " and a.situacao='Concluida' and a.dataconclusao>= :dataInicial and a.dataconclusao<= :dataFinal";
         listaAtividade = new ArrayList<>();
-        listaAtividade = atividadeUsuarioRepository.list(sql);
+        listaAtividade = atividadeUsuarioRepository.list(sql, dataInicial, dataFinal);
          if (listaAtividade == null) {
              listaAtividade = new ArrayList<>();
          }
@@ -351,6 +391,56 @@ public class RelatoriosAtividadeConcluidaMB implements Serializable{
         if (listaUsuario == null) {
             listaUsuario = new ArrayList<Usuario>();
         }
+    }
+    
+         
+    public int retornarMes(){
+        LocalDate hoje = LocalDate.now();
+        int mes = hoje.getMonthValue();
+        int diaFinal = Formatacao.getUltimoDiaMes(hoje.getDayOfYear(), hoje.getMonthValue(), 1);
+        return diaFinal;
+    }
+    
+    
+    public void pesquisar(String tipo) {
+        if (tipo.equalsIgnoreCase("mais")) {
+            mes = mes + 1;
+            if (mes > 12) {
+                mes = 1;
+                ano = ano + 1;
+            }
+        }else if(tipo.equalsIgnoreCase("menos")){
+            mes = mes - 1;
+            if (mes < 1) {
+                mes = 12;
+                ano = ano - 1;
+            }
+        }
+        LocalDate hoje = LocalDate.now();
+        dataInicial = LocalDate.of(ano, mes, 1);
+        dataFinal = dataInicial.plusDays(30);
+        nomeMes = Formatacao.nomeMes(mes);
+        mesAno = nomeMes + " | " + ano;
+        String sql = "SELECT a FROM Atividadeusuario a where a.usuario.idusuario=" + usuarioLogadoMB.getUsuario().getIdusuario()
+                + " and a.situacao='Concluida' and a.dataconclusao>= :dataInicial and a.dataconclusao<= :dataFinal";
+        listaAtividade = new ArrayList<>();
+        listaAtividade = atividadeUsuarioRepository.list(sql, dataInicial, dataFinal);
+         if (listaAtividade == null) {
+             listaAtividade = new ArrayList<>();
+         }
+         nAtividadesConcluidas = 0;
+         nErros = 0;
+         tempoUtilizado = 0;
+         for (int i = 0; i < listaAtividade.size(); i++) {
+             nAtividadesConcluidas = nAtividadesConcluidas + 1;
+             tempoUtilizado = tempoUtilizado + listaAtividade.get(i).getTempoatual();
+             List<Atividadeerro> listaAtividadeerro = atividadeErroRepository.list("SELECT a FROM Atividadeerro a WHERE a.atividadeusuario.idatividadeusuario="
+                + listaAtividade.get(i).getIdatividadeusuario());
+             if (listaAtividadeerro != null && listaAtividadeerro.size() > 0) {
+                 nErros = nErros + 1;
+             }
+         }
+         mostrarTempoUtilizado = Formatacao.converterMinutosHora(tempoUtilizado);
     }
 
 }

@@ -20,7 +20,7 @@
                     </h:panelGroup>     
                 </h:panelGrid>   
                 <br/> 
-                <div class="row state-overview">
+                <div class="row state-overview" id="idpanelTarefa">
                     <h:panelGroup id="colunaNumTarefas">
                         <div class="col-lg-3 col-sm-6">     
                             <section class="panel" style="background: #C9A471;">
@@ -73,8 +73,13 @@
                             <section class="panel tasks-widget" style="width:100%;">
                                 <div class="panel-body">     
                                     <div  class="task-content">
-                                        <ul id="sortable" class="task-list ui-sortable">   
-                                            <p:dataTable value="#{relatoriosAtividadeConcluidaMB.listaAtividade}" var="atividades"  draggableRows="true" emptyMessage="Nenhuma Tarefa encontrada."> 
+                                        <ul id="sortable" class="task-list ui-sortable">  
+                                            <h:panelGrid columns="3" style="width:53%;">
+                                                <p:commandButton action="#{relatoriosAtividadeConcluidaMB.pesquisar('menos')}" value="Anterior" icon="ui-icon-arrowthick-1-w" update="tabelaAtividadesConcluidas, nomeMes, :consAtividades:colunaNumTarefas"/>
+                                                <p:outputLabel style="font-size:24px;" id="nomeMes" value="#{relatoriosAtividadeConcluidaMB.mesAno}"/>
+                                                <p:commandButton action="#{relatoriosAtividadeConcluidaMB.pesquisar('mais')}" value="Próximo" icon="ui-icon-arrowthick-1-e" update="tabelaAtividadesConcluidas, nomeMes, :consAtividades:colunaNumTarefas"/>
+                                            </h:panelGrid>
+                                            <p:dataTable id="tabelaAtividadesConcluidas" value="#{relatoriosAtividadeConcluidaMB.listaAtividade}" var="atividades"  draggableRows="true" emptyMessage="Nenhuma Tarefa encontrada."> 
                                                 <p:ajax event="rowReorder" update=":consAtividades:tabelaAtividades" /> 
                                                 <p:column>
                                                     <li class="list ui-sortable-handle" >    
